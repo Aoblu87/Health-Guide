@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useState } from "react";
 export default function Profile() {
   const [file, setFile] = useState();
-  const userId = localStorage.getItem("userId") 
-
+  type localStorage = {
+    [key: string]: string;
+  };
+  const userId = localStorage.getItem("userId");
 
   const upFile = (e: any) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -30,11 +32,10 @@ export default function Profile() {
       } else {
         throw new Error(`HTTP error! Status: ${fileResponse.status}`);
       }
-    } catch (error:any) {
-        console.log("Error fetching data:", error)
-
+    } catch (error: any) {
+      console.log("Error fetching data:", error);
     }
-  }
+  };
   return (
     <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
       <div className="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
@@ -66,35 +67,34 @@ export default function Profile() {
                 />
                 <div className="flex gap-x-2">
                   <div>
-                  <input
-        type="file"
-        className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-        
-        multiple={false}
-        onChange={upFile}
-        />
-      <button
-        type="submit"
-        className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-        >
-        <svg
-          className="flex-shrink-0 w-4 h-4"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          >
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="17 8 12 3 7 8" />
-          <line x1="12" x2="12" y1="3" y2="15" />
-        </svg>
-        Upload photo
-      </button>
+                    <input
+                      type="file"
+                      className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                      multiple={false}
+                      onChange={upFile}
+                    />
+                    <button
+                      type="submit"
+                      className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    >
+                      <svg
+                        className="flex-shrink-0 w-4 h-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" x2="12" y1="3" y2="15" />
+                      </svg>
+                      Upload photo
+                    </button>
                   </div>
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function Profile() {
                   placeholder="+x(xxx)xxx-xx-xx"
                 />
                 <select className="py-2 px-3 pe-9 block w-full sm:w-auto border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
-                  <option >Mobile</option>
+                  <option>Mobile</option>
                   <option>Home</option>
                   <option>Work</option>
                   <option>Fax</option>
@@ -321,20 +321,22 @@ export default function Profile() {
               ></textarea>
             </div>
           </div>
-
-          <div className="mt-5 flex justify-end gap-x-2">
-            <button
-              type="button"
-              className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            >
-              Save changes
-            </button>
+          <div className="mt-5 flex justify-between gap-x-2">
+            
+            <div className="mt-5 flex justify-end gap-x-2">
+              <button
+                type="button"
+                className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              >
+                Save changes
+              </button>
+            </div>
           </div>
         </form>
       </div>
