@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
   dayOfBirth: {
     type: String,
   },
-  avatar: {
+  photo: {
     type: String,
   },
   createdAt: {

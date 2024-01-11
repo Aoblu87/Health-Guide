@@ -44,7 +44,7 @@
     "app/api/(auth)/route.js",
     "app/api/(auth)/route.js",
     "app/api/(auth)/route.js"
-, "app/api/auth/[...nextauth]/route.js", "app/api/users/[id]/uploadAvatar/route"  ],
+, "app/api/auth/[...nextauth]/route.js", "app/api/users/[id]/[uploadAvatar]/route", "app/middlewares.js", "app/api/users/[id]/[uploadAvatar]/route.js", "app/api/avatar/[id]/route.js"  ],
   "exclude": ["node_modules"]
 }
  
