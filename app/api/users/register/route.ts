@@ -42,7 +42,11 @@ export async function POST(request: NextRequest) {
     // Saves the new user to the database.
     await newuser.save();
 
-    return NextResponse.json(userWithoutPassword);
+    return NextResponse.json({
+      message: "User created successfully",
+      success: true,
+      userWithoutPassword,
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

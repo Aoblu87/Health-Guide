@@ -1,15 +1,15 @@
-import dbConnect from "@/dbConfig/dbConfig";
-import clientPromise from "@/lib/mongoDBAuthProvider";
-import User from "@/models/User";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import bcryptjs from 'bcryptjs';
-import { User as IUser } from "next-auth";
-import type { Adapter } from "next-auth/adapters";
+import clientPromise from "@/lib/mongoDBAuthProvider";
+import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import { NextAuthOptions, User as IUser } from "next-auth";
 import NextAuth from "next-auth/next";
-import CredentialsProvider from "next-auth/providers/credentials";
-import EmailProvider from "next-auth/providers/email";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
+import dbConnect from "@/dbConfig/dbConfig";
+import User from "@/models/User";
+import type { Adapter } from "next-auth/adapters";
 
 
 
@@ -20,14 +20,15 @@ interface ICustomDataOfUser extends IUser {
     provider: string;
 }
 
-export default NextAuth( {
-
+const authOptions: NextAuthOptions = {
+//Define the providers you want to use
     adapter: MongoDBAdapter(clientPromise) as Adapter,
     secret: process.env.NEXTAUTH_SECRET as string,
+    //Define the pages you want to use
     pages: {
-        signIn: "auth/login"
+        signIn: "/login"
     },
-
+//define the strategy of the authentication on session and its duration
     session: {
         strategy: 'jwt',
         maxAge: 10 * 24 * 60 * 60,
@@ -35,6 +36,7 @@ export default NextAuth( {
     },
     //  debug: process.env.NODE_ENV === "development",
 
+//Define providers you want to use for authentication
     providers: [
         GitHubProvider({
             clientId: process.env.GITHUB_CLIENT_ID as string,
@@ -57,6 +59,7 @@ export default NextAuth( {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            //Define the object that will be passed to the OAuth provider
             profile(profile) {
                 return {
                     id: profile.sub,
@@ -105,7 +108,7 @@ export default NextAuth( {
                 if (!isUserExist) {
                     return null;
                 }
-          
+      
 
                 const isValidPassword = await bcryptjs.compare(formPassword, isUserExist?.password)
 
@@ -122,7 +125,7 @@ export default NextAuth( {
             }
         })
     ],
-
+//Define the callback to signin the user 
     callbacks: {
 
         async signIn({ account, profile, user, credentials }) {
@@ -152,7 +155,6 @@ export default NextAuth( {
         
             
         
-
 
 
         async jwt({ token, user, account }) {
@@ -196,12 +198,14 @@ export default NextAuth( {
             }
             return ({ ...token, ...customData })
         },
+        //USe session to keep track of the user
         async session({ session, token }) {
             session.user = token as any;
             return session;
         }
     }
 
-})
+}
 
-
+const handler = NextAuth(authOptions)
+export { handler as GET, handler as POST }

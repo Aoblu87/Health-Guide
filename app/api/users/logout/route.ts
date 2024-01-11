@@ -1,17 +1,22 @@
-import  connectionDB  from '@/lib/connectionDB';
-import { NextResponse } from "next/server";
+import { getDataFromToken } from "@/app/helper/getDataFromToken";
+import connectionDB from "@/lib/connectionDB";
+import User from "@/models/User";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-  await connectionDB()
+connectionDB();
+
+export async function GET(request: NextRequest) {
   try {
-    const response = NextResponse.json({
-      message: "Logout successful",
-      success: true,
-    });
-    response.cookies.set("token", "", { httpOnly: true, expires: new Date(0) });
+    // Extract user ID from the authentication token
+    const userId = await getDataFromToken(request);
 
-    return response;
+    // Find the user in the database based on the user ID
+    const user = await User.findOne({ _id: userId }).select("-password");
+    return NextResponse.json({
+      message: "User found",
+      data: user,
+    });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
