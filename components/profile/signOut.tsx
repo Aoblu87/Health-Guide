@@ -1,6 +1,7 @@
 "use client";
 
 import { LoginContext } from "@/context/loginContext";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
@@ -18,6 +19,7 @@ export default function SignOut() {
       setLogin(false);
       //Clearing the local storage
       localStorage.clear();
+      signOut()
     } catch (error: any) {
       console.log(error.message);
     }

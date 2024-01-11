@@ -11,6 +11,8 @@ import dbConnect from "@/dbConfig/dbConfig";
 import User from "@/models/User";
 import type { Adapter } from "next-auth/adapters";
 
+  
+
 
 
 interface ICustomDataOfUser extends IUser {
@@ -20,7 +22,7 @@ interface ICustomDataOfUser extends IUser {
     provider: string;
 }
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
 //Define the providers you want to use
     adapter: MongoDBAdapter(clientPromise) as Adapter,
     secret: process.env.NEXTAUTH_SECRET as string,
@@ -137,15 +139,15 @@ const authOptions: NextAuthOptions = {
       
               // if not, create a new document and save user in MongoDB
               if (!userExists) {
-                await User.create({
+               const newUser= await User.create({
                     googleId: profile?.sub,
             firstName: profile?.name?.replace(/\s/g, "").toLowerCase(),
             lastName: profile?.name?.replace(/\s/g, "").toLowerCase(),
             email: profile?.email,
-
                 })
+
               }
-      
+           
               return true
             } catch (error:any) {
               console.log('Error checking if user exists: ', error.message)
@@ -157,9 +159,10 @@ const authOptions: NextAuthOptions = {
         
 
 
-        async jwt({ token, user, account }) {
+        async jwt({ token, user, account, profile}) {
             if (account) {
                 token.accessToken = account?.access_token
+
             }
             let customData;
             if (user) {
@@ -201,6 +204,8 @@ const authOptions: NextAuthOptions = {
         //USe session to keep track of the user
         async session({ session, token }) {
             session.user = token as any;
+           
+            
             return session;
         }
     }

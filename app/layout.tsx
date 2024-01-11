@@ -5,9 +5,11 @@ import Navbar from "@/components/home/navbar";
 import { LoginProvider } from "@/context/loginContext";
 import { ThemeProvider } from "@/context/themeContext";
 import "@/app/globals.css";
-import { getServerSession } from "next-auth";
-import SessionProvider from "@/context/authContext";
+
 require("dotenv").config();
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import SessionProvider from "@/context/authContext";
 
 export const metadata = {
   title: "Healt-Guide",
@@ -19,7 +21,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">

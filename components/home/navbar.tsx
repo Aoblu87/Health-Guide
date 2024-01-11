@@ -6,10 +6,21 @@ import { useContext } from "react";
 import { Button } from "../ui/button";
 import { ThemeSwitch } from "./ThemeSwitch";
 import NavLinks from "./nav-links";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { useSession } from "next-auth/react";
 
 export default function Navbar() {
-  const { login } = useContext(LoginContext);
+  // const { login } = useContext(LoginContext);
+  // const session = (async ()=> await getServerSession(authOptions))
+  // if (!session) {
+  //   redirect("/login");
+  // }
+ 
 
+    const { data: session } = useSession();
+    console.log("session", session);
   return (
     <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b border-gray-200 text-sm py-4 dark:bg-gray-800 dark:border-gray-700">
       <nav
@@ -77,7 +88,7 @@ export default function Navbar() {
           >
             <NavLinks />
             <ThemeSwitch />
-            {login ? (
+            {session? (
               <ProfileDropdown />
             ) : (
               <LoginButton asChild >

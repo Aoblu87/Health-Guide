@@ -11,6 +11,27 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
   api_key: process.env.CLOUDINARY_API_KEY,
 });
+
+//Get user by ID
+export async function GET(request: NextRequest,{params}:{params:{id:string}}){
+await connectionDB();
+try {
+  const reqBody = request.json()
+  const id= params.id;
+  const user = await User.findById({ _id: id }).select("-password");
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+  return NextResponse.json(user, { status: 200 });
+} catch (error:any) {
+  return NextResponse.json({ error: error.message }, { status: 500 });
+  
+}
+
+}
+
+
+
 //Route for modifying a user
 export async function PUT(
   request: NextRequest,
