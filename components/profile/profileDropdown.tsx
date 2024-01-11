@@ -15,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import SignOut from "./signOut";
-import Link from "next/link";
 export default function ProfileDropdown() {
   return ( <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -57,12 +56,9 @@ export default function ProfileDropdown() {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <Link href="/profile">
-
             <DropdownMenuItem>
               Profile
             </DropdownMenuItem>
-            </Link>
             
             <DropdownMenuItem>
               Settings
