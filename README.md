@@ -10,6 +10,6 @@ Rendere il processo di ricerca del medico giusto, dei servizi farmaceutici e del
 - **React** 🔄: Per un'interfaccia utente reattiva e coinvolgente.
 - **Next.js** 📡: Framework per React, ottimizzando il SEO e il rendering lato server.
 - **Tailwind CSS** 🎨: Per uno stile moderno e una facile personalizzazione dell'UI.
-- **Node.js e Express** 🚀: Gestione backend e API.
+- **Node.js** 🚀: Gestione backend e API.
 - **Mongoose & MongoDB** 🌱: Database sicuro e scalabile.
 - **AI APIs** 🧠: Analisi dei sintomi e generazione di consigli.
