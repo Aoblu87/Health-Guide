@@ -14,13 +14,12 @@ export async function PATCH(
   uploadFile.single("avatar")
  
 const reqBody = await req.json();
-const user = await User.findByIdAndUpdate(id);
     const file = reqBody.file;
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
-
+const user = await User.findByIdAndUpdate(id, { avatar: file.filename }, { new:true})
       // Update the user with the file information
       return NextResponse.json(user, { status: 200 });
     
