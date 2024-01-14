@@ -5,6 +5,7 @@ import { useAtom } from "jotai";
 import { messagesAtom, threadAtom } from "@/atoms";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import InputMessages from "../inputMessages";
 export default function ChatBubble() {
   const router = useRouter();
 
@@ -185,6 +186,10 @@ export default function ChatBubble() {
         </div>
       </li>
     </ul>
+    <div className="flex flex-col h-full ">
+
+    <InputMessages/>
+    </div>
     </>
 
   );

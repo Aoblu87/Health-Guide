@@ -1,48 +1,15 @@
 "use client";
-import { messagesAtom, threadAtom } from "@/atoms";
-import { useAtom } from "jotai";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Input() {
-  const router = useRouter();
+export default function InputMessages() {
 
-  // Atom State
-  const [thread] = useAtom(threadAtom);
-  const [messages, setMessages] = useAtom(messagesAtom);
 
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
 
-  const sendMessage = async (e: any) => {
-    e.preventDefault();
-    if (!thread) return;
-    if (!message) return;
-    setSending(true);
-    console.log("Message:" + message);
-    console.log("Thread:" + thread);
-    try {
-      const response = await fetch(
-        `/api/openai/run/createRun-thread?assistantId=${process.env.ASSISTANT_ID}&message=${message}`
-      );
-      if (!response.ok) {
-        throw new Error(`Errore nella richiesta: ${response.status}`);
-      }
-      const newMessage = await response.json();
-      console.log("newMessage", newMessage);
-      setMessages([...messages, newMessage]);
-      setMessage("");
 
-      router.push("/dashboard");
-    } catch (error) {
-      console.log("error", error);
-    } finally {
-      setSending(false);
-    }
-  };
   return (
-    <form onSubmit={sendMessage}>
       <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
         <div className="flex-[1_0_0%]">
           <label
@@ -78,6 +45,5 @@ export default function Input() {
           </button>
         </div>
       </div>
-    </form>
   );
 }

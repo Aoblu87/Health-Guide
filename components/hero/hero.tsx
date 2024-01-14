@@ -1,4 +1,4 @@
-import Input from "./input"
+import Input from "../inputMessages"
 
 export const Hero =()=>{
     return (<>
