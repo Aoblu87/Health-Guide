@@ -3,11 +3,11 @@ import OpenAI from "openai";
 import {IncomingForm} from "formidable";
 import { createReadStream } from "fs";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   console.log("Upload runnin");
