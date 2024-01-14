@@ -33,8 +33,8 @@ export const authOptions: NextAuthOptions = {
 //define the strategy of the authentication on session and its duration
     session: {
         strategy: 'jwt',
-        maxAge: 10 * 24 * 60 * 60,
-        updateAge: 2 * 24 * 60 * 60
+        maxAge: 10 * 24 * 60 * 60, //define the max age of the session in days, hours, minutes and seconds
+        updateAge: 2 * 24 * 60 * 60 //define the update time of the session in the same ways
     },
     //  debug: process.env.NODE_ENV === "development",
 
@@ -89,7 +89,6 @@ export const authOptions: NextAuthOptions = {
             from: process.env.EMAIL_SERVER_FROM,
         }),
         CredentialsProvider({
-
             name: "Credentials",
 
             credentials: {
@@ -97,7 +96,40 @@ export const authOptions: NextAuthOptions = {
                 password: {},
                
             },
-            async authorize(credentials ) {
+      
+        
+    
+            // name: "Credentials",
+
+            // credentials: {
+            //     email: {},
+            //     password: {},
+               
+            // },
+            // const credentialDetails = {
+            //     email: credentials?.email,
+            //     password: credentials?.password,
+            //   };
+      
+            //   const resp = await fetch(backendURL + "/auth/login", {
+            //     method: "POST",
+            //     headers: {
+            //       Accept: "application/json",
+            //       "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify(credentialDetails),
+            //   });
+            //   const user = await resp.json();
+            //   if (user.is_success) {
+            //     console.log("nextauth daki user: " + user.is_success);
+      
+            //     return user;
+            //   } else {
+            //     console.log("check your credentials");
+            //     return null;
+            //   }
+            // },
+            async authorize(credentials ,req) {
                 const formEmail = credentials?.email as string
                 const formPassword = credentials?.password as string
                
@@ -110,7 +142,7 @@ export const authOptions: NextAuthOptions = {
                 if (!isUserExist) {
                     return null;
                 }
-      
+      console.log(isUserExist);
 
                 const isValidPassword = await bcryptjs.compare(formPassword, isUserExist?.password)
 
@@ -120,19 +152,21 @@ export const authOptions: NextAuthOptions = {
 
                 return {
                     id: isUserExist?._id,
-                    name: isUserExist?.name || "anonymous",
+                    firstName: isUserExist?.name || "anonymous",
                     email: isUserExist?.email
                 };
 
             }
         })
+        
     ],
 //Define the callback to signin the user 
     callbacks: {
 
         async signIn({ account, profile, user, credentials }) {
+            await dbConnect();
+          
             try {
-                await dbConnect();
       
               // check if user already exists
               const userExists = await User.findOne({ email: profile?.email })
@@ -147,6 +181,7 @@ export const authOptions: NextAuthOptions = {
                 })
 
               }
+             
            
               return true
             } catch (error:any) {
@@ -155,7 +190,7 @@ export const authOptions: NextAuthOptions = {
             }
           },
         
-            
+      
         
 
 
@@ -204,7 +239,7 @@ export const authOptions: NextAuthOptions = {
         //USe session to keep track of the user
         async session({ session, token }) {
             session.user = token as any;
-           
+
             
             return session;
         }

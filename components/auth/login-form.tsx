@@ -1,17 +1,20 @@
 "use client";
 import { useContext } from "react";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 import { LoginContext } from "@/context/loginContext";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
+import { signIn } from "next-auth/react";
+import { getServerSession } from "next-auth";
 
 export default function LoginForm(props: any) {
-  const[error, setError ]= useState<string|undefined>("");
-  const[success, setSuccess ]= useState<string|undefined>("");
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
 
-  const {loading, setLoading } = props;
+  const { loading, setLoading } = props;
   const [emailExists, setEmailExists] = useState(true);
   const [user, setUser] = useState({
     email: "",
@@ -23,8 +26,8 @@ export default function LoginForm(props: any) {
   const handleLogin = async (e: any) => {
     e.preventDefault();
     setLoading(true);
-    setError("")
-    setSuccess("")
+    setError("");
+    setSuccess("");
 
     try {
       const response = await fetch(`/api/auth/login`, {
@@ -44,19 +47,19 @@ export default function LoginForm(props: any) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      if(data.success){
+      if (data.success) {
         setLogin(true);
-router.push("/");
+        router.push("/");
       }
-      setError(data.error)
-      setSuccess(data.success)
+      setError(data.error);
+      setSuccess(data.success);
       if (data.token) {
         localStorage.setItem(
           "userId",
           data.userId ? data.userId : data.payload.id
-          );
-          localStorage.setItem("token", data.token);
-        }
+        );
+        localStorage.setItem("token", data.token);
+      }
       console.log(data);
     } catch (error) {
       console.log("Error fetching data:", error);
@@ -64,6 +67,21 @@ router.push("/");
       setLoading(false);
     }
   };
+  // const handleLogin = (e: any) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   const formData = {
+  //     email: user.email,
+  //     password: user.password,
+  //   };
+  //   try {
+  //     signIn("Credentials", formData);
+  //   } catch (error) {
+  //     console.log("Error login:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <form onSubmit={handleLogin}>
@@ -152,13 +170,13 @@ router.push("/");
           </p>
         </div>
         {/* {success&& <FormError message="Invalid credentials" />} */}
-     
+
         <div className="flex items-center">
           <div className="flex">
             <input
               id="remember-me"
               name="remember-me"
-         disabled={loading}
+              disabled={loading}
               type="checkbox"
               className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
             />

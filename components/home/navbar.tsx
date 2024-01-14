@@ -12,7 +12,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { useSession } from "next-auth/react";
 
 export default function Navbar() {
-  // const { login } = useContext(LoginContext);
+  const { login } = useContext(LoginContext);
   // const session = (async ()=> await getServerSession(authOptions))
   // if (!session) {
   //   redirect("/login");
@@ -88,7 +88,7 @@ export default function Navbar() {
           >
             <NavLinks />
             <ThemeSwitch />
-            {session? (
+            {session||login? (
               <ProfileDropdown />
             ) : (
               <LoginButton asChild >

@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
 
     // Find the user in the database based on the user ID
     const user = await User.findOne({ _id: userId }).select("-password");
+   
+
     return NextResponse.json({
       message: "User found",
       data: user,
