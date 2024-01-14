@@ -1,9 +1,12 @@
-"use client"
+"use client";
 import { messagesAtom, threadAtom } from "@/atoms";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Input() {
+  const router = useRouter();
+
   // Atom State
   const [thread] = useAtom(threadAtom);
   const [messages, setMessages] = useAtom(messagesAtom);
@@ -11,65 +14,35 @@ export default function Input() {
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-  const [fetching, setFetching] = useState(false);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      setFetching(true);
-      if (!thread) return;
-
-      try {
-        // axios
-        //   .get<{ messages: ThreadMessage[] }>(
-        //     `/api/message/list?threadId=${thread.id}`
-        //   )
-        //   .then((response) => {
-        //     let newMessages = response.data.messages;
-
-        //     // Sort messages in descending order by createdAt
-        //     newMessages = newMessages.sort(
-        //       (a, b) =>
-        //         new Date(a.created_at).getTime() -
-        //         new Date(b.created_at).getTime()
-        //     );
-        //     setMessages(newMessages);
-        //   });
-      } catch (error) {
-        console.log("error", error);
-      } finally {
-        setFetching(false);
-      }
-    };
-
-    fetchMessages();
-  }, [thread]);
-
-  const sendMessage = async () => {
+  const sendMessage = async (e: any) => {
+    e.preventDefault();
     if (!thread) return;
+    if (!message) return;
     setSending(true);
+    console.log("Message:" + message);
+    console.log("Thread:" + thread);
+    try {
+      const response = await fetch(
+        `/api/openai/run/createRun-thread?assistantId=${process.env.ASSISTANT_ID}&message=${message}`
+      );
+      if (!response.ok) {
+        throw new Error(`Errore nella richiesta: ${response.status}`);
+      }
+      const newMessage = await response.json();
+      console.log("newMessage", newMessage);
+      setMessages([...messages, newMessage]);
+      setMessage("");
 
-    // try {
-    //   const response = await axios.post<{ message: ThreadMessage }>(
-    //     `/api/message/create?threadId=${thread.id}&message=${message}`,
-    //     { message: message, threadId: thread.id }
-    //   );
-
-    //   const newMessage = response.data.message;
-    //   console.log("newMessage", newMessage);
-    //   setMessages([...messages, newMessage]);
-    //   setMessage("");
-    //   toast.success("Successfully sent message", {
-    //     position: "bottom-center",
-    //   });
-    // } catch (error) {
-    //   console.log("error", error);
-    //   toast.error("Error sending message", { position: "bottom-center" });
-    // } finally {
-    //   setSending(false);
-    // }
+      router.push("/dashboard");
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setSending(false);
+    }
   };
   return (
-    <form>
+    <form onSubmit={sendMessage}>
       <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
         <div className="flex-[1_0_0%]">
           <label
@@ -88,11 +61,9 @@ export default function Input() {
         </div>
         <div className="flex-[0_0_auto] cursor-pointer">
           <button
+            type="submit"
             className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            disabled={!thread || sending || message === ""}
-            onClick={() => {
-              sendMessage();
-            }}
+            disabled={sending || message === ""}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
