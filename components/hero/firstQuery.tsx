@@ -1,5 +1,5 @@
 "use client";
-import { messagesAtom, threadAtom } from "@/atoms";
+import { messagesAtom, threadAtom, threadIdAtom } from "@/atoms";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
@@ -10,12 +10,13 @@ export default function FirstQuery() {
 
   // Atom State
   const [thread, setThread] = useAtom(threadAtom);
-
   const [messages, setMessages] = useAtom(messagesAtom);
-
+  const [threadId, setThreadId] = useAtom(threadIdAtom);
+  
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  console.log(`Thread state:${threadId}`);
 
   const sendMessage = async (e: any) => {
     e.preventDefault();
@@ -39,17 +40,11 @@ export default function FirstQuery() {
       setMessages([...messages, newMessage]);
       //Cancel data on message state
       setMessage("");
-      const threadData: Thread= {
-                id: newMessage.thread_id,
-                object: newMessage.object,
-                metadata: newMessage.metadata,
-        created_at: newMessage.created_at
-      };
-     
-      setThread(threadData);
-      console.log(`Thread state:${threadData}`)
+   
+      setThreadId(newMessage.thread_id);
+      console.log(`Thread state:${threadId}`);
       //Memorize thread ID into local storage
-      localStorage.setItem("thread", threadData.id);
+      localStorage.setItem("thread", newMessage.thread_id);
       //Redirect to dashboard
       router.push("/dashboard");
     } catch (error) {

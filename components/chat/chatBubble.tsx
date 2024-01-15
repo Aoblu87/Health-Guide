@@ -1,5 +1,5 @@
 "use client";
-import { messagesAtom, threadAtom } from "@/atoms";
+import { messagesAtom, threadAtom, threadIdAtom } from "@/atoms";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import Image from "next/image";
@@ -11,20 +11,23 @@ export default function ChatBubble() {
   // Atom State
   const [thread] = useAtom(threadAtom);
   const [messages, setMessages] = useAtom(messagesAtom);
+  const [threadId, setThreadId] = useAtom(threadIdAtom);
 
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [fetching, setFetching] = useState(false);
+  console.log(`Messages state:${messages}`);
+  console.log(`Thread state:${threadId}`);
 
   useEffect(() => {
     const fetchMessages = async () => {
       setFetching(true);
-      if (!thread) return;
+      if (!threadId) return;
 
       try {
         const response = await fetch(
-          `/api/openai/message/list?threadId=${thread.id}`
+          `/api/openai/message/list?threadId=${threadId}`
         );
         if (!response.ok) {
           throw new Error(`Errore nella richiesta: ${response.status}`);
@@ -44,34 +47,47 @@ export default function ChatBubble() {
     };
 
     fetchMessages();
-  }, [thread, setMessages]);
+  }, [threadId, setMessages]);
 
 
     
   const sendMessage = async (e: any) => {
+    e.preventDefault();
+    console.log(threadId);
       //TEMPORANEAMENTE LEGGO IL THREAD ID DAL LOCAL STORAGE
   const localThread = localStorage.getItem("thread");
-    e.preventDefault();
-    if (!thread){
-      console.error("Thread not found");
+  if (!threadId) {
+    console.error("Thread not found");
     };
     if (!message){
       console.error("Message not found");
     }
     setSending(true);
-//     const sendingData: ThreadMessage= {
-//       threadId: thread?.id,
-// };
-  const sendingData={
-    threadId: localThread,
-    message:{
-      role:"user",
-      content: message,
+
+  // const sendingData={
+  //   threadId: localThread,
+  //   message:{
+  //     role:"user",
+  //     content: message,
       
+  //   }
+    
+  // }
+  const sendingData = {
+    threadId: localThread,
+    message: {
+      role: "user",
+      content: [
+        {
+          type: "text",
+          text: {
+            value: message
+          }
+        }
+      ]
     }
-    
-    
-  }
+  };
+  console.log(message)
     try {
       const response = await fetch(
         `/api/openai/message/create?threadId=${localThread}&message=${message}`,
@@ -90,6 +106,7 @@ export default function ChatBubble() {
       const newMessage = await response.json();
       console.log("newMessage", newMessage);
       setMessages([...messages, newMessage]);
+      console.log(`Messages state:${messages}`);
       setMessage("");
 
     } catch (error) {
@@ -98,6 +115,7 @@ export default function ChatBubble() {
       setSending(false);
     }
   };
+  
   return (
     <>
       <div className="flex flex-col h-full max-h-[calc(100vh-400px)] overflow-y-auto border-blue-200 border-solid border-2 p-6 rounded-lg">

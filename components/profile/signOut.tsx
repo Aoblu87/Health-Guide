@@ -1,28 +1,28 @@
 "use client";
 
+import clearCookies from "@/app/helper/clearCookies";
 import { LoginContext } from "@/context/loginContext";
+import { clear } from "console";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-
 
 export default function SignOut() {
   const router = useRouter();
   const { setLogin } = useContext(LoginContext);
   const { data: sessionData } = useSession();
 
-
   // Function to log out the user
   const logout = async () => {
     try {
-      //Setting the login state false 
+      //Setting the login state false
       setLogin(false);
       //Clearing the local storage
-      signOut()
+      signOut();
       //Redirect to the home page
-      router.push("/");
+      clearCookies("token");
       localStorage.clear();
-
+      router.push("/");
     } catch (error: any) {
       console.log(error.message);
     }

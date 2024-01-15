@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
     console.log(threadMessage);
 
     return Response.json({ message: threadMessage });
-  } catch (e) {
-    console.log(e);
-    return Response.json({ error: e });
+  } catch (error:any) {
+    console.log(error);
+    return Response.json({ error: error });
   }
 }
 
