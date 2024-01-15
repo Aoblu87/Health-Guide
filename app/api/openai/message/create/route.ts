@@ -6,9 +6,12 @@ export async function POST(req: NextRequest) {
     //Get message and thread id from request body
   const { message, threadId } = await req.json();
 
-  if (!threadId || !message)
-    return Response.json({ error: "Invalid message" }, { status: 400 });
-
+  if (!threadId ){
+    return Response.json({ error: "Thread id not found" }, { status: 400 });
+  }
+  if(!message ){
+    return Response.json({ error: "Message not found" }, { status: 400 });
+  }
   const openai = new OpenAI();
 
   try {

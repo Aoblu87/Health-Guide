@@ -8,7 +8,6 @@ export default function InputMessages() {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
 
-
   return (
       <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
         <div className="flex-[1_0_0%]">

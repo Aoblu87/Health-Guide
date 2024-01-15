@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
       },
     });
     console.log({ "create And Run": createAndRun });
-    return Response.json({ "create And Run": createAndRun });
+    return Response.json(createAndRun );
   } catch (error: any) {
     return Response.json({ error: error.message }, { status: 500 });
   }

@@ -20,3 +20,11 @@ try {
 
 }
 
+//RESPONSE
+// {
+//     "id": "thread_abc123",
+//     "object": "thread",
+//     "created_at": 1699014083,
+//     "metadata": {}
+//   }
+  

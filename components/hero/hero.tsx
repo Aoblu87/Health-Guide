@@ -1,8 +1,8 @@
 import Input from "../inputMessages"
+import FirstQuery from "./firstQuery"
 
 export const Hero =()=>{
     return (<>
-        {/* <!-- Hero --> */}
     <div className="relative overflow-hidden">
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-24 mt-5">
         <div className="text-center">
@@ -14,9 +14,7 @@ export const Hero =()=>{
 How can I help you today?          </p>
 
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
-            {/* <!-- Form --> */}
-           <Input/>
-            {/* <!-- End Form --> */}
+           <FirstQuery/>
 
             {/* <!-- SVG Element --> */}
             <div className="hidden md:block absolute top-0 end-0 -translate-y-12 translate-x-20">

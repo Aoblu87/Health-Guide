@@ -22,7 +22,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     try {
       fetch("/api/users/me").then((response) => {
         if (!response.ok) {
-          throw new Error();
+          return null;
         }
 
         setLogin(true);

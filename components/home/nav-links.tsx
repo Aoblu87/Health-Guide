@@ -3,7 +3,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", current: true },
+  { name: "Dashboard", href: "/dashboard", current: false },
 
   {
     name: "How it works",

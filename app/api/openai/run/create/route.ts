@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
-export async function POST(request:NextRequest) {
+export async function GET(request:NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const threadId = searchParams.get("threadId");
     const assistantId = searchParams.get("assistantId");
