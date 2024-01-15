@@ -10,17 +10,20 @@ export const assistantFileAtom = atom<string | null>(null);
 export const threadAtom = atom<Thread | null>(null);
 const _threadIdAtom = atom<string | null>(null);
 export const runAtom = atom<Run | null>(null);
-export const messagesAtom = atom<ThreadMessage[]>([]);
+const _messagesAtom = atom<ThreadMessage[]>([]);
 
 
 const atomWithLocalStorage = (key:string, initialValue:null) => {
   const getInitialValue = () => {
-    const item = localStorage.getItem(key)
-    if (item !== null) {
-      return JSON.parse(item)
+    // Check if the code is running in a browser environment
+    if (typeof window !== 'undefined') {
+      const item = localStorage.getItem(key);
+      if (item !== null) {
+        return JSON.parse(item);
+      }
     }
-    return initialValue
-  }
+    return initialValue;
+  };
   const baseAtom = atom(getInitialValue())
   const derivedAtom = atom(
     (get) => get(baseAtom),
@@ -34,6 +37,8 @@ const atomWithLocalStorage = (key:string, initialValue:null) => {
   return derivedAtom
 }
 export const threadIdAtom = atomWithLocalStorage(_threadIdAtom.toString(), null);
+export const messagesAtom = atomWithLocalStorage(_messagesAtom.toString(),null)
+
 
 export type RunState =
   | "queued"

@@ -2,14 +2,12 @@
 import { messagesAtom, threadAtom, threadIdAtom } from "@/atoms";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
-import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { useState } from "react";
 
 export default function FirstQuery() {
   const router = useRouter();
 
   // Atom State
-  const [thread, setThread] = useAtom(threadAtom);
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   
@@ -36,8 +34,9 @@ export default function FirstQuery() {
       const newMessage = await response.json();
 
       console.log("newMessage", newMessage);
+      
       //Memorize messages into atomic state
-      setMessages([...messages, newMessage]);
+      // setMessages([...messages, newMessage]);
       //Cancel data on message state
       setMessage("");
    

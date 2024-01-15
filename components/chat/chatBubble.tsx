@@ -16,7 +16,7 @@ export default function ChatBubble() {
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-  const [fetching, setFetching] = useState(false);
+  const [fetching, setFetching] = useState(true);
   console.log(`Messages state:${messages}`);
   console.log(`Thread state:${threadId}`);
 
@@ -115,15 +115,15 @@ export default function ChatBubble() {
       setSending(false);
     }
   };
-  
+
   return (
     <>
       <div className="flex flex-col h-full max-h-[calc(100vh-400px)] overflow-y-auto border-blue-200 border-solid border-2 p-6 rounded-lg">
         {fetching && <div className="m-auto font-bold">Fetching messages.</div>}
-        {!fetching && messages.length === 0 && (
+        {!fetching && messages?.length === 0 && (
           <div className="m-auto font-bold">No messages found for thread.</div>
         )}
-        {messages?.map((message) => (
+        {messages?.map((message:any) => (
           <div
             key={message.id}
             className={`px-4 py-2 mb-3 rounded-lg text-white w-fit text-lg ${
