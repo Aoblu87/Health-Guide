@@ -37,7 +37,7 @@ const atomWithLocalStorage = (key:string, initialValue:null) => {
   return derivedAtom
 }
 export const threadIdAtom = atomWithLocalStorage(_threadIdAtom.toString(), null);
-export const messagesAtom = atomWithLocalStorage(_messagesAtom.toString(),null)
+export const messagesAtom = atomWithLocalStorage(JSON.stringify(_messagesAtom,null,2),null)
 
 
 export type RunState =
