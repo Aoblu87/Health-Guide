@@ -1,5 +1,11 @@
 "use client";
-import { messagesAtom, threadAtom, threadIdAtom } from "@/atoms";
+import {
+  messagesAtom,
+  runAtom,
+  runStateAtom,
+  threadAtom,
+  threadIdAtom,
+} from "@/atoms";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -10,11 +16,95 @@ export default function FirstQuery() {
   // Atom State
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
-  
+  const [run, setRun] = useAtom(runAtom);
+  const [runState, setRunState] = useAtom(runStateAtom);
+
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [pollingIntervalId, setPollingIntervalId] =
+    useState<NodeJS.Timeout | null>(null);
+
   console.log(`Thread state:${threadId}`);
+
+  //   const fetchMessages = async () => {
+  //     setFetching(false);
+  //     if (!threadId) return;
+
+  //     try {
+  //       const response = await fetch(
+  //         `/api/openai/message/list?threadId=${threadId}`
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error(`Errore nella richiesta: ${response.status}`);
+  //       }
+  //       const getMessages = await response.json();
+
+  //       console.log("Data Response fetch messages:", getMessages);
+  //       // Sort messages by created_at timestamp in ascending order
+  //       const sortedMessages = getMessages.messages.sort(
+  //         (a: any, b: any) => a.created_at - b.created_at
+  //       );
+  //       console.log("Sorted messages:", sortedMessages);
+  //       // Format the sorted messages
+  //       const formattedMessages = sortedMessages.map((msg: any) => {
+  //         return {
+  //           ...msg,
+  //           content: msg.content
+  //             .map((contentItem: any) => contentItem.text.value)
+  //             .join(" "),
+  //         };
+  //       });
+  //       console.log("Formatted Messages:", formattedMessages);
+  //       setMessages(formattedMessages);
+      
+
+  //       setMessage("");
+  //     } catch (error: any) {
+  //       console.error("Fetching messages error", error);
+  //     } finally {
+  //       setFetching(false);
+  //     }
+  //   };
+
+
+  // useEffect(() => {
+  //   // Clean up polling on unmount
+  //   return () => {
+  //     if (pollingIntervalId) clearInterval(pollingIntervalId);
+  //   };
+  // }, [pollingIntervalId]);
+
+  // const startPolling = (runId: string) => {
+  //   if (!threadId) return;
+  //   const intervalId = setInterval(async () => {
+  //     try {
+  //       const response = await fetch(`/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
+  //       );
+  //       const updatedRun = response.data.run;
+
+  //       setRun(updatedRun);
+  //       setRunState(updatedRun.status);
+
+  //       if (
+  //         ["cancelled", "failed", "completed", "expired"].includes(
+  //           updatedRun.status
+  //         )
+  //       ) {
+  //         clearInterval(intervalId);
+  //         setPollingIntervalId(null);
+  //         fetchMessages();
+  //       }
+  //     } catch (error) {
+  //       console.error("Error polling run status:", error);
+  //       clearInterval(intervalId);
+  //       setPollingIntervalId(null);
+  //     }
+  //   }, 500);
+
+  //   setPollingIntervalId(intervalId);
+  // };
 
   const sendMessage = async (e: any) => {
     e.preventDefault();
@@ -34,12 +124,12 @@ export default function FirstQuery() {
       const newMessage = await response.json();
 
       console.log("newMessage", newMessage);
-      
+
       //Memorize messages into atomic state
       // setMessages([...messages, newMessage]);
       //Cancel data on message state
       setMessage("");
-   
+
       setThreadId(newMessage.thread_id);
       console.log(`Thread state:${threadId}`);
       //Memorize thread ID into local storage

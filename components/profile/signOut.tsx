@@ -20,7 +20,6 @@ export default function SignOut() {
       //Clearing the local storage
       signOut();
       //Redirect to the home page
-      clearCookies("token");
       localStorage.clear();
       router.push("/");
     } catch (error: any) {

@@ -1,6 +1,6 @@
 import { inter } from "@/app/fonts";
 
-import PrelineScript from "@/app/PrelineScript";
+import PrelineScript from "@/components/PrelineScript";
 import Navbar from "@/components/home/navbar";
 import { LoginProvider } from "@/context/loginContext";
 import { ThemeProvider } from "@/context/themeContext";

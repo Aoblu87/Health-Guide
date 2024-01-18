@@ -37,7 +37,7 @@
     "app/layout.tsx",
     "app/ui/home/ThemeSwitch.tsx",
     "app/context/themeContext.tsx",
-    "app/PrelineScript.tsx",
+    "components/PrelineScript.tsx",
     "app/api/route.js",
     "app/api/route.js",
     "app/models/User.js",

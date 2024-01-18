@@ -2,9 +2,11 @@ import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
 //Create message from user input
-export async function POST(req: NextRequest) {
-    //Get message and thread id from request body
-  const { message, threadId } = await req.json();
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const threadId = searchParams.get("threadId");
+  const message = searchParams.get("message");
+
 
   if (!threadId ){
     return Response.json({ error: "Thread id not found" }, { status: 400 });
