@@ -1,15 +1,14 @@
 import { atom } from "jotai";
-import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
 import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 
-export const assistantAtom = atom<Assistant | null>(null);
+const _assistantAtom = process.env.ASSISTANT_ID
 export const fileAtom = atom<string | null>(null);
 export const assistantFileAtom = atom<string | null>(null);
 export const threadAtom = atom<Thread | null>(null);
 const _threadIdAtom = atom<string | null>(null);
-export const runAtom = atom<Run | null>(null);
+const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
 
 
@@ -38,6 +37,8 @@ const atomWithLocalStorage = (key:string, initialValue:null) => {
 }
 export const threadIdAtom = atomWithLocalStorage(_threadIdAtom.toString(), null);
 export const messagesAtom = atomWithLocalStorage(JSON.stringify(_messagesAtom,null,2),null)
+export const runAtom = atomWithLocalStorage(JSON.stringify(_runAtom,null,2),null)
+export const assistantAtom = atomWithLocalStorage(JSON.stringify(_assistantAtom,null,2),null)
 
 
 export type RunState =
