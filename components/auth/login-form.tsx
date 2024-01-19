@@ -39,7 +39,7 @@ export default function LoginForm(props: any) {
       const data = await response.json();
       if (data.success) {
         setLogin(true);
-        router.push("/");
+        router.push("/dashboard");
       }
 
       if (data.token) {

@@ -1,13 +1,13 @@
-import Login from "@/components/auth/login"
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import Login from "@/components/auth/login";
 
 const LoginPage= async ()=>{
-  // const session = await getServerSession();
-  // if (session) {
-  //   redirect("/");
-  // }
-  return <Login/>
+
+  return <>
+  <div className="relative h-screen w-full lg:ps-64">
+
+  <Login/>
+  </div>
+  </>
 }
 
 export default LoginPage

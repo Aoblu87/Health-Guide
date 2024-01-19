@@ -3,9 +3,10 @@ import Sidebar from "@/components/sidebar/sidebar";
 
 export default function Page() {
   return (
-    <div className="">
-      <Sidebar />
-      <ChatBubble />
-    </div>
+    <>
+      <div className="relative h-screen w-full lg:ps-64">
+        <ChatBubble />
+      </div>
+    </>
   );
 }

@@ -5,7 +5,7 @@ export default function ButtonGoogleAuth(){
     const handleOAuthSignIn = () => {
         try {
          
-          signIn('google', { callbackUrl: 'http://localhost:3000/', });
+          signIn('google', { callbackUrl: '/dashboard', });
         } catch (error) {
          console.log("Error login:", error);
         }

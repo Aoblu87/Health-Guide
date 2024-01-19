@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { authOptions } from "@/auth";
 import PrelineScript from "@/components/PrelineScript";
 import Navbar from "@/components/home/navbar";
+import Sidebar from "@/components/sidebar/sidebar";
 import SessionProvider from "@/context/authContext";
 import { LoginProvider } from "@/context/loginContext";
 import { ThemeProvider } from "@/context/themeContext";
@@ -28,10 +29,8 @@ export default async function RootLayout({
       <LoginProvider>
         <body className={`${inter.className} antialiased`}>
           <SessionProvider>
-            <ThemeProvider>
-              <Navbar />
-              {children}
-            </ThemeProvider>
+            <Sidebar />
+            <ThemeProvider>{children}</ThemeProvider>
           </SessionProvider>
         </body>
       </LoginProvider>

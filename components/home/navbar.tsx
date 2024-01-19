@@ -1,17 +1,20 @@
 "use client";
-import { LoginButton } from "@/components/auth/login-button";
 import ProfileDropdown from "@/components/profile/profileDropdown";
 import { LoginContext } from "@/context/loginContext";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useContext } from "react";
 import { Button } from "../ui/button";
 import { ThemeSwitch } from "./ThemeSwitch";
-import NavLinks from "./nav-links";
 
 export default function Navbar() {
   const { login } = useContext(LoginContext);
 
   const { data: session } = useSession();
+
+  if(login||session){
+    return null
+  }
   console.log("session", session);
   return (
     <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b border-gray-200 text-sm py-4 dark:bg-gray-800 dark:border-gray-700">
@@ -78,19 +81,20 @@ export default function Navbar() {
             data-hs-scrollspy="#scrollspy"
             className="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:justify-end sm:mt-0 sm:ps-5 [--scrollspy-offset:220] md:[--scrollspy-offset:70] min-h-12"
           >
-            <NavLinks />
+            <Link href="/dashboardAuth">Dashboard</Link>
             <ThemeSwitch />
             {session || login ? (
               <ProfileDropdown />
             ) : (
-              <LoginButton asChild>
-                <Button
-                  variant="ghost"
-                  className="text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Sign in <span aria-hidden="true">&rarr;</span>
-                </Button>
-              </LoginButton>
+              // <LoginButton asChild>
+              //   <Button
+              //     variant="ghost"
+              //     className="text-sm font-semibold leading-6 text-gray-900"
+              //   >
+              //     Sign in <span aria-hidden="true">&rarr;</span>
+              //   </Button>
+              // </LoginButton>
+              null
             )}
           </div>
         </div>
