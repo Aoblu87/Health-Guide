@@ -29,6 +29,7 @@ export default async function RootLayout({
       <LoginProvider>
         <body className={`${inter.className} antialiased`}>
           <SessionProvider>
+            <Navbar/>
             <Sidebar />
             <ThemeProvider>{children}</ThemeProvider>
           </SessionProvider>

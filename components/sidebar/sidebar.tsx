@@ -1,10 +1,10 @@
 "use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import SignOut from "../profile/signOut";
-import { useContext } from "react";
 import { LoginContext } from "@/context/loginContext";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import SignOut from "../profile/signOut";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -13,7 +13,10 @@ export default function Sidebar() {
   const { data: session } = useSession();
   return (
     <>
-      <div className="col-start-3 relative ">
+      {/* <div
+        className={`${!session? "hidden" : "col-start-3 relative"} `}
+      > */}
+      <div className="col-start-3 relative">
         <div
           className="hs-tooltip inline-block [--placement:right] absolute"
           style={{ top: 300 }}

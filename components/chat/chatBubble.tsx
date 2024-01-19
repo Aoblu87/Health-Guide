@@ -178,7 +178,7 @@ export default function ChatBubble() {
   // console.log(`Fetching state:${fetching}`);
   return (
     <>
-    <div className="relative h-screen w-full lg:ps-64">
+    <div className="relative h-screen lg:ps-64">
         <div className="flex flex-col h-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg">
            {!fetching ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-md w-full mx-auto">
