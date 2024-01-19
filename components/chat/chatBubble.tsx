@@ -1,6 +1,5 @@
 "use client";
 import {
-  assistantAtom,
   messagesAtom,
   runAtom,
   runStateAtom,
@@ -10,7 +9,6 @@ import {
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 export default function ChatBubble() {
   // Atom State
@@ -19,7 +17,6 @@ export default function ChatBubble() {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
   const [runState, setRunState] = useAtom(runStateAtom);
-  const [assistant] = useAtom(assistantAtom);
 
   // State
   const [message, setMessage] = useState("");
@@ -33,69 +30,51 @@ export default function ChatBubble() {
   console.log(`Messages state:${messages}`);
   console.log(`Thread state:${threadId}`);
   
-  // const handleCreate = async () => {
-  //   if (!assistant || !thread) return;
-
-  //   setCreating(true);
-  //   try {
-  //     const response = await fetch(
-  //       `/api/run/create?threadId=${threadId}&assistantId=${assistant}`
-  //     );
-
-  //     const newRun = await response.json();
-
-  //     setRunState(newRun.status);
-  //     setRun(newRun);
-
-  //     // Start polling after creation
-  //     startPolling(newRun.id);
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setCreating(false);
-  //   }
-  // };
-
-  const fetchMessages = useCallback(async () => {
-    setFetching(false);
-    if (!threadId) return;
-
-    try {
-      const response = await fetch(
-        `/api/openai/message/list?threadId=${threadId}`
-      );
-      if (!response.ok) {
-        throw new Error(`Errore nella richiesta: ${response.status}`);
-      }
-      const getMessages = await response.json();
-
-      console.log("Data Response fetch messages:", getMessages);
-      // Sort messages by created_at timestamp in ascending order
-      const sortedMessages = getMessages.messages.sort(
-        (a: any, b: any) => a.created_at - b.created_at
-      );
-      console.log("Sorted messages:", sortedMessages);
-      // Format the sorted messages
-      const formattedMessages = sortedMessages.map((msg: any) => {
-        return {
-          ...msg,
-          content: msg.content
-            .map((contentItem: any) => contentItem.text.value)
-            .join(" "),
-        };
-      });
-      console.log("Formatted Messages:", formattedMessages);
-      setMessages(formattedMessages);
-
-      setMessage("");
-    } catch (error: any) {
-      console.error("Fetching messages error", error);
-    } finally {
-      setFetching(false);
-    }
-  }, [setMessages, threadId]);
-  // useEffect(() => {
-  //   // Clean up polling on unmount
+  
+   
+        const fetchMessages= useCallback(async () =>{
+          setFetching(false);
+          if (!threadId) return;
+          
+          try {
+            const response = await fetch(
+              `/api/openai/message/list?threadId=${threadId}`
+              );
+              if (!response.ok) {
+                throw new Error(`Errore nella richiesta: ${response.status}`);
+              }
+              const getMessages = await response.json();
+              
+              console.log("Data Response fetch messages:", getMessages);
+              // Sort messages by created_at timestamp in ascending order
+              const sortedMessages = getMessages.messages.sort(
+                (a: any, b: any) => a.created_at - b.created_at
+                );
+                console.log("Sorted messages:", sortedMessages);
+                // Format the sorted messages
+                const formattedMessages = sortedMessages.map((msg: any) => {
+                  return {
+                    ...msg,
+                    content: msg.content
+                    .map((contentItem: any) => contentItem.text.value)
+                    .join(" "),
+                  };
+                });
+                console.log("Formatted Messages:", formattedMessages);
+                setMessages(formattedMessages);
+                
+                setMessage("");
+              } catch (error: any) {
+                console.error("Fetching messages error", error);
+              } finally {
+                setFetching(false);
+              }
+              fetchMessages();
+        }
+      ,[setMessages,threadId]);
+      
+      // useEffect(() => {
+        //   // Clean up polling on unmount
   //   return () => {
   //     if (pollingIntervalId) clearInterval(pollingIntervalId);
   //   };
@@ -141,41 +120,61 @@ export default function ChatBubble() {
   //   startPolling(run.id);
   // }, [run, startPolling]);
 
+  // const handleCreate = async () => {
+  //   if (!threadId) return;
+
+  //   setCreating(true);
+  //   try {
+  //     const response = await fetch(
+  //       `/api/run/create?threadId=${threadId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
+  //     );
+
+  //     const newRun = await response.json();
+  //     setRunState(newRun.status);
+  //     setRun(newRun);
+  //     localStorage.setItem("run", JSON.stringify(newRun));
+
+  //     // Start polling after creation
+  //     startPolling(newRun.id);
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setCreating(false);
+  //   }
+  // };
   const sendMessage = async (e: any) => {
-    e.preventDefault()
-    // handleCreate();
+    e.preventDefault();
     if (!threadId) {
-        console.error("Thread not found")
+      console.error("Thread not found");
     }
     if (!message) {
-        console.error("Message not found")
+      console.error("Message not found");
     }
-    setSending(true)
+    setSending(true);
 
-    
     try {
-        const response = await fetch(
-            `/api/openai/message/create?threadId=${threadId}&message=${message}`
-        )
+      const response = await fetch(
+        `/api/openai/message/create?threadId=${threadId}&message=${message}`
+      );
 
-        if (!response.ok) {
-            throw new Error(`Errore nella richiesta: ${response.status}`)
-        }
-        const newMessage = await response.json()
+      if (!response.ok) {
+        throw new Error(`Errore nella richiesta: ${response.status}`);
+      }
+      const newMessage = await response.json();
 
-        console.log("Message sent", newMessage)
-        setMessages([...messages, newMessage])
-        fetchMessages()
-        setMessage("")
+      console.log("Message sent", newMessage);
+      setMessages([...messages, newMessage]);
+      setMessage("");
+      // handleCreate();
     } catch (error) {
-        console.error("Sending message error", error)
+      console.error("Sending message error", error);
     } finally {
-        setSending(false)
+      setSending(false);
     }
-}
-console.log(`Messages state:${messages}`)
-console.log(`Thread state:${threadId}`)
-console.log(`Fetching state:${fetching}`)
+  };
+  console.log(`Messages state:${messages}`);
+  console.log(`Thread state:${threadId}`);
+  console.log(`Fetching state:${fetching}`);
   return (
     <>
       <div className="container mx-auto">

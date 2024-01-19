@@ -3,7 +3,7 @@ import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.m
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 
-const _assistantAtom = process.env.ASSISTANT_ID
+const _assistantAtom = atom<string | null>(null);
 export const fileAtom = atom<string | null>(null);
 export const assistantFileAtom = atom<string | null>(null);
 export const threadAtom = atom<Thread | null>(null);
