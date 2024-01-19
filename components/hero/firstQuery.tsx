@@ -72,6 +72,8 @@ export default function FirstQuery() {
 
   const sendMessage = async (e: any) => {
     e.preventDefault();
+    setMessages("");
+    setThreadId("")
     // const assistantId= process.env.ASSISTANT_ID
     // setAssistant(JSON.stringify(assistantId))
 

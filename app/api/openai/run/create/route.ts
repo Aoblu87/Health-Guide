@@ -19,8 +19,7 @@ try {
      threadId,
       { assistant_id: assistantId }
     );
-    
-    console.log({run:run});
+    return Response.json({NewRun:run}, { status: 200 });
 } catch (error:any) {
     return Response.json({ error: error.message });
 }

@@ -73,75 +73,76 @@ export default function ChatBubble() {
         }
       ,[setMessages,threadId]);
       
-      // useEffect(() => {
-        //   // Clean up polling on unmount
-  //   return () => {
-  //     if (pollingIntervalId) clearInterval(pollingIntervalId);
-  //   };
-  // }, [pollingIntervalId, setMessages, fetchMessages]);
+      useEffect(() => {
+          // Clean up polling on unmount
+    return () => {
+      if (pollingIntervalId) clearInterval(pollingIntervalId);
+    };
+  }, [pollingIntervalId, setMessages, fetchMessages]);
 
-  // const startPolling = useCallback (async (runId: string) => {
-  //   if (!threadId) return;
-  //   const intervalId = setInterval(async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error(`Errore nella richiesta: ${response.status}`);
-  //       }
-  //       const updatedRun = await response.json();
-  //       console.log("Updated run:", updatedRun);
+   async function startPolling(runId: string) {
+    if (!threadId) return;
+    const intervalId = setInterval(async () => {
+      try {
+        const response = await fetch(
+          `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
+        );
+        if (!response.ok) {
+          throw new Error(`Errore nella richiesta: ${response.status}`);
+        }
+        const updatedRun = await response.json();
+        console.log("Updated run:", updatedRun);
 
-  //       setRun(updatedRun);
-  //       setRunState(updatedRun.status);
+        setRun(updatedRun);
+        setRunState(updatedRun.status);
 
-  //       if (
-  //         ["cancelled", "failed", "completed", "expired"].includes(
-  //           updatedRun.status
-  //         )
-  //       ) {
-  //         clearInterval(intervalId);
-  //         setPollingIntervalId(null);
-  //         fetchMessages();
-  //       }
-  //     } catch (error) {
-  //       console.error("Error polling run status:", error);
-  //       clearInterval(intervalId);
-  //       setPollingIntervalId(null);
-  //     }
-  //   }, 500);
+        if (
+          ["cancelled", "failed", "completed", "expired"].includes(
+            updatedRun.status
+          )
+        ) {
+          clearInterval(intervalId);
+          setPollingIntervalId(null);
+          fetchMessages();
+        }
+      } catch (error) {
+        console.error("Error polling run status:", error);
+        clearInterval(intervalId);
+        setPollingIntervalId(null);
+      }
+    }, 500);
 
-  //   setPollingIntervalId(intervalId);
-  // },[fetchMessages,setRun,setRunState,threadId])
+    setPollingIntervalId(intervalId);
+  }
 
   // useEffect(() => {
   //   if (!run || run.status === "completed") return;
   //   startPolling(run.id);
   // }, [run, startPolling]);
 
-  // const handleCreate = async () => {
-  //   if (!threadId) return;
+  const handleCreate = async () => {
+    if (!threadId) return;
 
-  //   setCreating(true);
-  //   try {
-  //     const response = await fetch(
-  //       `/api/run/create?threadId=${threadId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
-  //     );
+    setCreating(true);
+    try {
+      const response = await fetch(
+        `/api/openai/run/create?threadId=${threadId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
+      );
 
-  //     const newRun = await response.json();
-  //     setRunState(newRun.status);
-  //     setRun(newRun);
-  //     localStorage.setItem("run", JSON.stringify(newRun));
+      const newRun = await response.json();
+      console.log("New run:", newRun.id, newRun);
+      setRunState(newRun.status);
+      setRun(newRun);
+      localStorage.setItem("run", JSON.stringify(newRun));
 
-  //     // Start polling after creation
-  //     startPolling(newRun.id);
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setCreating(false);
-  //   }
-  // };
+      // Start polling after creation
+      startPolling(newRun.id);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCreating(false);
+    }
+  };
   const sendMessage = async (e: any) => {
     e.preventDefault();
     if (!threadId) {
@@ -165,7 +166,7 @@ export default function ChatBubble() {
       console.log("Message sent", newMessage);
       setMessages([...messages, newMessage]);
       setMessage("");
-      // handleCreate();
+      handleCreate();
     } catch (error) {
       console.error("Sending message error", error);
     } finally {
@@ -179,7 +180,7 @@ export default function ChatBubble() {
     <>
       <div className="container mx-auto">
         <div className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg">
-          {/* {!fetching ? (
+           {!fetching ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-md w-full mx-auto">
               <div className="animate-pulse flex space-x-4">
                 <div className="rounded-full bg-slate-700 h-10 w-10"></div>
@@ -195,7 +196,7 @@ export default function ChatBubble() {
                 </div>
               </div>
             </div>
-          ) : ( */}
+          ) : ( 
           <ul className="space-y-5">
             {messages?.map((message: any) => (
               <>
@@ -253,7 +254,7 @@ export default function ChatBubble() {
               </>
             ))}
           </ul>
-          {/* )} */}
+          )} 
         </div>
         <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4">
           <form onSubmit={sendMessage}>
