@@ -3,13 +3,8 @@ import OpenAI from "openai";
 import {IncomingForm} from "formidable";
 import { createReadStream } from "fs";
 
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default function POST (req: NextApiRequest, res: NextApiResponse) {
   console.log("Upload runnin");
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -51,3 +46,4 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
   });
 }
+
