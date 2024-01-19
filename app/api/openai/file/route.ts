@@ -4,7 +4,7 @@ import {IncomingForm} from "formidable";
 import { createReadStream } from "fs";
 
 
-export default function POST (req: NextApiRequest, res: NextApiResponse) {
+export async function POST (req: NextApiRequest, res: NextApiResponse) {
   console.log("Upload runnin");
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
