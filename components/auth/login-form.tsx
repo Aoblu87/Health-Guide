@@ -1,19 +1,11 @@
 "use client";
 import { useContext } from "react";
-import CredentialsProvider from "next-auth/providers/credentials";
 
 import { LoginContext } from "@/context/loginContext";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
-import { signIn } from "next-auth/react";
-import { getServerSession } from "next-auth";
 
 export default function LoginForm(props: any) {
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
-
   const { loading, setLoading } = props;
   const [emailExists, setEmailExists] = useState(true);
   const [user, setUser] = useState({
@@ -26,8 +18,6 @@ export default function LoginForm(props: any) {
   const handleLogin = async (e: any) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-    setSuccess("");
 
     try {
       const response = await fetch(`/api/auth/login`, {
@@ -51,8 +41,7 @@ export default function LoginForm(props: any) {
         setLogin(true);
         router.push("/");
       }
-      setError(data.error);
-      setSuccess(data.success);
+
       if (data.token) {
         localStorage.setItem(
           "userId",
@@ -67,21 +56,6 @@ export default function LoginForm(props: any) {
       setLoading(false);
     }
   };
-  // const handleLogin = (e: any) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   const formData = {
-  //     email: user.email,
-  //     password: user.password,
-  //   };
-  //   try {
-  //     signIn("Credentials", formData);
-  //   } catch (error) {
-  //     console.log("Error login:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <form onSubmit={handleLogin}>

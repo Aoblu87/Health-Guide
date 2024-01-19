@@ -1,15 +1,15 @@
 import { inter } from "@/app/fonts";
 
+import "@/app/globals.css";
+import { authOptions } from "@/auth";
 import PrelineScript from "@/components/PrelineScript";
 import Navbar from "@/components/home/navbar";
+import SessionProvider from "@/context/authContext";
 import { LoginProvider } from "@/context/loginContext";
 import { ThemeProvider } from "@/context/themeContext";
-import "@/app/globals.css";
+import { getServerSession } from "next-auth";
 
 require("dotenv").config();
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
-import SessionProvider from "@/context/authContext";
 
 export const metadata = {
   title: "Healt-Guide",
@@ -28,11 +28,10 @@ export default async function RootLayout({
       <LoginProvider>
         <body className={`${inter.className} antialiased`}>
           <SessionProvider>
-
-          <ThemeProvider>
-            <Navbar />
-            {children}
-          </ThemeProvider>
+            <ThemeProvider>
+              <Navbar />
+              {children}
+            </ThemeProvider>
           </SessionProvider>
         </body>
       </LoginProvider>

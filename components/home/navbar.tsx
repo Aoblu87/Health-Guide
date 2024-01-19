@@ -2,21 +2,14 @@
 import { LoginButton } from "@/components/auth/login-button";
 import ProfileDropdown from "@/components/profile/profileDropdown";
 import { LoginContext } from "@/context/loginContext";
+import { useSession } from "next-auth/react";
 import { useContext } from "react";
 import { Button } from "../ui/button";
 import { ThemeSwitch } from "./ThemeSwitch";
 import NavLinks from "./nav-links";
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { useSession } from "next-auth/react";
 
 export default function Navbar() {
   const { login } = useContext(LoginContext);
-  // const session = (async ()=> await getServerSession(authOptions))
-  // if (!session) {
-  //   redirect("/login");
-  // }
 
   const { data: session } = useSession();
   console.log("session", session);

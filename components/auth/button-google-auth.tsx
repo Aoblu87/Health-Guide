@@ -1,15 +1,11 @@
-import { LoginContext } from "@/context/loginContext";
 import { signIn } from "next-auth/react";
-import { useContext } from "react";
 
 export default function ButtonGoogleAuth(){
-  const { setLogin } = useContext(LoginContext);
 
     const handleOAuthSignIn = () => {
         try {
          
           signIn('google', { callbackUrl: 'http://localhost:3000/', });
-          //Aggiungere set login true, ma dopo la callback
         } catch (error) {
          console.log("Error login:", error);
         }

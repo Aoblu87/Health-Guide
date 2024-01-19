@@ -322,7 +322,6 @@ export default function Profile() {
             </div>
           </div>
           <div className="mt-5 flex justify-between gap-x-2">
-            
             <div className="mt-5 flex justify-end gap-x-2">
               <button
                 type="button"
