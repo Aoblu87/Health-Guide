@@ -1,23 +1,20 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import OpenAI from "openai";
-import {IncomingForm} from "formidable";
+import { IncomingForm } from "formidable";
 import { createReadStream } from "fs";
+import { NextRequest, NextResponse } from "next/server";
+import OpenAI from "openai";
 
 
-export async function POST (req: NextApiRequest, res: NextApiResponse) {
+export async function POST (request: NextRequest, res: NextResponse) {
   console.log("Upload runnin");
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    res.status(405).end("Method Not Allowed");
-    return;
-  }
+  const reqBody = await request.json();
 
   const form = new IncomingForm();
 
-  form.parse(req, async (err, fields, files) => {
+  form.parse(reqBody, async (err, fields, files) => {
     if (err) {
-      res.status(500).json({ error: "Error parsing the form data." });
-      return;
+      
+      return NextResponse.json({ error: err.message }, { status: 500 });
+      
     }
 
     try {
@@ -25,8 +22,8 @@ export async function POST (req: NextApiRequest, res: NextApiResponse) {
       const file = fileArray[0];
 
       if (!file) {
-        res.status(400).json({ error: "No file uploaded." });
-        return;
+      return NextResponse.json({ error: "No file uploaded"}, { status: 400 });
+
       }
 
       // Create a ReadStream from the file
@@ -37,12 +34,10 @@ export async function POST (req: NextApiRequest, res: NextApiResponse) {
         file: fileStream, // Use the ReadStream for uploading
         purpose: "assistants",
       });
-
-      res.status(200).json({ file: response });
-    } catch (e) {
-      res
-        .status(500)
-        .json({ error: e instanceof Error ? e.message : "Unknown error" });
+NextResponse.json({ file: response }, { status: 200 })
+    } catch (e:any) {
+      return NextResponse.json({ error: e.message }, { status: 500 });
+     
     }
   });
 }
