@@ -27,7 +27,10 @@ export default function SignOut() {
   return (
     <button
       type="button"
-      className="flex items-center gap-x-3.5 py-2 ps-4 rounded-lg text-sm text-gray-700 leading-6 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-500 hs-scrollspy-active:text-blue-600 dark:hs-scrollspy-active:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      data-hs-overlay="#docs-sidebar"
+      aria-controls="docs-sidebar"
+      aria-label="Toggle navigation"
+      className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
       onClick={logout}
     >
       Sign out

@@ -1,43 +1,63 @@
 "use client";
 import avatar from "@/public/assets/person-circle.svg";
+import { isAuthenticated } from "@/utils/auth";
 import Image from "next/image";
-import { useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { useLayoutEffect, useState } from "react";
 export default function Profile() {
+  const router = useRouter();
   const [file, setFile] = useState();
+  const [loading, setLoading] = useState(false);
+  const [updateProfile, setUpdateProfile] = useState(false);
+
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+  });
+
+  // useLayoutEffect(() => {
+  //   const isAuth = isAuthenticated;
+  //   if(!isAuth){
+  //     redirect("/")
+  //   }
+  // }, [])
+
   type localStorage = {
     [key: string]: string;
   };
-  const userId = localStorage.getItem("userId");
+  // const userId = localStorage.getItem("userId");
 
   const upFile = (e: any) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
     setFile(selectedFile);
   };
 
-  const handleFile = async (e: any) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData();
-      if (file) {
-        formData.append("photo", file);
-      }
-      const fileResponse = await fetch(`/api/users/${userId}`, {
-        method: "PATCH",
-        body: formData,
-      });
-      if (fileResponse.ok) {
-        const fileDataResponse = await fileResponse.json();
-        console.log(fileDataResponse);
-        formData.delete("photo");
-      } else {
-        throw new Error(`HTTP error! Status: ${fileResponse.status}`);
-      }
-    } catch (error: any) {
-      console.log("Error fetching data:", error);
-    }
-  };
+  // const handleFile = async (e: any) => {
+  //   e.preventDefault();
+  //   try {
+  //     const formData = new FormData();
+  //     if (file) {
+  //       formData.append("photo", file);
+  //     }
+  //     const fileResponse = await fetch(`/api/users/${userId}`, {
+  //       method: "PATCH",
+  //       body: formData,
+  //     });
+  //     if (fileResponse.ok) {
+  //       const fileDataResponse = await fileResponse.json();
+  //       console.log(fileDataResponse);
+  //       formData.delete("photo");
+  //     } else {
+  //       throw new Error(`HTTP error! Status: ${fileResponse.status}`);
+  //     }
+  //   } catch (error: any) {
+  //     console.log("Error fetching data:", error);
+  //   }
+  // };
   return (
-    <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+    <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-0 mx-auto lg:ps-64">
       <div className="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
         <div className="mb-8">
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
@@ -48,7 +68,7 @@ export default function Profile() {
           </p>
         </div>
 
-        <form onSubmit={handleFile}>
+        <form>
           <div className="grid sm:grid-cols-12 gap-2 sm:gap-6">
             <div className="sm:col-span-3">
               <label className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
@@ -65,38 +85,21 @@ export default function Profile() {
                   src={avatar}
                   alt="Image Description"
                 />
-                <div className="flex gap-x-2">
-                  <div>
-                    <input
-                      type="file"
-                      className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                      multiple={false}
-                      onChange={upFile}
-                    />
-                    <button
-                      type="submit"
-                      className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                    >
-                      <svg
-                        className="flex-shrink-0 w-4 h-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" x2="12" y1="3" y2="15" />
-                      </svg>
-                      Upload photo
-                    </button>
-                  </div>
-                </div>
+                <label htmlFor="small-file-input" className="sr-only">
+                  Choose file
+                </label>
+                <input
+                  type="file"
+                  name="small-file-input"
+                  id="small-file-input"
+                  className="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600
+     file:border-0
+    file:bg-gray-100 file:me-4
+    file:py-2 file:px-4
+    dark:file:bg-gray-700 dark:file:text-gray-400"
+                  multiple={false}
+                  // onChange={upFile}
+                />
               </div>
             </div>
 
@@ -137,11 +140,21 @@ export default function Profile() {
                   type="text"
                   className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                   placeholder="Maria"
+                  required
+                  value={user.firstName}
+                  onChange={(e) =>
+                    setUser({ ...user, firstName: e.target.value })
+                  }
                 />
                 <input
                   type="text"
                   className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                   placeholder="Boone"
+                  required
+                  value={user.lastName}
+                  onChange={(e) =>
+                    setUser({ ...user, lastName: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -161,6 +174,9 @@ export default function Profile() {
                 type="email"
                 className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                 placeholder="maria@site.com"
+                required
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
               />
             </div>
 
@@ -180,157 +196,28 @@ export default function Profile() {
                   type="text"
                   className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                   placeholder="Enter current password"
+                  value={user.password}
+                  onChange={(e) =>
+                    setUser({ ...user, password: e.target.value })
+                  }
+                  required
                 />
-                <input
-                  type="text"
-                  className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                  placeholder="Enter new password"
-                />
               </div>
-            </div>
-
-            <div className="sm:col-span-3">
-              <div className="inline-block">
-                <label
-                  htmlFor="af-account-phone"
-                  className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200"
-                >
-                  Phone
-                </label>
-                <span className="text-sm text-gray-400 dark:text-gray-600">
-                  (Optional)
-                </span>
-              </div>
-            </div>
-
-            <div className="sm:col-span-9">
-              <div className="sm:flex">
-                <input
-                  id="af-account-phone"
-                  type="text"
-                  className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                  placeholder="+x(xxx)xxx-xx-xx"
-                />
-                <select className="py-2 px-3 pe-9 block w-full sm:w-auto border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
-                  <option>Mobile</option>
-                  <option>Home</option>
-                  <option>Work</option>
-                  <option>Fax</option>
-                </select>
-              </div>
-
-              <p className="mt-3">
-                <a
-                  className="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                  href="../docs/index.html"
-                >
-                  <svg
-                    className="flex-shrink-0 w-4 h-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M8 12h8" />
-                    <path d="M12 8v8" />
-                  </svg>
-                  Add phone
-                </a>
-              </p>
-            </div>
-
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="af-account-gender-checkbox"
-                className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200"
-              >
-                Gender
-              </label>
-            </div>
-
-            <div className="sm:col-span-9">
-              <div className="sm:flex">
-                <label
-                  htmlFor="af-account-gender-checkbox"
-                  className="flex py-2 px-3 w-full border border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                >
-                  <input
-                    type="radio"
-                    name="af-account-gender-checkbox"
-                    className="shrink-0 mt-0.5 border-gray-300 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-500 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                    id="af-account-gender-checkbox"
-                  />
-                  <span className="text-sm text-gray-500 ms-3 dark:text-gray-400">
-                    Male
-                  </span>
-                </label>
-
-                <label
-                  htmlFor="af-account-gender-checkbox-female"
-                  className="flex py-2 px-3 w-full border border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                >
-                  <input
-                    type="radio"
-                    name="af-account-gender-checkbox"
-                    className="shrink-0 mt-0.5 border-gray-300 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-500 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                    id="af-account-gender-checkbox-female"
-                  />
-                  <span className="text-sm text-gray-500 ms-3 dark:text-gray-400">
-                    Female
-                  </span>
-                </label>
-
-                <label
-                  htmlFor="af-account-gender-checkbox-other"
-                  className="flex py-2 px-3 w-full border border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                >
-                  <input
-                    type="radio"
-                    name="af-account-gender-checkbox"
-                    className="shrink-0 mt-0.5 border-gray-300 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-500 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                    id="af-account-gender-checkbox-other"
-                  />
-                  <span className="text-sm text-gray-500 ms-3 dark:text-gray-400">
-                    Other
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="af-account-bio"
-                className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200"
-              >
-                BIO
-              </label>
-            </div>
-
-            <div className="sm:col-span-9">
-              <textarea
-                id="af-account-bio"
-                className="py-2 px-3 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                rows={6}
-                placeholder="Type your message..."
-              ></textarea>
             </div>
           </div>
-          <div className="mt-5 flex justify-between gap-x-2">
+          <div className="mt-5 flex justify-end gap-x-2">
             <div className="mt-5 flex justify-end gap-x-2">
               <button
                 type="button"
                 className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                onClick={() => {
+                  router.push("/");
+                }}
               >
                 Cancel
               </button>
               <button
-                type="button"
+                type="submit"
                 className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               >
                 Save changes

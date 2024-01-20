@@ -1,5 +1,8 @@
 import photo from "@/public/assets/photo-1438761681033-6461ffad8d80.avif";
 import Image from "next/image";
+import { ThemeSwitch } from "../home/ThemeSwitch";
+import SignOut from "./signOut";
+import Link from "next/link";
 export default function ProfileDropdown() {
   return (
     <div className="hs-dropdown relative inline-flex">
@@ -8,11 +11,7 @@ export default function ProfileDropdown() {
         type="button"
         className="hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
       >
-        <Image
-          className="w-8 h-auto rounded-full"
-          src={photo}
-          alt="Maria"
-        />
+        <Image className="w-8 h-auto rounded-full" src={photo} alt="Maria" />
         {/* UTENTE NON LOGGATO */}
         {/* <span className="inline-block h-[2.875rem] w-[2.875rem] bg-gray-100 rounded-full overflow-hidden">
           <svg
@@ -44,50 +43,41 @@ export default function ProfileDropdown() {
         <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
           Maria
         </span>
+      </button>
+
+      <div
+        className="hs-dropdown-menu transition-[opacity,margin] hidden duration hs-dropdown-open:opacity-100 opacity-0 min-w-[15rem] bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-gray-800 dark:border dark:border-gray-700"
+        aria-labelledby="hs-dropdown-custom-trigger"
+      >
+        <a 
+          href="/profile"
+
+          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+        >
+          Profile
+        </a>
+        <ThemeSwitch />
+        <div className="flex items-center">
+
+        <SignOut />
         <svg
-          className="hs-dropdown-open:rotate-180 w-4 h-4"
+          className="flex-shrink-0 w-4 h-4 cursor pointer"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <path d="m6 9 6 6 6-6" />
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+          <polyline points="10 17 15 12 10 7"></polyline>
+          <line x1="15" x2="3" y1="12" y2="12"></line>
         </svg>
-      </button>
+        </div>
 
-      <div
-        className="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-[15rem] bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-gray-800 dark:border dark:border-gray-700"
-        aria-labelledby="hs-dropdown-custom-trigger"
-      >
-        <a
-          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-          href="#"
-        >
-          Newsletter
-        </a>
-        <a
-          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-          href="#"
-        >
-          Purchases
-        </a>
-        <a
-          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-          href="#"
-        >
-          Downloads
-        </a>
-        <a
-          className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-          href="#"
-        >
-          Team Account
-        </a>
       </div>
     </div>
   );
