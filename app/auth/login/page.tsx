@@ -1,13 +1,13 @@
 import Login from "@/components/auth/login";
 
-const LoginPage= async ()=>{
+const LoginPage = async () => {
+  return (
+    <>
+      <div className="relative h-screen w-full lg:ps-64">
+        <Login />
+      </div>
+    </>
+  );
+};
 
-  return <>
-  <div className="relative h-screen w-full lg:ps-64">
-
-  <Login/>
-  </div>
-  </>
-}
-
-export default LoginPage
+export default LoginPage;

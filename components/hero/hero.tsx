@@ -1,21 +1,22 @@
+"use client"
+import { LoginContext } from "@/context/loginContext";
+import { useSession } from "next-auth/react";
+import { useContext } from "react";
+import Animation from "../ui/animation";
 import FirstQuery from "./firstQuery";
 
 export const Hero = () => {
+  const { login } = useContext(LoginContext);
+
+  const { data: session } = useSession();
   return (
     <>
-      <div className="relative h-screen lg:ps-64">
-        <div className="relative overflow-hidden">
-          <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-24 mt-5">
+      <div className={`${!session||!login ? "relative  lg:ps-64" : "relative flex"}`}>
+          <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 sm:py-24 md:py-9 mt-4 mb-2">
             <div className="text-center">
-              <h1 className="text-4xl sm:text-6xl font-bold text-gray-800 dark:text-gray-200">
-                Welcome!
-              </h1>
+              <Animation />
 
-              <p className="mt-3 text-gray-600 dark:text-gray-400">
-                How can I help you today?{" "}
-              </p>
-
-              <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
+              <div className="mt-7 mx-auto max-w-xl relative">
                 <FirstQuery />
 
                 {/* <!-- SVG Element --> */}
@@ -71,7 +72,7 @@ export const Hero = () => {
                 {/* <!-- End SVG Element --> */}
               </div>
 
-              <div className="mt-10 sm:mt-20">
+              <div className="mt-10 ">
                 <a
                   className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   href="#"
@@ -135,28 +136,9 @@ export const Hero = () => {
                   >
                     <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z" />
                   </svg>
-                  Creative
+                  Poisoning{" "}
                 </a>
-                <a
-                  className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                  href="#"
-                >
-                  <svg
-                    className="flex-shrink-0 w-3 h-auto"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022zM6 8.694 1 10.36V15h5V8.694zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5V15z"
-                    />
-                    <path d="M2 11h1v1H2v-1zm2 0h1v1H4v-1zm-2 2h1v1H2v-1zm2 0h1v1H4v-1zm4-4h1v1H8V9zm2 0h1v1h-1V9zm-2 2h1v1H8v-1zm2 0h1v1h-1v-1zm2-2h1v1h-1V9zm0 2h1v1h-1v-1zM8 7h1v1H8V7zm2 0h1v1h-1V7zm2 0h1v1h-1V7zM8 5h1v1H8V5zm2 0h1v1h-1V5zm2 0h1v1h-1V5zm0-2h1v1h-1V3z" />
-                  </svg>
-                  Environment
-                </a>
+
                 <a
                   className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   href="#"
@@ -177,7 +159,6 @@ export const Hero = () => {
             </div>
           </div>
         </div>
-      </div>
       {/* <!-- End Hero --> */}
     </>
   );
