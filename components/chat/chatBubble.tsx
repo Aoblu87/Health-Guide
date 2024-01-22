@@ -6,12 +6,14 @@ import {
   threadAtom,
   threadIdAtom,
 } from "@/atoms";
-import { LoginContext } from "@/context/loginContext";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useCallback, useContext, useEffect, useState } from "react";
+import InputMessages from "../inputMessages";
+import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
+import { useSession } from "next-auth/react";
+import { LoginContext } from "@/context/loginContext";
 export default function ChatBubble() {
   const { login } = useContext(LoginContext);
 
@@ -35,90 +37,96 @@ export default function ChatBubble() {
   console.log(`Messages state:${messages}`);
   console.log(`Thread state:${threadId}`);
 
-        const fetchMessages= useCallback(async () =>{
-          setFetching(false);
-          if (!threadId) return;
+  // FETCH MESSAGE
+  const fetchMessages = useCallback(async () => {
+    setFetching(false);
+    if (!threadId) return;
 
-          try {
-            const response = await fetch(
-              `/api/openai/message/list?threadId=${threadId}`
-              );
-              if (!response.ok) {
-                throw new Error(`Errore nella richiesta: ${response.status}`);
-              }
-              const getMessages = await response.json();
+    try {
+      const response = await fetch(
+        `/api/openai/message/list?threadId=${threadId}`
+      );
+      if (!response.ok) {
+        throw new Error(`Errore nella richiesta: ${response.status}`);
+      }
+      const getMessages = await response.json();
 
-              console.log("Data Response fetch messages:", getMessages);
-              // Sort messages by created_at timestamp in ascending order
-              const sortedMessages = getMessages.messages.sort(
-                (a: any, b: any) => a.created_at - b.created_at
-                );
-                console.log("Sorted messages:", sortedMessages);
-                // Format the sorted messages
-                const formattedMessages = sortedMessages.map((msg: any) => {
-                  return {
-                    ...msg,
-                    content: msg.content
-                    .map((contentItem: any) => contentItem.text.value)
-                    .join(" "),
-                  };
-                });
-                console.log("Formatted Messages:", formattedMessages);
-                setMessages(formattedMessages);
+      console.log("Data Response fetch messages:", getMessages);
+      // Sort messages by created_at timestamp in ascending order
+      const sortedMessages = getMessages.messages.sort(
+        (a: any, b: any) => a.created_at - b.created_at
+      );
+      console.log("Sorted messages:", sortedMessages);
+      // Format the sorted messages
+      const formattedMessages = sortedMessages.map((msg: any) => {
+        return {
+          ...msg,
+          content: msg.content
+            .map((contentItem: any) => contentItem.text.value)
+            .join(" "),
+        };
+      });
+      console.log("Formatted Messages:", formattedMessages);
+      setMessages(formattedMessages);
 
-                setMessage("");
-              } catch (error: any) {
-                console.error("Fetching messages error", error);
-              } finally {
-                setFetching(false);
-              }
-              fetchMessages();
-        }
-      ,[setMessages,threadId]);
+      setMessage("");
+    } catch (error: any) {
+      console.error("Fetching messages error", error);
+    } finally {
+      setFetching(false);
+    }
+    fetchMessages();
+  }, [setMessages, threadId]);
 
-      useEffect(() => {
-          // Clean up polling on unmount
+  // FUNZIONE PER CONTINUARE A RECUPERARE LISTA RUN
+  useEffect(() => {
+    // Clean up polling on unmount
     return () => {
       if (pollingIntervalId) clearInterval(pollingIntervalId);
     };
-  }, [pollingIntervalId, setMessages, fetchMessages]);
+  }, [pollingIntervalId, setMessages]);
 
-  const startPolling = useCallback(async (runId:string) =>{
-    // async function startPolling(runId: string) {
-    if (!threadId) return;
-    const intervalId = setInterval(async () => {
-      try {
-        const response = await fetch(
-          `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
-        );
-        if (!response.ok) {
-          throw new Error(`Errore nella richiesta: ${response.status}`);
-        }
-        const updatedRun = await response.json();
-        console.log("Updated run:", updatedRun);
+  // FUNZIONE LISTA RUN
+  const startPolling = useCallback(
+    async (runId: string) => {
+      // async function startPolling(runId: string) {
+      if (!threadId) return;
+      const intervalId = setInterval(async () => {
+        try {
+          const response = await fetch(
+            `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
+          );
+          if (!response.ok) {
+            throw new Error(`Errore nella richiesta: ${response.status}`);
+          }
+          const updatedRun = await response.json();
+          console.log("Updated run:", updatedRun);
 
-        setRun(updatedRun);
-        setRunState(updatedRun.status);
+          setRun(updatedRun);
+          setRunState(updatedRun.status);
 
-        if (
-          ["cancelled", "failed", "completed", "expired"].includes(
-            updatedRun.status
-          )
-        ) {
+          if (
+            ["cancelled", "failed", "completed", "expired"].includes(
+              updatedRun.status
+            )
+          ) {
+            clearInterval(intervalId);
+            setPollingIntervalId(null);
+            fetchMessages();
+          }
+        } catch (error) {
+          console.error("Error polling run status:", error);
           clearInterval(intervalId);
           setPollingIntervalId(null);
-          fetchMessages();
         }
-      } catch (error) {
-        console.error("Error polling run status:", error);
-        clearInterval(intervalId);
-        setPollingIntervalId(null);
-      }
-    }, 500);
+      }, 500);
 
-    setPollingIntervalId(intervalId);
-  },[fetchMessages,setRun, setRunState,threadId])
+      setPollingIntervalId(intervalId);
+    },
+    [setRun, setRunState, threadId, fetchMessages]
+  );
 
+  // FUNZIONE RICERCA STATO COMPLETATO
   useEffect(() => {
     if (!run || run.status === "completed") return;
     startPolling(run.id);
@@ -147,8 +155,55 @@ export default function ChatBubble() {
       setCreating(false);
     }
   };
+
+  //   useEffect(() => {
+  //     const fetchMessages = async () => {
+  //       setFetching(false);
+  //       if (!threadId) return;
+
+  //       try {
+  //         const response = await fetch(
+  //           `/api/openai/message/list?threadId=${threadId}`
+  //         );
+  //         if (!response.ok) {
+  //           throw new Error(`Errore nella richiesta: ${response.status}`);
+  //         }
+  //         const getMessages = await response.json();
+
+  //         console.log("Data Response fetch messages:", getMessages);
+  //         // Sort messages by created_at timestamp in ascending order
+  //         const sortedMessages = getMessages.messages.sort(
+  //           (a: any, b: any) => a.created_at - b.created_at
+  //         );
+  //         console.log("Sorted messages:", sortedMessages);
+  //         // Format the sorted messages
+  //         const formattedMessages = sortedMessages.map((msg: any) => {
+  //           return {
+  //             ...msg,
+  //             content: msg.content
+  //               .map((contentItem: any) => contentItem.text.value)
+  //               .join(" "),
+  //           };
+  //         });
+  //         console.log("Formatted Messages:", formattedMessages);
+  //         setMessages(formattedMessages);
+
+  //         setMessage("");
+  //       } catch (error: any) {
+  //         console.error("Fetching messages error", error);
+  //       } finally {
+  //         setFetching(false);
+  //       }
+  //     };
+
+  //     fetchMessages();
+  //   }, [threadId, setMessages]);
+
   const sendMessage = async (e: any) => {
     e.preventDefault();
+    console.log(threadId);
+    //TEMPORANEAMENTE LEGGO IL THREAD ID DAL LOCAL STORAGE
+    const localThread = localStorage.getItem("thread");
     if (!threadId) {
       console.error("Thread not found");
     }
@@ -159,32 +214,28 @@ export default function ChatBubble() {
 
     try {
       const response = await fetch(
-        `/api/openai/message/create?threadId=${threadId}&message=${message}`
+        `/api/openai/message/create?threadId=${localThread}&message=${message}`
       );
 
       if (!response.ok) {
         throw new Error(`Errore nella richiesta: ${response.status}`);
       }
       const newMessage = await response.json();
-
+      handleCreate();
       console.log("Message sent", newMessage);
       setMessages([...messages, newMessage]);
       setMessage("");
-      handleCreate();
     } catch (error) {
       console.error("Sending message error", error);
     } finally {
       setSending(false);
     }
   };
-  // console.log(`Messages state:${messages}`);
-  // console.log(`Thread state:${threadId}`);
-  // console.log(`Fetching state:${fetching}`);
   return (
     <>
-      <div className={`${!session||!login ? "relative  flex" : "relative  lg:ps-64"}`}>
-        <div className="flex flex-col h-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg">
-          {!fetching ? (
+      <div className="container mx-auto">
+        <div className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg">
+          {fetching && message ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-md w-full mx-auto">
               <div className="animate-pulse flex space-x-4">
                 <div className="rounded-full bg-slate-700 h-10 w-10"></div>
@@ -202,89 +253,79 @@ export default function ChatBubble() {
             </div>
           ) : (
             <ul className="space-y-5">
-              {messages?.map((message: any) => (
-                <>
+              {messages?.map((message: any) =>
+                message.role === "assistant" ? (
+                  // Assistant Messages
                   <li
                     className="flex ms-auto gap-x-2 sm:gap-x-4"
                     key={message.id}
                   >
-                    {message.role === "assistant" ? (
-                      // Assistant Messages
-                      <>
-                        <Image
-                          className="inline-block h-9 w-9 rounded-full"
-                          src={avatar}
-                          alt="Image Description"
-                          width={30}
-                          height={30}
-                        />
-                        <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
-                          {/* {message.content ? (  */}
-                          <div className="space-y-1.5">
-                            <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
-                              {message?.content}
-                            </p>
-                          </div>
-                          {/* //  ) : (
-                                          //        <div className="flex space-x-2 bg-white dark:invert">
-                                          //            <span className="sr-only">
-                                          //                Loading...
-                                          //            </span>
-                                          //            <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                          //            <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                          //            <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
-                                          //        </div>
-                                          //  )}  */}
+                    <Image
+                      className="inline-block h-9 w-9 rounded-full"
+                      src={avatar}
+                      alt="Image Description"
+                      width={30}
+                      height={30}
+                    />
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
+                      {message.content ? (
+                        <div className="space-y-1.5">
+                          <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
+                            {message.content}
+                          </p>
                         </div>
-                      </>
-                    ) : (
-                      // User Messages
-                      <>
-                        <div className="flex justify-end items-center grow text-end space-y-3">
-                          <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
-                            <p className="text-sm text-white">
-                              {message?.content}
-                            </p>
-                          </div>
+                      ) : (
+                        <div className="flex space-x-2 bg-white dark:invert">
+                          <span className="sr-only">Loading...</span>
+                          <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                          <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                          <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
                         </div>
-                        <span className="flex-shrink-0 inline-flex items-center justify-center h-[2.375rem] w-[2.375rem] rounded-full bg-gray-600">
-                          <span className="text-sm font-medium text-white leading-none">
-                            AZ
-                          </span>
-                        </span>
-                      </>
-                    )}
+                      )}
+                    </div>
                   </li>
-                </>
-              ))}
+                ) : (
+                  // User Messages
+                  <li
+                    className="flex ms-auto gap-x-2 sm:gap-x-4"
+                    key={message.id}
+                  >
+                    <div className="flex justify-end items-center grow text-end space-y-3">
+                      {message?.content ? (
+                        <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
+                          <p className="text-sm text-white">
+                            {" "}
+                            {message?.content}{" "}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex space-x-2 justify-end  bg-white dark:invert">
+                          <span className="sr-only">Loading...</span>
+                          <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                          <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                          <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
+                        </div>
+                      )}
+                    </div>
+                    <span className="flex-shrink-0 inline-flex items-center justify-center h-[2.375rem] w-[2.375rem] rounded-full bg-gray-600">
+                      <span className="text-sm font-medium text-white leading-none">
+                        AZ
+                      </span>
+                    </span>
+                  </li>
+                )
+              )}
             </ul>
           )}
-          {/* <button
-            type="button"
-            className="py-1.5 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 text-xs dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
-          >
-            <svg
-              className="flex-shrink-0 w-3 h-3"
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z" />
-            </svg>
-            Stop generating
-                    </button>*/}
-        </div> 
-
-        <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4" >
+        </div>
+        <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4">
           <form onSubmit={sendMessage}>
-            <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-full shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
-              <div className="flex items-center cursor-pointer ms-2">
+            <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
+              <div className="flex items-center cursor-pointer">
                 {/* Button upload file */}
                 <button
                   type="button"
-                  className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-full text-gray-500 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-lg text-gray-500 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 >
                   <svg
                     className="flex-shrink-0 h-4 w-4"
@@ -307,11 +348,11 @@ export default function ChatBubble() {
                   htmlFor="hs-search-article-1"
                   className="block text-sm text-gray-700 font-medium dark:text-white"
                 >
-                  <span className="sr-only">Write here</span>
+                  <span className="sr-only">Search article</span>
                 </label>
                 <input
                   type="text"
-                  className="py-2.5 px-4 block w-full border-transparent rounded-full focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+                  className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
                   placeholder="Message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -322,13 +363,13 @@ export default function ChatBubble() {
                 {/* Button mic */}
                 <button
                   type="button"
-                  className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-full text-gray-500 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-lg text-gray-500 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 >
                   <svg
                     className="flex-shrink-0 h-4 w-4"
                     xmlns="http://www.w3.org/2000/svg"
-                    width="54"
-                    height="54"
+                    width="24"
+                    height="24"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -343,7 +384,7 @@ export default function ChatBubble() {
                 </button>
                 <button
                   type="submit"
-                  className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   disabled={sending || message === ""}
                 >
                   <svg
