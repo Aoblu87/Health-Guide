@@ -54,7 +54,7 @@ export default function Sidebar() {
       >
         <div className="flex flex-col justify between">
           <div className="mt-5 px-6">
-            <Link
+            <a
               href="/"
               className="flex-none text-xl font-semibold dark:text-white"
               aria-label="Brand"
@@ -73,7 +73,7 @@ export default function Sidebar() {
                   transform="translate(667.003 -694.43)"
                 />
               </svg>{" "}
-            </Link>
+            </a>
           </div>
           <nav
             className="hs-accordion-group w-full flex flex-col flex-wrap"
