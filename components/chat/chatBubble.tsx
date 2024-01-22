@@ -35,117 +35,118 @@ export default function ChatBubble() {
   console.log(`Messages state:${messages}`);
   console.log(`Thread state:${threadId}`);
 
-  //       const fetchMessages= useCallback(async () =>{
-  //         setFetching(false);
-  //         if (!threadId) return;
+        const fetchMessages= useCallback(async () =>{
+          setFetching(false);
+          if (!threadId) return;
 
-  //         try {
-  //           const response = await fetch(
-  //             `/api/openai/message/list?threadId=${threadId}`
-  //             );
-  //             if (!response.ok) {
-  //               throw new Error(`Errore nella richiesta: ${response.status}`);
-  //             }
-  //             const getMessages = await response.json();
+          try {
+            const response = await fetch(
+              `/api/openai/message/list?threadId=${threadId}`
+              );
+              if (!response.ok) {
+                throw new Error(`Errore nella richiesta: ${response.status}`);
+              }
+              const getMessages = await response.json();
 
-  //             console.log("Data Response fetch messages:", getMessages);
-  //             // Sort messages by created_at timestamp in ascending order
-  //             const sortedMessages = getMessages.messages.sort(
-  //               (a: any, b: any) => a.created_at - b.created_at
-  //               );
-  //               console.log("Sorted messages:", sortedMessages);
-  //               // Format the sorted messages
-  //               const formattedMessages = sortedMessages.map((msg: any) => {
-  //                 return {
-  //                   ...msg,
-  //                   content: msg.content
-  //                   .map((contentItem: any) => contentItem.text.value)
-  //                   .join(" "),
-  //                 };
-  //               });
-  //               console.log("Formatted Messages:", formattedMessages);
-  //               setMessages(formattedMessages);
+              console.log("Data Response fetch messages:", getMessages);
+              // Sort messages by created_at timestamp in ascending order
+              const sortedMessages = getMessages.messages.sort(
+                (a: any, b: any) => a.created_at - b.created_at
+                );
+                console.log("Sorted messages:", sortedMessages);
+                // Format the sorted messages
+                const formattedMessages = sortedMessages.map((msg: any) => {
+                  return {
+                    ...msg,
+                    content: msg.content
+                    .map((contentItem: any) => contentItem.text.value)
+                    .join(" "),
+                  };
+                });
+                console.log("Formatted Messages:", formattedMessages);
+                setMessages(formattedMessages);
 
-  //               setMessage("");
-  //             } catch (error: any) {
-  //               console.error("Fetching messages error", error);
-  //             } finally {
-  //               setFetching(false);
-  //             }
-  //             fetchMessages();
-  //       }
-  //     ,[setMessages,threadId]);
+                setMessage("");
+              } catch (error: any) {
+                console.error("Fetching messages error", error);
+              } finally {
+                setFetching(false);
+              }
+              fetchMessages();
+        }
+      ,[setMessages,threadId]);
 
-  //     useEffect(() => {
-  //         // Clean up polling on unmount
-  //   return () => {
-  //     if (pollingIntervalId) clearInterval(pollingIntervalId);
-  //   };
-  // }, [pollingIntervalId, setMessages, fetchMessages]);
+      useEffect(() => {
+          // Clean up polling on unmount
+    return () => {
+      if (pollingIntervalId) clearInterval(pollingIntervalId);
+    };
+  }, [pollingIntervalId, setMessages, fetchMessages]);
 
-  //  async function startPolling(runId: string) {
-  //   if (!threadId) return;
-  //   const intervalId = setInterval(async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error(`Errore nella richiesta: ${response.status}`);
-  //       }
-  //       const updatedRun = await response.json();
-  //       console.log("Updated run:", updatedRun);
+  const startPolling = useCallback(async (runId:string) =>{
+    // async function startPolling(runId: string) {
+    if (!threadId) return;
+    const intervalId = setInterval(async () => {
+      try {
+        const response = await fetch(
+          `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
+        );
+        if (!response.ok) {
+          throw new Error(`Errore nella richiesta: ${response.status}`);
+        }
+        const updatedRun = await response.json();
+        console.log("Updated run:", updatedRun);
 
-  //       setRun(updatedRun);
-  //       setRunState(updatedRun.status);
+        setRun(updatedRun);
+        setRunState(updatedRun.status);
 
-  //       if (
-  //         ["cancelled", "failed", "completed", "expired"].includes(
-  //           updatedRun.status
-  //         )
-  //       ) {
-  //         clearInterval(intervalId);
-  //         setPollingIntervalId(null);
-  //         fetchMessages();
-  //       }
-  //     } catch (error) {
-  //       console.error("Error polling run status:", error);
-  //       clearInterval(intervalId);
-  //       setPollingIntervalId(null);
-  //     }
-  //   }, 500);
+        if (
+          ["cancelled", "failed", "completed", "expired"].includes(
+            updatedRun.status
+          )
+        ) {
+          clearInterval(intervalId);
+          setPollingIntervalId(null);
+          fetchMessages();
+        }
+      } catch (error) {
+        console.error("Error polling run status:", error);
+        clearInterval(intervalId);
+        setPollingIntervalId(null);
+      }
+    }, 500);
 
-  //   setPollingIntervalId(intervalId);
-  // }
+    setPollingIntervalId(intervalId);
+  },[fetchMessages,setRun, setRunState,threadId])
 
-  // useEffect(() => {
-  //   if (!run || run.status === "completed") return;
-  //   startPolling(run.id);
-  // }, [run, startPolling]);
+  useEffect(() => {
+    if (!run || run.status === "completed") return;
+    startPolling(run.id);
+  }, [run, startPolling]);
 
-  // const handleCreate = async () => {
-  //   if (!threadId) return;
+  const handleCreate = async () => {
+    if (!threadId) return;
 
-  //   setCreating(true);
-  //   try {
-  //     const response = await fetch(
-  //       `/api/openai/run/create?threadId=${threadId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
-  //     );
+    setCreating(true);
+    try {
+      const response = await fetch(
+        `/api/openai/run/create?threadId=${threadId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
+      );
 
-  //     const newRun = await response.json();
-  //     console.log("New run:", newRun.id, newRun);
-  //     setRunState(newRun.status);
-  //     setRun(newRun);
-  //     localStorage.setItem("run", JSON.stringify(newRun));
+      const newRun = await response.json();
+      console.log("New run:", newRun.id, newRun);
+      setRunState(newRun.status);
+      setRun(newRun);
+      localStorage.setItem("run", JSON.stringify(newRun));
 
-  //     // Start polling after creation
-  //     startPolling(newRun.id);
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setCreating(false);
-  //   }
-  // };
+      // Start polling after creation
+      startPolling(newRun.id);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCreating(false);
+    }
+  };
   const sendMessage = async (e: any) => {
     e.preventDefault();
     if (!threadId) {
@@ -169,7 +170,7 @@ export default function ChatBubble() {
       console.log("Message sent", newMessage);
       setMessages([...messages, newMessage]);
       setMessage("");
-      // handleCreate();
+      handleCreate();
     } catch (error) {
       console.error("Sending message error", error);
     } finally {

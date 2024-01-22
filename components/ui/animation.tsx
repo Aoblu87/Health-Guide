@@ -9,7 +9,7 @@ export default function Animation() {
         animationData={animation}
         play
         loop
-        style={{ width: 250, height: 250 }}
+        style={{ width: 285, height: 285 }}
       />
       <div className="absolute">
       {/* <HelloAnimation/> */}

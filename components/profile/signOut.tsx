@@ -15,13 +15,14 @@ export default function SignOut() {
   // Function to log out the user
   const logout = async () => {
     try {
-      //Setting the login state false
-      setLogin(false);
-      //Clearing the local storage
-      signOut();
-      //Redirect to the home page
       clearCookies("token");
       clearCookies("userId");
+
+      //Setting the login state false
+      setLogin(false);
+      
+      //Clearing the local storage
+      signOut();
 
       localStorage.clear();
       router.push("/");
