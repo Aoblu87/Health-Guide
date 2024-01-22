@@ -14,7 +14,7 @@ export default function Login() {
 
       <div
         className=" mt-0  sm:max-w-lg sm:w-full m-3 sm:mx-auto"
-      >
+        >
         <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <div className="relative p-4 sm:p-7">
             <div className="absolute top-2 end-2">

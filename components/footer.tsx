@@ -9,7 +9,7 @@ export default function Footer() {
 
   const { data: session } = useSession();
   return (
-    <footer className={`${!session||!login ? "fixed bottom-0 left-0 right-0  lg:ps-64 mt-5" : "fixed bottom-0 right-0 left-0 mt-5 "}`}>
+    <footer className={`${session||login ? "fixed bottom-0 left-0 right-0  lg:ps-64 mt-5" : "fixed bottom-0 right-0 left-0 mt-5 "}`}>
       <div className="max-w-4xl text-center mx-auto px-4sm:px-6 lg:px-8">
         <p className=" p-3 text-xs text-gray-600 dark:text-gray-500">
           © 2024 Health Guide. A product of{" "}

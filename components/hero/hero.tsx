@@ -13,7 +13,7 @@ export const Hero = () => {
     <>
       <div
         className={`${
-          !session || !login ? "relative  lg:ps-64" : "relative flex"
+          session || login ? "relative flex lg:ps-64" : "relative flex md:justify-center "
         }`}
       >
         <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 sm:py-24 md:py-9 mt-4 mb-2">

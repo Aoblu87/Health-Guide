@@ -11,10 +11,10 @@ const router= useRouter()
 
   const { data: session } = useSession();
   console.log("session", session);
-  return (
+  return session || login ? null : (
     <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b border-gray-200 text-sm py-4 dark:bg-gray-800 dark:border-gray-700">
       <nav
-        className="relative max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8"
+        className="relative flex justify-between max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8"
         aria-label="Global"
       >
         <div className="flex items-center justify-between">
@@ -38,7 +38,7 @@ const router= useRouter()
           </a>
         </div>
 
-        <div className="flex flex-row basis-full grow justify-end min-h-12">
+        <div className="flex flex-row justify-end min-h-12">
           
           {session || login ? (
             <ProfileDropdown />

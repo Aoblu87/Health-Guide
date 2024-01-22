@@ -321,7 +321,7 @@ export default function Profile() {
             >
               <DeleteModal />
             </div>
-            ˚{" "}
+            {" "}
             <div className="mt-5 flex justify-end gap-x-2">
               <a
                 type="button"

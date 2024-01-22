@@ -44,7 +44,6 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-   
   ],
   //Define the callback to signin the user
   callbacks: {
@@ -54,7 +53,7 @@ export const authOptions: NextAuthOptions = {
       try {
         // check if user already exists
         const user = await User.findOne({ email: profile?.email });
-       
+
         // if not, create a new document and save user in MongoDB
         if (!user) {
           const newUser = await User.create({
@@ -64,15 +63,15 @@ export const authOptions: NextAuthOptions = {
 
             email: profile?.email,
             photo: profile?.image,
-            
           });
           return newUser;
         }
-        
-        // cookies().set({
-        //   name: 'userId',
-        //   value: user._id,
-        //   httpOnly: true,})
+
+        cookies().set({
+          name: "userId",
+          value: user._id,
+          httpOnly: true,
+        });
 
         return user;
       } catch (error: any) {
