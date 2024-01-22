@@ -6,6 +6,7 @@ import { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
+import { cookies } from "next/headers";
 
 export const authOptions: NextAuthOptions = {
   //Define the providers you want to use
@@ -43,17 +44,7 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      },
-      from: process.env.EMAIL_SERVER_FROM,
-    }),
+   
   ],
   //Define the callback to signin the user
   callbacks: {
@@ -62,25 +53,33 @@ export const authOptions: NextAuthOptions = {
 
       try {
         // check if user already exists
-        const userExists = await User.findOne({ email: profile?.email });
-
+        const user = await User.findOne({ email: profile?.email });
+       
         // if not, create a new document and save user in MongoDB
-        if (!userExists) {
+        if (!user) {
           const newUser = await User.create({
             googleId: profile?.sub,
             firstName: profile?.name?.replace(/\s/g, "").toLowerCase(),
             lastName: profile?.name?.replace(/\s/g, "").toLowerCase(),
-            email: profile?.email,
-          });
-        }
 
-        return true;
+            email: profile?.email,
+            photo: profile?.image,
+            
+          });
+          return newUser;
+        }
+        
+        // cookies().set({
+        //   name: 'userId',
+        //   value: user._id,
+        //   httpOnly: true,})
+
+        return user;
       } catch (error: any) {
         console.log("Error checking if user exists: ", error.message);
         return false;
       }
     },
-
     //USe session to keep track of the user
     async session({ session, token }) {
       session.user = token as any;
