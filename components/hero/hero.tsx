@@ -2,7 +2,7 @@
 import { LoginContext } from "@/context/loginContext";
 import { useSession } from "next-auth/react";
 import { useContext } from "react";
-import Animation from "../ui/animation";
+import Animation from "@/components/ui/animation"
 import FirstQuery from "./firstQuery";
 
 export const Hero = () => {
