@@ -24,6 +24,7 @@ export default function ChatBubble() {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
   const [runState, setRunState] = useAtom(runStateAtom);
+  const [runId, setRunId] = useAtom(runStateAtom);
 
   // State
   const [message, setMessage] = useState("");
@@ -36,102 +37,108 @@ export default function ChatBubble() {
 
   console.log(`Messages state:${messages}`);
   console.log(`Thread state:${threadId}`);
+  console.log(`Run ID from RUN state:${run.id}`);
+  console.log(`RunID :${runId}`);
+  console.log(`STATUS RUN state:${runState}`);
 
-  // FETCH MESSAGE
-  const fetchMessages = useCallback(async () => {
-    setFetching(false);
-    if (!threadId) return;
 
-    try {
-      const response = await fetch(
-        `/api/openai/message/list?threadId=${threadId}`
-      );
-      if (!response.ok) {
-        throw new Error(`Errore nella richiesta: ${response.status}`);
-      }
-      const getMessages = await response.json();
 
-      console.log("Data Response fetch messages:", getMessages);
-      // Sort messages by created_at timestamp in ascending order
-      const sortedMessages = getMessages.messages.sort(
-        (a: any, b: any) => a.created_at - b.created_at
-      );
-      console.log("Sorted messages:", sortedMessages);
-      // Format the sorted messages
-      const formattedMessages = sortedMessages.map((msg: any) => {
-        return {
-          ...msg,
-          content: msg.content
-            .map((contentItem: any) => contentItem.text.value)
-            .join(" "),
-        };
-      });
-      console.log("Formatted Messages:", formattedMessages);
-      setMessages(formattedMessages);
 
-      setMessage("");
-    } catch (error: any) {
-      console.error("Fetching messages error", error);
-    } finally {
-      setFetching(false);
-    }
-    fetchMessages();
-  }, [setMessages, threadId]);
 
   // FUNZIONE PER CONTINUARE A RECUPERARE LISTA RUN
-  useEffect(() => {
-    // Clean up polling on unmount
-    return () => {
-      if (pollingIntervalId) clearInterval(pollingIntervalId);
-    };
-  }, [pollingIntervalId, setMessages]);
+    useEffect(() => {
+      // Clean up polling on unmountnpm
+      return () => {
+        if (pollingIntervalId) clearInterval(pollingIntervalId);
+      };
+    }, [pollingIntervalId, setMessages]);
 
-  // FUNZIONE LISTA RUN
-  const startPolling = useCallback(
-    async (runId: string) => {
-      // async function startPolling(runId: string) {
-      if (!threadId) return;
-      const intervalId = setInterval(async () => {
+    const fetchMessages = useCallback(async () => {
+        setFetching(false);
+        if (!threadId) return;
+  
         try {
           const response = await fetch(
-            `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
+            `/api/openai/message/list?threadId=${threadId}`
           );
           if (!response.ok) {
             throw new Error(`Errore nella richiesta: ${response.status}`);
           }
-          const updatedRun = await response.json();
-          console.log("Updated run:", updatedRun);
+          const getMessages = await response.json();
+  
+          console.log("Data Response fetch messages:", getMessages);
+          // Sort messages by created_at timestamp in ascending order
+          const sortedMessages = getMessages.messages.sort(
+            (a: any, b: any) => a.created_at - b.created_at
+          );
+          console.log("Sorted messages:", sortedMessages);
+          // Format the sorted messages
+          const formattedMessages = sortedMessages.map((msg: any) => {
+            return {
+              ...msg,
+              content: msg.content
+                .map((contentItem: any) => contentItem.text.value)
+                .join(" "),
+            };
+          });
+          console.log("Formatted Messages:", formattedMessages);
+          setMessages(formattedMessages);
+  
+          setMessage("");
+        } catch (error: any) {
+          console.error("Fetching messages error", error);
+        } finally {
+          setFetching(false);
+        }
+      },[threadId, setMessages]);
 
-          setRun(updatedRun);
-          setRunState(updatedRun.status);
+  // FUNZIONE LISTA RUN
+  const startPolling = useCallback(async () => {
+    // async function startPolling(runId: string) {
+    if (!threadId) return;
+    if (!runId) return;
+    const intervalId = setInterval(async () => {
+      try {
+        const response = await fetch(
+          `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
+        );
+        if (!response.ok) {
+          throw new Error(`Errore nella richiesta: ${response.status}`);
+        }
+        const updatedRun = await response.json();
+        console.log("Updated run:", updatedRun);
+        console.log("status run: ", updatedRun.run.status);
+        setRun(updatedRun.run);
+        setRunState(updatedRun.run.status);
 
-          if (
-            ["cancelled", "failed", "completed", "expired"].includes(
-              updatedRun.status
-            )
-          ) {
-            clearInterval(intervalId);
-            setPollingIntervalId(null);
-            fetchMessages();
-          }
-        } catch (error) {
-          console.error("Error polling run status:", error);
+        if (
+          ["cancelled", "failed", "completed", "expired"].includes(
+            updatedRun.run.status
+          )
+        ) {
           clearInterval(intervalId);
           setPollingIntervalId(null);
         }
-      }, 500);
+      } catch (error) {
+        console.error("Error polling run status:", error);
+        clearInterval(intervalId);
+        setPollingIntervalId(null);
+      }
+    }, 500);
 
-      setPollingIntervalId(intervalId);
-    },
-    [setRun, setRunState, threadId, fetchMessages]
-  );
+    setPollingIntervalId(intervalId);
+  }, [runId, setRun, setRunState, threadId]);
 
   // FUNZIONE RICERCA STATO COMPLETATO
   useEffect(() => {
-    if (!run || run.status === "completed") return;
-    startPolling(run.id);
-  }, [run, startPolling]);
+    if (!runId || run.status === "completed") return;
+    startPolling();
+    fetchMessages()
 
+  }, [startPolling, runId, run.status,fetchMessages]);
+
+
+//   AVVIA RUN----------------------------------------------------------------
   const handleCreate = async () => {
     if (!threadId) return;
 
@@ -146,59 +153,22 @@ export default function ChatBubble() {
       setRunState(newRun.status);
       setRun(newRun);
       localStorage.setItem("run", JSON.stringify(newRun));
-
+      setRunId(newRun.id);
       // Start polling after creation
-      startPolling(newRun.id);
     } catch (error) {
       console.error(error);
     } finally {
       setCreating(false);
+      startPolling();
+
     }
   };
 
-  //   useEffect(() => {
-  //     const fetchMessages = async () => {
-  //       setFetching(false);
-  //       if (!threadId) return;
 
-  //       try {
-  //         const response = await fetch(
-  //           `/api/openai/message/list?threadId=${threadId}`
-  //         );
-  //         if (!response.ok) {
-  //           throw new Error(`Errore nella richiesta: ${response.status}`);
-  //         }
-  //         const getMessages = await response.json();
 
-  //         console.log("Data Response fetch messages:", getMessages);
-  //         // Sort messages by created_at timestamp in ascending order
-  //         const sortedMessages = getMessages.messages.sort(
-  //           (a: any, b: any) => a.created_at - b.created_at
-  //         );
-  //         console.log("Sorted messages:", sortedMessages);
-  //         // Format the sorted messages
-  //         const formattedMessages = sortedMessages.map((msg: any) => {
-  //           return {
-  //             ...msg,
-  //             content: msg.content
-  //               .map((contentItem: any) => contentItem.text.value)
-  //               .join(" "),
-  //           };
-  //         });
-  //         console.log("Formatted Messages:", formattedMessages);
-  //         setMessages(formattedMessages);
 
-  //         setMessage("");
-  //       } catch (error: any) {
-  //         console.error("Fetching messages error", error);
-  //       } finally {
-  //         setFetching(false);
-  //       }
-  //     };
 
-  //     fetchMessages();
-  //   }, [threadId, setMessages]);
-
+//   MANDA MESSAGGIO-----------------------------
   const sendMessage = async (e: any) => {
     e.preventDefault();
     console.log(threadId);
@@ -221,10 +191,10 @@ export default function ChatBubble() {
         throw new Error(`Errore nella richiesta: ${response.status}`);
       }
       const newMessage = await response.json();
-      handleCreate();
       console.log("Message sent", newMessage);
       setMessages([...messages, newMessage]);
       setMessage("");
+      handleCreate();
     } catch (error) {
       console.error("Sending message error", error);
     } finally {
@@ -235,7 +205,7 @@ export default function ChatBubble() {
     <>
       <div className="container mx-auto">
         <div className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg">
-          {fetching && message ? (
+          {/* {fetching && message ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-md w-full mx-auto">
               <div className="animate-pulse flex space-x-4">
                 <div className="rounded-full bg-slate-700 h-10 w-10"></div>
@@ -251,72 +221,72 @@ export default function ChatBubble() {
                 </div>
               </div>
             </div>
-          ) : (
-            <ul className="space-y-5">
-              {messages?.map((message: any) =>
-                message.role === "assistant" ? (
-                  // Assistant Messages
-                  <li
-                    className="flex ms-auto gap-x-2 sm:gap-x-4"
-                    key={message.id}
-                  >
-                    <Image
-                      className="inline-block h-9 w-9 rounded-full"
-                      src={avatar}
-                      alt="Image Description"
-                      width={30}
-                      height={30}
-                    />
-                    <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
-                      {message.content ? (
-                        <div className="space-y-1.5">
-                          <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
-                            {message.content}
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="flex space-x-2 bg-white dark:invert">
-                          <span className="sr-only">Loading...</span>
-                          <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                          <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                          <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                ) : (
-                  // User Messages
-                  <li
-                    className="flex ms-auto gap-x-2 sm:gap-x-4"
-                    key={message.id}
-                  >
-                    <div className="flex justify-end items-center grow text-end space-y-3">
-                      {message?.content ? (
-                        <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
-                          <p className="text-sm text-white">
-                            {" "}
-                            {message?.content}{" "}
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="flex space-x-2 justify-end  bg-white dark:invert">
-                          <span className="sr-only">Loading...</span>
-                          <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                          <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                          <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
-                        </div>
-                      )}
-                    </div>
-                    <span className="flex-shrink-0 inline-flex items-center justify-center h-[2.375rem] w-[2.375rem] rounded-full bg-gray-600">
-                      <span className="text-sm font-medium text-white leading-none">
-                        AZ
-                      </span>
+          ) : ( */}
+          <ul className="space-y-5">
+            {messages?.map((message: any) =>
+              message.role === "assistant" ? (
+                // Assistant Messages
+                <li
+                  className="flex ms-auto gap-x-2 sm:gap-x-4"
+                  key={message.id}
+                >
+                  <Image
+                    className="inline-block h-9 w-9 rounded-full"
+                    src={avatar}
+                    alt="Image Description"
+                    width={30}
+                    height={30}
+                  />
+                  <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
+                    {message.content ? (
+                      <div className="space-y-1.5">
+                        <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
+                          {message.content}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex space-x-2 bg-white dark:invert">
+                        <span className="sr-only">Loading...</span>
+                        <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                        <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                        <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
+                      </div>
+                    )}
+                  </div>
+                </li>
+              ) : (
+                // User Messages
+                <li
+                  className="flex ms-auto gap-x-2 sm:gap-x-4"
+                  key={message.id}
+                >
+                  <div className="flex justify-end items-center grow text-end space-y-3">
+                    {message?.content ? (
+                      <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
+                        <p className="text-sm text-white">
+                          {" "}
+                          {message?.content}{" "}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex space-x-2 justify-end  bg-white dark:invert">
+                        <span className="sr-only">Loading...</span>
+                        <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                        <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                        <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
+                      </div>
+                    )}
+                  </div>
+                  <span className="flex-shrink-0 inline-flex items-center justify-center h-[2.375rem] w-[2.375rem] rounded-full bg-gray-600">
+                    <span className="text-sm font-medium text-white leading-none">
+                      AZ
                     </span>
-                  </li>
-                )
-              )}
-            </ul>
-          )}
+                  </span>
+                </li>
+              )
+            )}
+          </ul>
+          {/* )} */}
         </div>
         <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4">
           <form onSubmit={sendMessage}>

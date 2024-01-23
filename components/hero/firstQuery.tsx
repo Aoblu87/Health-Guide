@@ -3,12 +3,13 @@ import {
   messagesAtom,
   runAtom,
   runStateAtom,
+  showComponentAtom,
   threadAtom,
   threadIdAtom,
 } from "@/atoms";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function FirstQuery() {
   const router = useRouter();
@@ -19,18 +20,27 @@ export default function FirstQuery() {
   const [run, setRun] = useAtom(runAtom);
   const [runState, setRunState] = useAtom(runStateAtom);
   const [fetching, setFetching] = useState(true);
+  const [showComponent,setShowComponent] = useAtom(showComponentAtom);
+  const [runId, setRunId] = useAtom(runStateAtom);
+
+
 
 
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [creating, setCreating] = useState(false);
+
   const [pollingIntervalId, setPollingIntervalId] =
     useState<NodeJS.Timeout | null>(null);
 
-  console.log(`Thread state:${threadId}`);
+  console.log(`Thread state on HomePage:${threadId}`);
+  console.log(`Message state on HomePage:${messages}`);
+  console.log(`Run ID state on HomePage:${messages}`);
 
-    const fetchMessages = async () => {
+
+
+    const fetchMessages = useCallback(async () => {
       setFetching(false);
       if (!threadId) return;
 
@@ -63,20 +73,28 @@ export default function FirstQuery() {
       
 
         setMessage("");
+
       } catch (error: any) {
         console.error("Fetching messages error", error);
       } finally {
         setFetching(false);
+
+
       }
-    };
+    },[setMessages,threadId])
 
 
+useEffect(() => {
+  fetchMessages()
 
-
+},[setThreadId, setMessages,fetchMessages]);
  
 
   const sendMessage = async (e: any) => {
+    
+    
     e.preventDefault();
+    
 
     if (!message) {
       console.error("Message not found");
@@ -94,26 +112,29 @@ export default function FirstQuery() {
 
       console.log("newMessage", newMessage);
 
-      //Memorize messages into atomic state
-      // setMessages([...messages, newMessage]);
-      //Cancel data on message state
+     
       setMessage("");
-fetchMessages();
+      setRunId(newMessage.id);
       setThreadId(newMessage.thread_id);
+
       console.log(`Thread state:${threadId}`);
-      //Memorize thread ID into local storage
-      localStorage.setItem("thread", newMessage.thread_id);
+     
       //Redirect to dashboard
-      router.push("/dashboard");
     } catch (error) {
       console.error("Errore durante la chiamata Fetch:", error);
     } finally {
       setSending(false);
+      fetchMessages()
+
+      router.push("/dashboard");
+
+
     }
   };
 
   return (
-    <form onSubmit={sendMessage}>
+      <>
+      <form onSubmit={sendMessage}>
       <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
         <div className="flex-[1_0_0%]">
           <label
@@ -137,6 +158,7 @@ fetchMessages();
             type="submit"
             className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
             disabled={sending || message === ""}
+           
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -152,5 +174,8 @@ fetchMessages();
         </div>
       </div>
     </form>
-  );
+    </>
+    
+    )
+  
 }

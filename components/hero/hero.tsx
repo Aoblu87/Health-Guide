@@ -1,14 +1,18 @@
 "use client";
 import { LoginContext } from "@/context/loginContext";
 import { useSession } from "next-auth/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Animation from "@/components/ui/animation"
 import FirstQuery from "./firstQuery";
+import { useAtom } from "jotai";
+import { showComponentAtom } from "@/atoms";
 
 export const Hero = () => {
   const { login } = useContext(LoginContext);
 
   const { data: session } = useSession();
+
+
   return (
     <>
       <div
@@ -21,7 +25,7 @@ export const Hero = () => {
             <Animation />
 
             <div className="mt-7 mx-auto max-w-xl relative">
-              <FirstQuery />
+              <FirstQuery  />
 
               {/* <!-- SVG Element --> */}
               <div className="hidden md:block absolute top-0 end-0 -translate-y-12 translate-x-20">
