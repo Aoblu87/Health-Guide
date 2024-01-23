@@ -31,7 +31,6 @@ try {
 }
 
 
-
 //Route for modifying a user
 export async function PUT(
   request: NextRequest,

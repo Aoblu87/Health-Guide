@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { Schema} from 'mongoose';
+
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -32,6 +34,10 @@ const userSchema = new mongoose.Schema({
   },
   createdAt: {
     type: String,
+  },
+  threads: {
+    type: Schema.Types.ObjectId, 
+    ref: "treads",
   },
 });
 
