@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import connectionDB from "@/lib/connectionDB";
-import User from "@/models/User.js";
+import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
 // Calls the connect function to establish a connection to the database.
@@ -37,6 +37,8 @@ export async function POST(request: NextRequest) {
       firstName: newuser.firstName,
       lastName: newuser.lastName,
       email: newuser.email,
+      threads: newuser.threads,
+      time:newuser.time
     };
 
     // Saves the new user to the database.

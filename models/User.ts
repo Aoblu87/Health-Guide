@@ -1,8 +1,18 @@
 import mongoose from "mongoose";
-import { Schema} from 'mongoose';
+import { Schema, Types} from 'mongoose';
 
-
-const userSchema = new mongoose.Schema({
+interface IUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  googleId:string
+  dayOfBirth:string
+  avatar:string;
+  time: Date
+  threads: Types.ObjectId[]
+}
+const userSchema = new Schema<IUser>({
   firstName: {
     type: String,
     required: true,
@@ -32,15 +42,17 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
   },
-  createdAt: {
-    type: String,
-  },
+  time : { type : Date, default: Date.now },
+
   threads: {
-    type: Schema.Types.ObjectId, 
-    ref: "treads",
+    type: [Schema.Types.ObjectId], 
+    ref: "threads",
+    default: []
   },
+
+
 });
 
-const User = mongoose.models.users || mongoose.model("users", userSchema);
+const User = mongoose.models.users<IUser> || mongoose.model("users", userSchema)<IUser>;
 
 export default User;

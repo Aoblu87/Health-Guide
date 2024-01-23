@@ -38,3 +38,9 @@ export async function POST(request: NextRequest) {
 
 
 
+// {
+//   "title":"medicine",
+//   "user":{
+//       "_id":"65b01368ced66ccdc565f4bb"
+//   }
+// }

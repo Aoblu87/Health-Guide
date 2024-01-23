@@ -4,7 +4,6 @@ import User from "@/models/User";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
-import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 import { cookies } from "next/headers";
 
@@ -71,7 +70,7 @@ export const authOptions: NextAuthOptions = {
           name: "userId",
           value: user._id,
           httpOnly: true,
-          maxAge: 48 * 60 * 60,
+          // maxAge: 48 * 60 * 60,
 
         });
 

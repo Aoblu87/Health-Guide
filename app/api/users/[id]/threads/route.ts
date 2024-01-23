@@ -9,7 +9,7 @@ export async function GET(request: NextRequest,{params}:{params:{id:string}}){
   await connectionDB();
   try {
     const id= params.id;
-    const userThread = await User.findById({ _id: id }).populate("thread");
+    const userThread = await User.findById({ _id: id }).populate("threads").select("threads");
     if (!userThread) {
       return NextResponse.json({ error: "UserThread not found" }, { status: 404 });
     }

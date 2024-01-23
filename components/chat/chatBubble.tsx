@@ -133,7 +133,7 @@ export default function ChatBubble() {
   useEffect(() => {
     if (!runId || run.status === "completed") return;
     startPolling();
-    fetchMessages()
+    // fetchMessages()
 
   }, [startPolling, runId, run.status,fetchMessages]);
 
@@ -205,7 +205,7 @@ export default function ChatBubble() {
     <>
       <div className="container mx-auto">
         <div className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg">
-          {/* {fetching && message ? (
+          {/* {fetching ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-md w-full mx-auto">
               <div className="animate-pulse flex space-x-4">
                 <div className="rounded-full bg-slate-700 h-10 w-10"></div>
@@ -286,7 +286,7 @@ export default function ChatBubble() {
               )
             )}
           </ul>
-          {/* )} */}
+          {/* )}  */}
         </div>
         <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4">
           <form onSubmit={sendMessage}>
