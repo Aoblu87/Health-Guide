@@ -158,13 +158,12 @@ export default function SignUp() {
                         className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                         required
                         placeholder="mario.rossi@gmail.com "
-                        aria-describedby="email-error"
                         value={user.email}
                         onChange={(e) =>
                           setUser({ ...user, email: e.target.value })
                         }
                       />
-                      {!emailExists && (
+                      {/* {!emailExists && ( */}
                         <div className="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
                           <svg
                             className="h-5 w-5 text-red-500"
@@ -177,14 +176,14 @@ export default function SignUp() {
                             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
                           </svg>
                         </div>
-                      )}
+                      {/* )} */}
                     </div>
-                    {!emailExists && (
+                    {/* {!emailExists && (
                       <p className="text-xs text-red-600 mt-2" id="email-error">
                         Please include a valid email address so we can get back
                         to you
                       </p>
-                    )}
+                    )} */}
 
                   <div className="relative">
                     <input
@@ -208,7 +207,6 @@ export default function SignUp() {
                     <div className="flex">
                       <input
                         id="remember-me"
-                        required
                         name="remember-me"
                         type="checkbox"
                         className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"

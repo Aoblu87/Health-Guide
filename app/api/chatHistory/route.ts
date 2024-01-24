@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
 //ADD new trends
 export async function POST(request: NextRequest) {
-  connectionDB();
+  await connectionDB();
 
   try {
     const reqBody = await request.json();

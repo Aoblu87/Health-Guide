@@ -167,8 +167,7 @@ export default function ChatBubble() {
   //   MANDA MESSAGGIO-----------------------------
   const sendMessage = async (e: any) => {
     e.preventDefault();
-    setRun("");
-    setRunState("N/A");
+//    CANCEDRLLARE STATUS E ID
     console.log(threadId);
  
     if (!threadId) {

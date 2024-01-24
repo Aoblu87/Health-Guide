@@ -42,6 +42,9 @@ export async function POST(request: NextRequest) {
       payload: payload,
       token: token,
     });
+//SAVE LOCAL STORAGE
+    localStorage.setItem("UserId", user._id);
+    
 
     // Set the token as an HTTP-only cookie
     response.cookies.set("token", token, {

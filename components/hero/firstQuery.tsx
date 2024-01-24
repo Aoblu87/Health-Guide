@@ -1,13 +1,11 @@
 "use client";
-import {
-  messagesAtom,
-  runAtom,
-  runStateAtom,
-  threadIdAtom
-} from "@/atoms";
+import { messagesAtom, runAtom, runStateAtom, threadIdAtom } from "@/atoms";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
+import getTitleThread from "@/app/helper/getTitleThread";
+import getCookies from "@/app/helper/getCookies";
+import printCookies from "@/app/helper/printCookies";
 
 export default function FirstQuery() {
   const router = useRouter();
@@ -27,8 +25,9 @@ export default function FirstQuery() {
   const fetchMessages = useCallback(async () => {
     setFetching(true);
     if (!threadId) {
-      console.log("no ThreadID")
-      return};
+      console.log("no ThreadID");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -63,7 +62,7 @@ export default function FirstQuery() {
     } finally {
       setFetching(false);
     }
-  }, [setMessages, threadId,setFetching]);
+  }, [setMessages, threadId, setFetching]);
 
   useEffect(() => {
     //Clean stored data
@@ -74,7 +73,7 @@ export default function FirstQuery() {
     // fetchMessages();
   }, [setThreadId, setMessages, setRun, setRunState]);
 
-  async function sendMessage (e: any) {
+  async function sendMessage(e: any) {
     e.preventDefault();
     setFetching(true);
 
@@ -99,26 +98,55 @@ export default function FirstQuery() {
       setMessage("");
       fetchMessages();
 
-        //Set new data
-        setRun(newMessage);
-        setThreadId(newMessage.thread_id);
-        setMessages({ ...messages, newMessage });
-        setRunState(newMessage.status);
-        console.log(`Thread state on HomePage:${threadId}`);
-        console.log(`Message state on HomePage:${messages}`);
-        console.log(`Run ID state on HomePage:${run.id}`);
-        console.log(`RunState on HomePage:${run.status}`);
-        
-      
-        router.push("/dashboard");
+      //Set new data
+      setRun(newMessage);
+      setThreadId(newMessage.thread_id);
+      setMessages({ ...messages, newMessage });
+      setRunState(newMessage.status);
+      console.log(`Thread state on HomePage:${threadId}`);
+      console.log(`Message state on HomePage:${messages}`);
+      console.log(`Run ID state on HomePage:${run.id}`);
+      console.log(`RunState on HomePage:${run.status}`);
 
-      
+      router.push("/dashboard");
     } catch (error) {
       console.error("Errore durante la chiamata Fetch:", error);
     } finally {
       setSending(false);
-
     }
+  }
+// CREAT il TITOLO E AGGIUNGE IL THREAD A HISTORY
+  const createTitleThread = async () => {
+    if (!message) {
+      console.error("Message not found");
+    }
+    const titleThread = getTitleThread(message);
+    console.log(titleThread);
+
+    const userId = getCookies("userId");
+    
+  
+
+    const newThread = {
+      title: titleThread,
+      user: {
+        _id:userId,
+    }}
+
+    try {
+      const response = await fetch("/api/chatHistory", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(newThread),
+      });
+      if (!response.ok) {
+        throw new Error(`Errore nella richiesta: ${response.status}`);
+      }
+      const newThreadCreated = await response.json();
+      console.log(newThreadCreated);
+    } catch (error) {}
   };
 
   return (
@@ -147,6 +175,7 @@ export default function FirstQuery() {
               type="submit"
               className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               disabled={sending || message === ""}
+              onClick={createTitleThread}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

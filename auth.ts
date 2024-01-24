@@ -65,13 +65,14 @@ export const authOptions: NextAuthOptions = {
           });
           return newUser;
         }
-
+        if (typeof window !== "undefined" && window.localStorage) {
+          localStorage.setItem("userId", user.id);}
+     
         cookies().set({
           name: "userId",
           value: user._id,
           httpOnly: true,
           // maxAge: 48 * 60 * 60,
-
         });
 
         return user;
@@ -80,9 +81,11 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
+    
     //USe session to keep track of the user
     async session({ session, token }) {
       session.user = token as any;
+
 
       return session;
     },
