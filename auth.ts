@@ -5,7 +5,7 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
-import { cookies } from "next/headers";
+import  cookies  from "js-cookie";
 
 export const authOptions: NextAuthOptions = {
   //Define the providers you want to use
@@ -66,14 +66,16 @@ export const authOptions: NextAuthOptions = {
           return newUser;
         }
         if (typeof window !== "undefined" && window.localStorage) {
-          localStorage.setItem("userId", user.id);}
+          localStorage.setItem("userId", user._id);}
      
-        cookies().set({
-          name: "userId",
-          value: user._id,
-          httpOnly: true,
-          // maxAge: 48 * 60 * 60,
-        });
+          cookies.set('userId', user._id)
+
+        // cookies().set({
+        //   name: "userId",
+        //   value: user._id,
+        //   httpOnly: true,
+        //   // maxAge: 48 * 60 * 60,
+        // });
 
         return user;
       } catch (error: any) {

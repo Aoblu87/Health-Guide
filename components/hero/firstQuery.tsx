@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState, useTransition } from "react";
 import getTitleThread from "@/app/helper/getTitleThread";
 import getCookies from "@/app/helper/getCookies";
 import printCookies from "@/app/helper/printCookies";
+import Cookies from "js-cookie"
 
 export default function FirstQuery() {
   const router = useRouter();
@@ -122,9 +123,10 @@ export default function FirstQuery() {
     }
     const titleThread = getTitleThread(message);
     console.log(titleThread);
+const userId =Cookies.get('userId') // => 'value'
 
-    const userId = getCookies("userId");
-    
+    // const userId = getCookies('userId');
+    console.log(userId)
   
 
     const newThread = {

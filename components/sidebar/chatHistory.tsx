@@ -1,3 +1,4 @@
+import getCookies from "@/app/helper/getCookies";
 import { useEffect, useState } from "react";
 import DropdownThreads from "./dropdownThreads";
 
@@ -7,7 +8,13 @@ export default function ChatHistory(){
    const [loading,setLoading]= useState(true)
    const getChatHistory = (async ()=>{
 
-    const userId = localStorage.getItem('userId');
+    const userId = getCookies('userId');
+    if (!userId) {
+        // Handle the case where userId is not available
+        console.error("UserId not found in cookies");
+        setLoading(false);
+        return;
+    }
 try {
     const response= await fetch(`/api/users/${userId}/threads`)
     if(!response.ok){

@@ -85,7 +85,7 @@ export default function Sidebar() {
               <li>
                 <a
                   className="flex items-center gap-x-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                  href="#"
+                  href="/"
                 >
                   <svg
                     className="flex-shrink-0 w-4 h-4"
@@ -109,12 +109,11 @@ export default function Sidebar() {
               <div className="py-3">
                 <p className="text-xs">Today</p>
               </div>
-              <ChatHistory/>
-             
+              <ChatHistory />
             </ul>
 
             {/* Footer */}
-            <div className="flex flex-col fixed bottom-0">
+            <div className="flex flex-col fixed bottom-0 w-full">
               <div className="p-2 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex ">
                   {login || session ? (
