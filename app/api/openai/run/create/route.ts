@@ -26,7 +26,8 @@ try {
 
 }
 
-
+//ENDPOINT
+// http://localhost:3000/api/openai/run/create?threadId=thread_OzapNbUDhBfkeBykYCw77PXn&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN
 
 //RESPONSE
 // {

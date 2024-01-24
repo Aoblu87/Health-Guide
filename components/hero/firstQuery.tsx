@@ -3,7 +3,6 @@ import {
   messagesAtom,
   runAtom,
   runStateAtom,
-  showComponentAtom,
   threadIdAtom
 } from "@/atoms";
 import { useAtom } from "jotai";
@@ -20,24 +19,16 @@ export default function FirstQuery() {
   const [run, setRun] = useAtom(runAtom);
   const [runState, setRunState] = useAtom(runStateAtom);
   const [fetching, setFetching] = useState(true);
-  const [showComponent, setShowComponent] = useAtom(showComponentAtom);
-  const [runId, setRunId] = useAtom(runStateAtom);
 
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-  const [creating, setCreating] = useState(false);
-
-  const [pollingIntervalId, setPollingIntervalId] =
-    useState<NodeJS.Timeout | null>(null);
-
-  console.log(`Thread state on HomePage:${threadId}`);
-  console.log(`Message state on HomePage:${messages}`);
-  console.log(`Run ID state on HomePage:${messages}`);
 
   const fetchMessages = useCallback(async () => {
-    setFetching(false);
-    if (!threadId) return;
+    setFetching(true);
+    if (!threadId) {
+      console.log("no ThreadID")
+      return};
 
     try {
       const response = await fetch(
@@ -72,14 +63,20 @@ export default function FirstQuery() {
     } finally {
       setFetching(false);
     }
-  }, [setMessages, threadId]);
+  }, [setMessages, threadId,setFetching]);
 
   useEffect(() => {
-    fetchMessages();
-  }, [setThreadId, setMessages, fetchMessages]);
+    //Clean stored data
+    setRun("");
+    setThreadId("");
+    setMessages("");
+    setRunState("N/A");
+    // fetchMessages();
+  }, [setThreadId, setMessages, setRun, setRunState]);
 
-  const sendMessage = async (e: any) => {
+  async function sendMessage (e: any) {
     e.preventDefault();
+    setFetching(true);
 
     if (!message) {
       console.error("Message not found");
@@ -100,17 +97,27 @@ export default function FirstQuery() {
       console.log("newMessage", newMessage);
 
       setMessage("");
-      setRunId(newMessage.id);
-      setThreadId(newMessage.thread_id);
+      fetchMessages();
 
-      console.log(`Thread state:${threadId}`);
+        //Set new data
+        setRun(newMessage);
+        setThreadId(newMessage.thread_id);
+        setMessages({ ...messages, newMessage });
+        setRunState(newMessage.status);
+        console.log(`Thread state on HomePage:${threadId}`);
+        console.log(`Message state on HomePage:${messages}`);
+        console.log(`Run ID state on HomePage:${run.id}`);
+        console.log(`RunState on HomePage:${run.status}`);
+        
+      
+        router.push("/dashboard");
+
+      
     } catch (error) {
       console.error("Errore durante la chiamata Fetch:", error);
     } finally {
       setSending(false);
-      fetchMessages();
 
-      router.push("/dashboard");
     }
   };
 

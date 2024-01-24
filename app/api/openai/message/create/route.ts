@@ -31,6 +31,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
+//ENDPOINT
+// http://localhost:3000/api/openai/message/create?threadId=thread_OzapNbUDhBfkeBykYCw77PXn&message=sportpermigliorareildoloreallaschiena
+
 //RESPONSE
 // {
 //     "id": "msg_abc123",

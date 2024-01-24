@@ -22,6 +22,11 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: e });
   }
 }
+
+
+//ENDPOINT
+// http://localhost:3000/api/openai/message/list?threadId=thread_OzapNbUDhBfkeBykYCw77PXn
+
 //RESPONSE
 // {
 //   "messages": [

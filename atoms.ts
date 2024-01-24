@@ -10,7 +10,6 @@ export const threadAtom = atom<Thread | null>(null);
 const _threadIdAtom = atom<string | null>(null);
 const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
-const _runIdAtom= atom<string | null>(null);
 
 export const showComponentAtom = atom<boolean | null>(false);
 
@@ -41,7 +40,6 @@ export const threadIdAtom = atomWithLocalStorage(_threadIdAtom.toString(), null)
 export const messagesAtom = atomWithLocalStorage(JSON.stringify(_messagesAtom,null,2),null)
 export const runAtom = atomWithLocalStorage(JSON.stringify(_runAtom,null,2),null)
 export const assistantAtom = atomWithLocalStorage(JSON.stringify(_assistantAtom,null,2),null)
-export const runIdAtom = atomWithLocalStorage(JSON.stringify(_runIdAtom,null,2),null)
 
 
 

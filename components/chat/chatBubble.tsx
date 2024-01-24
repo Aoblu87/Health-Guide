@@ -9,7 +9,7 @@ import {
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import Image from "next/image";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState, useTransition } from "react";
 import InputMessages from "../inputMessages";
 import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
 import { useSession } from "next-auth/react";
@@ -24,7 +24,6 @@ export default function ChatBubble() {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
   const [runState, setRunState] = useAtom(runStateAtom);
-  const [runId, setRunId] = useAtom(runStateAtom);
 
   // State
   const [message, setMessage] = useState("");
@@ -38,7 +37,6 @@ export default function ChatBubble() {
   console.log(`Messages state:${messages}`);
   console.log(`Thread state:${threadId}`);
   console.log(`Run ID from RUN state:${run.id}`);
-  console.log(`RunID :${runId}`);
   console.log(`STATUS RUN state:${runState}`);
 
 
@@ -53,8 +51,9 @@ export default function ChatBubble() {
       };
     }, [pollingIntervalId, setMessages]);
 
+    //FETCH MESSAGES
     const fetchMessages = useCallback(async () => {
-        setFetching(false);
+        setFetching(true);
         if (!threadId) return;
   
         try {
@@ -96,11 +95,11 @@ export default function ChatBubble() {
   const startPolling = useCallback(async () => {
     // async function startPolling(runId: string) {
     if (!threadId) return;
-    if (!runId) return;
+    if (!run.id) return;
     const intervalId = setInterval(async () => {
       try {
         const response = await fetch(
-          `/api/openai/run/retrieve?threadId=${threadId}&runId=${runId}`
+          `/api/openai/run/retrieve?threadId=${threadId}&runId=${run.id}`
         );
         if (!response.ok) {
           throw new Error(`Errore nella richiesta: ${response.status}`);
@@ -119,6 +118,8 @@ export default function ChatBubble() {
           clearInterval(intervalId);
           setPollingIntervalId(null);
         }
+    fetchMessages()
+
       } catch (error) {
         console.error("Error polling run status:", error);
         clearInterval(intervalId);
@@ -127,15 +128,17 @@ export default function ChatBubble() {
     }, 500);
 
     setPollingIntervalId(intervalId);
-  }, [runId, setRun, setRunState, threadId]);
+  }, [run, setRun, setRunState, threadId,fetchMessages]);
 
   // FUNZIONE RICERCA STATO COMPLETATO
   useEffect(() => {
-    if (!runId || run.status === "completed") return;
+    if (!run.id || run.status === "completed") {
+        setFetching(false);
+        return;
+    }
     startPolling();
-    // fetchMessages()
 
-  }, [startPolling, runId, run.status,fetchMessages]);
+  }, [startPolling, run, run.status]);
 
 
 //   AVVIA RUN----------------------------------------------------------------
@@ -153,7 +156,6 @@ export default function ChatBubble() {
       setRunState(newRun.status);
       setRun(newRun);
       localStorage.setItem("run", JSON.stringify(newRun));
-      setRunId(newRun.id);
       // Start polling after creation
     } catch (error) {
       console.error(error);
@@ -201,11 +203,16 @@ export default function ChatBubble() {
       setSending(false);
     }
   };
+  function SlowPost() {
+    let startTime = performance.now();
+    while (performance.now() - startTime < 1) {
+      // Do nothing for 1 ms per item to emulate extremely slow code
+    }}
   return (
     <>
       <div className="container mx-auto">
         <div className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg">
-          {/* {fetching ? (
+          {/* {fetching? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-md w-full mx-auto">
               <div className="animate-pulse flex space-x-4">
                 <div className="rounded-full bg-slate-700 h-10 w-10"></div>
@@ -222,8 +229,9 @@ export default function ChatBubble() {
               </div>
             </div>
           ) : ( */}
-          <ul className="space-y-5">
-            {messages?.map((message: any) =>
+            {!fetching && messages&&
+              <ul className="space-y-5">
+            {messages?.map((message:any) =>
               message.role === "assistant" ? (
                 // Assistant Messages
                 <li
@@ -238,20 +246,23 @@ export default function ChatBubble() {
                     height={30}
                   />
                   <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
-                    {message.content ? (
                       <div className="space-y-1.5">
+                    {message.content ? (
                         <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
                           {message.content}
                         </p>
-                      </div>
                     ) : (
-                      <div className="flex space-x-2 bg-white dark:invert">
+                      <>
+                                            <div className="flex">
+
                         <span className="sr-only">Loading...</span>
                         <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
                         <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                         <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
-                      </div>
+                     </div>
+                     </>
                     )}
+                    </div>
                   </div>
                 </li>
               ) : (
@@ -261,21 +272,25 @@ export default function ChatBubble() {
                   key={message.id}
                 >
                   <div className="flex justify-end items-center grow text-end space-y-3">
-                    {message?.content ? (
                       <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
+                    {message?.content ? (
                         <p className="text-sm text-white">
                           {" "}
                           {message?.content}{" "}
                         </p>
-                      </div>
                     ) : (
-                      <div className="flex space-x-2 justify-end  bg-white dark:invert">
+                        <>
+                      <div className="flex">
+
                         <span className="sr-only">Loading...</span>
                         <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
                         <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                         <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
                       </div>
+                     
+                     </>
                     )}
+                    </div>
                   </div>
                   <span className="flex-shrink-0 inline-flex items-center justify-center h-[2.375rem] w-[2.375rem] rounded-full bg-gray-600">
                     <span className="text-sm font-medium text-white leading-none">
@@ -285,8 +300,8 @@ export default function ChatBubble() {
                 </li>
               )
             )}
-          </ul>
-          {/* )}  */}
+          </ul>}
+          {/* )}   */}
         </div>
         <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4">
           <form onSubmit={sendMessage}>
