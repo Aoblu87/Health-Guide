@@ -34,6 +34,13 @@ async function dbConnect() {
             return mongoose;
         });
     }
+    try {
+        cached.conn = await cached.promise;
+        console.log("Connesso al DB MongoDB");
+    } catch (error) {
+        console.error("Errore di connessione a MongoDB:", error);
+    }
+    
     cached.conn = await cached.promise;
     return cached.conn;
 }

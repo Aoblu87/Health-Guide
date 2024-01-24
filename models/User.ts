@@ -45,10 +45,11 @@ const userSchema = new Schema<IUser>({
   time : { type : Date, default: Date.now },
 
   threads: {
-    type: [Schema.Types.ObjectId], 
-    ref: "threads",
+    type: [Schema.Types.ObjectId],
+    ref: "threads", 
     default: []
   },
+  
 
 
 });

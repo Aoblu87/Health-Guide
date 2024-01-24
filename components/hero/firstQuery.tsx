@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState, useTransition } from "react";
 import getTitleThread from "@/app/helper/getTitleThread";
 import getCookies from "@/app/helper/getCookies";
 import printCookies from "@/app/helper/printCookies";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 
 export default function FirstQuery() {
   const router = useRouter();
@@ -22,9 +22,12 @@ export default function FirstQuery() {
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState(""); // Aggiungi uno stato per gli errori
 
   const fetchMessages = useCallback(async () => {
     setFetching(true);
+    setError(""); // Resetta l'errore quando inizi una nuova richiesta
+
     if (!threadId) {
       console.log("no ThreadID");
       return;
@@ -77,6 +80,7 @@ export default function FirstQuery() {
   async function sendMessage(e: any) {
     e.preventDefault();
     setFetching(true);
+    setError(""); // Resetta l'errore quando inizi una nuova richiesta
 
     if (!message) {
       console.error("Message not found");
@@ -116,24 +120,27 @@ export default function FirstQuery() {
       setSending(false);
     }
   }
-// CREAT il TITOLO E AGGIUNGE IL THREAD A HISTORY
+  // CREAT il TITOLO E AGGIUNGE IL THREAD A HISTORY
   const createTitleThread = async () => {
     if (!message) {
       console.error("Message not found");
     }
     const titleThread = getTitleThread(message);
     console.log(titleThread);
-const userId =Cookies.get('userId') // => 'value'
 
-    // const userId = getCookies('userId');
-    console.log(userId)
-  
+    const dataCookies = await getCookies("userId");
+    const userId = dataCookies?.value;
+    if (!userId) {
+      console.error("UserId not found in cookies");
+      return;
+    }
 
     const newThread = {
       title: titleThread,
       user: {
-        _id:userId,
-    }}
+        _id: userId,
+      },
+    };
 
     try {
       const response = await fetch("/api/chatHistory", {
@@ -153,6 +160,9 @@ const userId =Cookies.get('userId') // => 'value'
 
   return (
     <>
+      {" "}
+      {error && <div className="error-message">{error}</div>}{" "}
+      {/* Mostra l'errore se presente */}
       <form onSubmit={sendMessage}>
         <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
           <div className="flex-[1_0_0%]">

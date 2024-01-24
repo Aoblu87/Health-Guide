@@ -1,6 +1,4 @@
-import mongoose from "mongoose";
-import { Schema, Types } from "mongoose";
-import { Inter_Tight } from "next/font/google";
+import mongoose, { Schema, Types } from "mongoose";
 
 interface IThread {
   title: string;
@@ -22,8 +20,11 @@ const threadSchema = new Schema<IThread>({
     required: true,
   },
 });
+const Thread = mongoose.model("threads", threadSchema)
+export default Thread
+// console.log("Registrando il modello Thread");
+// const Thread = mongoose.models.threads || mongoose.model<IThread>('threads', threadSchema);
+// console.log("Modello Thread registrato:", !!Thread);
 
-const Thread =
-  mongoose.models.threads<IThread> || mongoose.model("threads", threadSchema)<IThread>;
 
-export default Thread;
+// export default Thread;
