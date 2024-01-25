@@ -19,7 +19,7 @@ export async function GET(
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    const threads = await Thread.find({ "user._id": id });
+    const threads = await Thread.find({ "user": id });
     if (!threads) {
       return NextResponse.json({ error: "Thread not found" }, { status: 404 });
     }

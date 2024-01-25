@@ -70,12 +70,7 @@ export const authOptions: NextAuthOptions = {
      
           cookies.set('userId', user._id)
 
-        // cookies().set({
-        //   name: "userId",
-        //   value: user._id,
-        //   httpOnly: true,
-        //   // maxAge: 48 * 60 * 60,
-        // });
+    
 
         return user;
       } catch (error: any) {

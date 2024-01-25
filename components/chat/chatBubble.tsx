@@ -6,21 +6,22 @@ import {
   threadAtom,
   threadIdAtom,
 } from "@/atoms";
+import { LoginContext } from "@/context/loginContext";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import {
   useCallback,
   useContext,
   useEffect,
-  useState,
-  useTransition,
+  useState
 } from "react";
-import InputMessages from "../inputMessages";
-import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
-import { useSession } from "next-auth/react";
-import { LoginContext } from "@/context/loginContext";
 export default function ChatBubble() {
+  const { chatId } = useParams();
+  console.log(chatId);
+
   const { login } = useContext(LoginContext);
 
   const { data: session } = useSession();
@@ -45,13 +46,13 @@ export default function ChatBubble() {
   console.log(`Run ID from RUN state:${run.id}`);
   console.log(`STATUS RUN state:${runState}`);
 
-  // FUNZIONE PER CONTINUARE A RECUPERARE LISTA RUN
+  // CLEAN UP POLLING
   useEffect(() => {
     // Clean up polling on unmountnpm
     return () => {
       if (pollingIntervalId) clearInterval(pollingIntervalId);
     };
-  }, [pollingIntervalId, setMessages]);
+  }, [pollingIntervalId]);
 
   //FETCH MESSAGES
   const fetchMessages = useCallback(async () => {
@@ -126,19 +127,20 @@ export default function ChatBubble() {
         clearInterval(intervalId);
         setPollingIntervalId(null);
       }
-    }, 500);
+    }, 3000);
 
     setPollingIntervalId(intervalId);
   }, [run, setRun, setRunState, threadId, fetchMessages]);
 
   // FUNZIONE RICERCA STATO COMPLETATO
   useEffect(() => {
+    fetchMessages();
     if (!run.id || run.status === "completed") {
       setFetching(false);
       return;
     }
     startPolling();
-  }, [startPolling, run, run.status]);
+  }, [startPolling, run,fetchMessages]);
 
   //   AVVIA RUN----------------------------------------------------------------
   const handleCreate = async () => {
@@ -160,16 +162,15 @@ export default function ChatBubble() {
       console.error(error);
     } finally {
       setCreating(false);
-      startPolling();
     }
   };
 
   //   MANDA MESSAGGIO-----------------------------
   const sendMessage = async (e: any) => {
     e.preventDefault();
-//    CANCEDRLLARE STATUS E ID
+    //    CANCEDRLLARE STATUS E ID
     console.log(threadId);
- 
+
     if (!threadId) {
       console.error("Thread not found");
     }
@@ -231,7 +232,7 @@ export default function ChatBubble() {
                   // Assistant Messages
                   <li
                     className="flex ms-auto gap-x-2 sm:gap-x-4"
-                    key={message.id}
+                    key={message._id}
                   >
                     <Image
                       className="inline-block h-9 w-9 rounded-full"

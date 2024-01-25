@@ -1,32 +1,38 @@
 "use client";
-import { messagesAtom, runAtom, runStateAtom, threadIdAtom } from "@/atoms";
+import getCookies from "@/app/helper/getCookies";
+import {
+  messagesAtom,
+  newChatAtom,
+  runAtom,
+  runStateAtom,
+  threadIdAtom,
+} from "@/atoms";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
-import getTitleThread from "@/app/helper/getTitleThread";
-import getCookies from "@/app/helper/getCookies";
-import printCookies from "@/app/helper/printCookies";
-import Cookies from "js-cookie";
 
 export default function FirstQuery() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // Atom State
+  // Using Jotai atoms to manage global state
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
-  const [runState, setRunState] = useAtom(runStateAtom);
-  const [fetching, setFetching] = useState(true);
+  const [newChat, setNewChat] = useAtom(newChatAtom);
 
-  // State
+  // Local state management for component
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(""); // Aggiungi uno stato per gli errori
+  const [runState, setRunState] = useAtom(runStateAtom);
+  const [fetching, setFetching] = useState(true);
+
+  // Fetch messages associated with the current thread
 
   const fetchMessages = useCallback(async () => {
     setFetching(true);
-    setError(""); // Resetta l'errore quando inizi una nuova richiesta
+    setError(""); // Reset error state on new request
 
     if (!threadId) {
       console.log("no ThreadID");
@@ -59,8 +65,6 @@ export default function FirstQuery() {
       });
       console.log("Formatted Messages:", formattedMessages);
       setMessages(formattedMessages);
-
-      setMessage("");
     } catch (error: any) {
       console.error("Fetching messages error", error);
     } finally {
@@ -68,19 +72,21 @@ export default function FirstQuery() {
     }
   }, [setMessages, threadId, setFetching]);
 
+  // Effect to clear data on component mount
+
   useEffect(() => {
-    //Clean stored data
     setRun("");
     setThreadId("");
     setMessages("");
     setRunState("N/A");
-    // fetchMessages();
   }, [setThreadId, setMessages, setRun, setRunState]);
+
+  // Function to send first message
 
   async function sendMessage(e: any) {
     e.preventDefault();
     setFetching(true);
-    setError(""); // Resetta l'errore quando inizi una nuova richiesta
+    setError(""); // Reset error state on new request
 
     if (!message) {
       console.error("Message not found");
@@ -95,13 +101,13 @@ export default function FirstQuery() {
       if (!response.ok) {
         throw new Error(`Errore nella richiesta: ${response.status}`);
       }
+      // Handle response and update state accordingly
 
       const newMessage = await response.json();
 
       console.log("newMessage", newMessage);
 
-      setMessage("");
-      fetchMessages();
+      await fetchMessages();
 
       //Set new data
       setRun(newMessage);
@@ -113,20 +119,21 @@ export default function FirstQuery() {
       console.log(`Run ID state on HomePage:${run.id}`);
       console.log(`RunState on HomePage:${run.status}`);
 
-      router.push("/dashboard");
+      router.push("/dashboard"); // Navigate to dashboard after all operations
     } catch (error) {
       console.error("Errore durante la chiamata Fetch:", error);
     } finally {
       setSending(false);
     }
   }
-  // CREAT il TITOLO E AGGIUNGE IL THREAD A HISTORY
-  const createTitleThread = async () => {
+  // Function to create a thread title and add to history
+  const createTitleThread = useCallback(async () => {
+    setNewChat(true);
     if (!message) {
       console.error("Message not found");
     }
-    const titleThread = getTitleThread(message);
-    console.log(titleThread);
+    const titleThread = message.substring(0, 20);
+    console.log("title thread: ", titleThread);
 
     const dataCookies = await getCookies("userId");
     const userId = dataCookies?.value;
@@ -136,6 +143,7 @@ export default function FirstQuery() {
     }
 
     const newThread = {
+      threadId: threadId,
       title: titleThread,
       user: {
         _id: userId,
@@ -155,8 +163,21 @@ export default function FirstQuery() {
       }
       const newThreadCreated = await response.json();
       console.log(newThreadCreated);
-    } catch (error) {}
-  };
+
+    } catch (error: any) {
+      console.error("Errore durante la chiamata Create title thread≈:", error);
+    } finally {
+      setNewChat(false);
+      setMessage("");
+
+    }
+  }, [message, threadId, setNewChat]);
+
+  useEffect(()=> {
+    if (threadId) {
+      createTitleThread();
+    }
+  }, [threadId, createTitleThread]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
 
   return (
     <>
@@ -187,7 +208,6 @@ export default function FirstQuery() {
               type="submit"
               className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               disabled={sending || message === ""}
-              onClick={createTitleThread}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

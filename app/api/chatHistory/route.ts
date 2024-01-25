@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
 
 
-//ADD new trends
+//ADD new thrends
 export async function POST(request: NextRequest) {
   await connectionDB();
 

@@ -3,6 +3,7 @@ import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.m
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 
+
 const _assistantAtom = atom<string | null>(null);
 export const fileAtom = atom<string | null>(null);
 export const assistantFileAtom = atom<string | null>(null);
@@ -10,6 +11,7 @@ export const threadAtom = atom<Thread | null>(null);
 const _threadIdAtom = atom<string | null>(null);
 const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
+export const newChatAtom = atom<boolean| null>(false);
 
 export const showComponentAtom = atom<boolean | null>(false);
 
@@ -40,6 +42,7 @@ export const threadIdAtom = atomWithLocalStorage(_threadIdAtom.toString(), null)
 export const messagesAtom = atomWithLocalStorage(JSON.stringify(_messagesAtom,null,2),null)
 export const runAtom = atomWithLocalStorage(JSON.stringify(_runAtom,null,2),null)
 export const assistantAtom = atomWithLocalStorage(JSON.stringify(_assistantAtom,null,2),null)
+
 
 
 

@@ -1,14 +1,10 @@
 "use client";
 import { LoginContext } from "@/context/loginContext";
-import logo from "@/public/logo.svg";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import ProfileDropdown from "../profile/profileDropdown";
-import DropdownThreads from "./dropdownThreads";
-import ChatHistory from "./chatHistory";
+import {ChatHistory} from "../chatHistory/chatHistory";
 
 export default function Sidebar() {
   const router = useRouter();

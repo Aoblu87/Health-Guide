@@ -1,12 +1,17 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 interface IThread {
+  threadId: string
   title: string;
   time: Date;
 
   user: Types.ObjectId;
 }
 const threadSchema = new mongoose.Schema<IThread>({
+  threadId: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
