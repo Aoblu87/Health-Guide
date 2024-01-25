@@ -191,7 +191,7 @@ export default function ChatBubble() {
       console.log("Message sent", newMessage);
       setMessages([...messages, newMessage]);
       setMessage("");
-      handleCreate();
+      await handleCreate();
     } catch (error) {
       console.error("Sending message error", error);
     } finally {
