@@ -6,7 +6,7 @@ interface IThread {
 
   user: Types.ObjectId;
 }
-const threadSchema = new Schema<IThread>({
+const threadSchema = new mongoose.Schema<IThread>({
   title: {
     type: String,
     required: true,
@@ -20,11 +20,10 @@ const threadSchema = new Schema<IThread>({
     required: true,
   },
 });
-const Thread = mongoose.model("threads", threadSchema)
+const Thread = mongoose.models.threads|| mongoose.model("threads", threadSchema)
 export default Thread
-// console.log("Registrando il modello Thread");
-// const Thread = mongoose.models.threads || mongoose.model<IThread>('threads', threadSchema);
-// console.log("Modello Thread registrato:", !!Thread);
 
 
-// export default Thread;
+// const ThreadModel = mongoose.model('Customer', threadSchema)
+// // type `mongoose.models.Customer` same as `CustomerModel`
+// export const Customer = (mongoose.models.threads as typeof ThreadModel) || ThreadModel; 

@@ -44,16 +44,16 @@ const userSchema = new Schema<IUser>({
   },
   time : { type : Date, default: Date.now },
 
-  threads: {
-    type: [Schema.Types.ObjectId],
-    ref: "threads", 
-    default: []
-  },
-  
+  // threads: {
+  //   type: [Schema.Types.ObjectId],
+  //   ref: "threads", 
+  //   default: []
+  // },
+
 
 
 });
 
-const User = mongoose.models.users<IUser> || mongoose.model("users", userSchema)<IUser>;
+const User = mongoose.models.users || mongoose.model("users", userSchema);
 
 export default User;

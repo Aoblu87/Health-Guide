@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   await connectionDB();
   try {
-    const threads = await Thread.find();
+    const threads = await Thread.find({});
     if (!threads) {
       return NextResponse.json({ error: "threads not found" }, { status: 404 });
     }
@@ -15,6 +15,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+// GET ALL THREADS BY ONE USER
+
+
 
 //ADD new trends
 export async function POST(request: NextRequest) {

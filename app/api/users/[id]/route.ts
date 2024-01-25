@@ -16,7 +16,6 @@ cloudinary.v2.config({
 export async function GET(request: NextRequest,{params}:{params:{id:string}}){
 await connectionDB();
 try {
-  const reqBody = request.json()
   const id= params.id;
   const user = await User.findById({ _id: id }).select("-password");
   if (!user) {

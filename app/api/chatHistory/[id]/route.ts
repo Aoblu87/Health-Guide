@@ -1,7 +1,6 @@
 import connectionDB from "@/lib/connectionDB";
-import User from "@/models/User";
-import { NextRequest, NextResponse } from "next/server";
 import Thread from "@/models/Thread";
+import { NextRequest, NextResponse } from "next/server";
 
 
 //Get thread by id
@@ -9,7 +8,7 @@ export async function GET(request: NextRequest,{params}:{params:{id:string}}){
     await connectionDB();
     try {
       const id= params.id;
-      const thread = await Thread.findById({ _id: id })
+      const thread = await Thread.findById({_id:id})
       if (!thread) {
         return NextResponse.json({ error: "thread not found" }, { status: 404 });
       }
@@ -50,7 +49,7 @@ export async function PUT(
     await connectionDB();
     try {
       const id = params.id;
-      const deleteThread = await Thread.findByIdAndDelete(id);
+      const deleteThread = await Thread.findByIdAndDelete({_id:id});
       if (!deleteThread) {
         return NextResponse.json({ error: "Thread not found" }, { status: 404 });
       } else {
