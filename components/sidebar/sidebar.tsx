@@ -4,9 +4,13 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import ProfileDropdown from "../profile/profileDropdown";
-import {ChatHistory} from "../chatHistory/chatHistory";
+import { ChatHistory } from "../chatHistory/chatHistory";
+import { useAtom } from "jotai";
+import { threadIdAtom } from "@/atoms";
 
 export default function Sidebar() {
+  const [threadId, setThreadId] = useAtom(threadIdAtom);
+
   const router = useRouter();
   const { login } = useContext(LoginContext);
 
@@ -52,8 +56,11 @@ export default function Sidebar() {
       >
         <div className="flex flex-col justify between">
           <div className="mt-5 px-6">
-            <a
-              href="/"
+            <button
+              onClick={() => {
+                setThreadId("");
+                router.push("/");
+              }}
               className="flex-none text-xl font-semibold dark:text-white"
               aria-label="Brand"
               data-hs-overlay="#docs-sidebar"
@@ -71,7 +78,7 @@ export default function Sidebar() {
                   transform="translate(667.003 -694.43)"
                 />
               </svg>{" "}
-            </a>
+            </button>
           </div>
           <nav
             className="hs-accordion-group w-full flex flex-col flex-wrap"

@@ -75,9 +75,10 @@ export default function FirstQuery() {
   // Effect to clear data on component mount
 
   useEffect(() => {
-    setRun("");
+
     setThreadId("");
     setMessages("");
+    setRun("");
     setRunState("N/A");
   }, [setThreadId, setMessages, setRun, setRunState]);
 
@@ -119,7 +120,6 @@ export default function FirstQuery() {
       console.log(`Run ID state on HomePage:${run.id}`);
       console.log(`RunState on HomePage:${run.status}`);
 
-      router.push("/dashboard"); // Navigate to dashboard after all operations
     } catch (error) {
       console.error("Errore durante la chiamata Fetch:", error);
     } finally {
@@ -164,6 +164,7 @@ export default function FirstQuery() {
       const newThreadCreated = await response.json();
       console.log(newThreadCreated);
 
+
     } catch (error: any) {
       console.error("Errore durante la chiamata Create title thread≈:", error);
     } finally {
@@ -176,8 +177,10 @@ export default function FirstQuery() {
   useEffect(()=> {
     if (threadId) {
       createTitleThread();
+      router.push(`/dashboard/${threadId}`); // Navigate to dashboard after all operations
+
     }
-  }, [threadId, createTitleThread]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
+  }, [threadId, createTitleThread, router]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
 
   return (
     <>

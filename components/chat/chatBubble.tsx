@@ -1,6 +1,7 @@
 "use client";
 import {
   messagesAtom,
+  prevMessagesCountAtomAtom,
   runAtom,
   runStateAtom,
   threadAtom,
@@ -31,6 +32,8 @@ export default function ChatBubble() {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
   const [runState, setRunState] = useAtom(runStateAtom);
+  const [prevMessagesCount, setPrevMessagesCount] = useAtom(prevMessagesCountAtomAtom);
+
 
   // State
   const [message, setMessage] = useState("");
@@ -42,7 +45,7 @@ export default function ChatBubble() {
     useState<NodeJS.Timeout | null>(null);
 
   console.log(`Messages state:${messages}`);
-  console.log(`Thread state:${threadId}`);
+  console.log(`Thread state:${chatId}`);
   console.log(`Run ID from RUN state:${run.id}`);
   console.log(`STATUS RUN state:${runState}`);
 
@@ -57,11 +60,11 @@ export default function ChatBubble() {
   //FETCH MESSAGES
   const fetchMessages = useCallback(async () => {
     setFetching(true);
-    if (!threadId) return;
+    if (!chatId) return;
 
     try {
       const response = await fetch(
-        `/api/openai/message/list?threadId=${threadId}`
+        `/api/openai/message/list?threadId=${chatId}`
       );
       if (!response.ok) {
         throw new Error(`Errore nella richiesta: ${response.status}`);
@@ -85,24 +88,25 @@ export default function ChatBubble() {
       });
       console.log("Formatted Messages:", formattedMessages);
       setMessages(formattedMessages);
-
+      setPrevMessagesCount(formattedMessages.length);  // Aggiorna il conteggio dei messaggi precedenti
+console.log("conteggio messaggi: ", prevMessagesCount);
       setMessage("");
     } catch (error: any) {
       console.error("Fetching messages error", error);
     } finally {
       setFetching(false);
     }
-  }, [threadId, setMessages]);
+  }, [chatId, setMessages,setPrevMessagesCount, prevMessagesCount]);
 
   // FUNZIONE LISTA RUN
   const startPolling = useCallback(async () => {
     // async function startPolling(runId: string) {
-    if (!threadId) return;
+    if (!chatId) return;
     if (!run.id) return;
     const intervalId = setInterval(async () => {
       try {
         const response = await fetch(
-          `/api/openai/run/retrieve?threadId=${threadId}&runId=${run.id}`
+          `/api/openai/run/retrieve?threadId=${chatId}&runId=${run.id}`
         );
         if (!response.ok) {
           throw new Error(`Errore nella richiesta: ${response.status}`);
@@ -130,30 +134,33 @@ export default function ChatBubble() {
     }, 3000);
 
     setPollingIntervalId(intervalId);
-  }, [run, setRun, setRunState, threadId, fetchMessages]);
+  }, [run, setRun, setRunState, chatId, fetchMessages]);
 
   // FUNZIONE RICERCA STATO COMPLETATO
   useEffect(() => {
     fetchMessages();
-    if (!run.id || run.status === "completed") {
+
+    startPolling();
+
+    if (run.status === "completed"||messages.length > prevMessagesCount) {
       setFetching(false);
       return;
     }
-    startPolling();
-  }, [startPolling, run,fetchMessages]);
+
+  }, [startPolling, run,fetchMessages,prevMessagesCount,messages.length]);
 
   //   AVVIA RUN----------------------------------------------------------------
   const handleCreate = async () => {
-    if (!threadId) return;
+    if (!chatId) return;
 
     setCreating(true);
     try {
       const response = await fetch(
-        `/api/openai/run/create?threadId=${threadId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
+        `/api/openai/run/create?threadId=${chatId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
       );
 
       const newRun = await response.json();
-      console.log("New run:", newRun.id, newRun);
+      console.log("New run:",  newRun, newRun.id,);
       setRunState(newRun.status);
       setRun(newRun);
       localStorage.setItem("run", JSON.stringify(newRun));
@@ -169,9 +176,9 @@ export default function ChatBubble() {
   const sendMessage = async (e: any) => {
     e.preventDefault();
     //    CANCEDRLLARE STATUS E ID
-    console.log(threadId);
+    console.log(chatId);
 
-    if (!threadId) {
+    if (!chatId) {
       console.error("Thread not found");
     }
     if (!message) {
@@ -181,7 +188,7 @@ export default function ChatBubble() {
 
     try {
       const response = await fetch(
-        `/api/openai/message/create?threadId=${threadId}&message=${message}`
+        `/api/openai/message/create?threadId=${chatId}&message=${message}`
       );
 
       if (!response.ok) {
@@ -198,12 +205,7 @@ export default function ChatBubble() {
       setSending(false);
     }
   };
-  function SlowPost() {
-    let startTime = performance.now();
-    while (performance.now() - startTime < 1) {
-      // Do nothing for 1 ms per item to emulate extremely slow code
-    }
-  }
+  
   return (
     <>
       <div className="container mx-auto">
@@ -264,7 +266,7 @@ export default function ChatBubble() {
                   // User Messages
                   <li
                     className="flex ms-auto gap-x-2 sm:gap-x-4"
-                    key={message.id}
+                    key={message._id}
                   >
                     <div className="flex justify-end items-center grow text-end space-y-3">
                       <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">

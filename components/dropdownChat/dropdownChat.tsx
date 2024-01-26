@@ -1,15 +1,11 @@
-import {DeleteChat} from "./deleteChat";
+import { DeleteChat } from "./deleteChat";
 
 interface DropdownChatProps {
   id: string; // Assicurati che questo tipo corrisponda al tipo di dato effettivo
 }
 export const DropdownChat: React.FC<DropdownChatProps> = ({ id }) => {
-
-
   return (
     <>
-    
-
       <div className="hs-dropdown relative inline-flex">
         <button
           id="hs-split-dropright"
@@ -65,9 +61,9 @@ export const DropdownChat: React.FC<DropdownChatProps> = ({ id }) => {
             </svg>
             Rename
           </a>
-          <DeleteChat id={id}/>
+          <DeleteChat id={id} />
         </div>
       </div>
     </>
   );
-}
+};
