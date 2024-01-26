@@ -119,26 +119,9 @@ export default function Sidebar() {
             <div className="flex flex-col fixed bottom-0 w-full">
               <div className="p-2 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex ">
-                  {login || session ? (
-                    <>
+                 
                       <ProfileDropdown />
-                    </>
-                  ) : (
-                    <div className="flex  min-w-[13rem] bg-white rounded-lg p-2 mt-2 dark:bg-gray-800 dark:border dark:border-gray-700">
-                      <button
-                        type="button"
-                        className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-                        data-hs-overlay="#docs-sidebar"
-                        aria-controls="docs-sidebar"
-                        aria-label="Toggle navigation"
-                        onClick={() => {
-                          router.push("/auth/login");
-                        }}
-                      >
-                        Sign in <span aria-hidden="true">&rarr;</span>
-                      </button>
-                    </div>
-                  )}
+                   
                 </div>
               </div>
             </div>

@@ -4,10 +4,15 @@ import { LoginContext } from "@/context/loginContext";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
+import { useAtom } from "jotai";
+
+import { threadIdAtom } from "@/atoms";
 
 export default function Navbar() {
+  const [threadId, setThreadId] = useAtom(threadIdAtom);
+
   const { login } = useContext(LoginContext);
-const router= useRouter()
+  const router = useRouter();
 
   const { data: session } = useSession();
   console.log("session", session);
@@ -18,10 +23,13 @@ const router= useRouter()
         aria-label="Global"
       >
         <div className="flex items-center justify-between">
-          <a
+          <button
             className="flex-none text-xl font-semibold dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            href="/"
             aria-label="Brand"
+            onClick={() => {
+              setThreadId("");
+              router.push("/");
+            }}
           >
             <svg
               width="35px"
@@ -35,11 +43,10 @@ const router= useRouter()
                 transform="translate(667.003 -694.43)"
               />
             </svg>{" "}
-          </a>
+          </button>
         </div>
 
         <div className="flex flex-row justify-end min-h-12">
-          
           {session || login ? (
             <ProfileDropdown />
           ) : (
