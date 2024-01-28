@@ -1,74 +1,30 @@
-import getCookies from "@/app/helper/getCookies";
-import { chatListAtom } from "@/atoms";
-import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
 
 interface RenameChatProps {
-  id?: string; // Assicurati che questo tipo corrisponda al tipo di dato effettivo
+  handlerRenameState: (data: boolean) => void;
+  // handlerLinkState: (data: string, condition: boolean) => void;
+  id?: string;
 }
-export const RenameChat: React.FC<RenameChatProps> = ({ id }) => {
-  const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const RenameChat: React.FC<RenameChatProps> = ({
+  handlerRenameState,
+  // handlerLinkState,
+  id,
+}) => {
+  // const handleRenameClick = () => {
+  //   handlerRenameState(true);
+  //   // Check if 'id' is not undefined before calling handlerLinkState
+  //   if (id !== undefined) {
+  //     handlerLinkState(id, true);
+  //   } else {
+  //     // Handle the undefined case here
+  //     console.error("Error: id is undefined");
+  //   }
+  // };
 
-  // Atom State
-  const [newChat, setNewChat] = useAtom(chatListAtom);
-
-  const getChatHistory = useCallback(async () => {
-    const dataCookies = await getCookies("userId");
-    const userId = dataCookies?.value;
-    if (!userId) {
-      console.error("UserId not found in cookies");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/users/${userId}/threads`);
-      if (!response.ok) {
-        throw new Error("Error getting chat history");
-      }
-      const chat = await response.json();
-      setChats(chat);
-      setNewChat(chat);
-
-    } catch (error) {
-      console.error("Error fetching chat history:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [setNewChat]);
-
-
-
-  const handleDelete = async () => {
-    console.log("id: " + id);
-    const confirmDeletion = confirm("Are you sure you want to delete?");
-    if (!confirmDeletion) {
-      return;
-    }
-    if (!id) {
-      console.log("Thread id not specified");
-      return null;
-    }
-    try {
-      const response = await fetch(`/api/chatHistory/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to delete chat");
-      }
-      console.log("Chat deleted successfully");
-    } catch (error: any) {
-      console.error("Fetching delete error", error);
-    }
-  };
   return (
     <button
       className="flex items-center gap-x-3.5 py-2 px-1rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-    >
+      onClick={() => {
+        handlerRenameState(true)}}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
