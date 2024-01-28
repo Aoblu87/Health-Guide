@@ -1,8 +1,8 @@
 "use client";
 import getCookies from "@/app/helper/getCookies";
 import {
+  chatListAtom,
   messagesAtom,
-  newChatAtom,
   runAtom,
   runStateAtom,
   threadIdAtom,
@@ -19,7 +19,7 @@ export default function FirstQuery() {
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
-  const [newChat, setNewChat] = useAtom(newChatAtom);
+  const [newChat, setNewChat] = useAtom(chatListAtom);
 
   // Local state management for component
   const [message, setMessage] = useState("");
@@ -128,20 +128,19 @@ export default function FirstQuery() {
   }
   // Function to create a thread title and add to history
   const createTitleThread = useCallback(async () => {
-    setNewChat(true);
     if (!message) {
       console.error("Message not found");
     }
     const titleThread = message.substring(0, 20);
     console.log("title thread: ", titleThread);
-
+    
     const dataCookies = await getCookies("userId");
     const userId = dataCookies?.value;
     if (!userId) {
       console.error("UserId not found in cookies");
       return;
     }
-
+    
     const newThread = {
       threadId: threadId,
       title: titleThread,
@@ -149,7 +148,7 @@ export default function FirstQuery() {
         _id: userId,
       },
     };
-
+    
     try {
       const response = await fetch("/api/chatHistory", {
         headers: {
@@ -163,12 +162,12 @@ export default function FirstQuery() {
       }
       const newThreadCreated = await response.json();
       console.log(newThreadCreated);
-
+      
+      setNewChat(newThreadCreated);
 
     } catch (error: any) {
       console.error("Errore durante la chiamata Create title thread≈:", error);
     } finally {
-      setNewChat(false);
       setMessage("");
 
     }

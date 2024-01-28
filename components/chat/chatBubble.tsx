@@ -138,14 +138,15 @@ console.log("conteggio messaggi: ", prevMessagesCount);
 
   // FUNZIONE RICERCA STATO COMPLETATO
   useEffect(() => {
-    fetchMessages();
-
-    startPolling();
+    
 
     if (run.status === "completed"||messages.length > prevMessagesCount) {
       setFetching(false);
       return;
     }
+    fetchMessages();
+
+    startPolling();
 
   }, [startPolling, run,fetchMessages,prevMessagesCount,messages.length]);
 
@@ -208,7 +209,6 @@ console.log("conteggio messaggi: ", prevMessagesCount);
   
   return (
     <>
-      <div className="container mx-auto">
         <div className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg">
           {/* {fetching? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-md w-full mx-auto">
@@ -279,9 +279,9 @@ console.log("conteggio messaggi: ", prevMessagesCount);
                           <>
                             <div className="flex">
                               <span className="sr-only">Loading...</span>
-                              <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                              <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                              <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
+                              <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                              <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                              <div className="h-2 w-2 bg-white rounded-full animate-bounce"></div>
                             </div>
                           </>
                         )}
@@ -383,7 +383,6 @@ console.log("conteggio messaggi: ", prevMessagesCount);
             </div>
           </form>
         </div>
-      </div>
     </>
   );
 }

@@ -42,17 +42,20 @@ export async function POST(request: NextRequest) {
       payload: payload,
       token: token,
     });
-//SAVE LOCAL STORAGE
-    localStorage.setItem("UserId", user._id);
+
     
 
     // Set the token as an HTTP-only cookie
     response.cookies.set("token", token, {
       httpOnly: true,
     });
-    response.cookies.set("userId", user._id, {
+    response.cookies.set({
+      name: "userId",
+      value: user._id,
       httpOnly: true,
+      // maxAge: 48 * 60 * 60,
     });
+  
 
     return response;
   } catch (error: any) {

@@ -64,7 +64,7 @@ export default function Login() {
               <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-gray-500 dark:before:border-gray-600 dark:after:border-gray-600">
                 Or
               </div>
-              {loading ? (
+              {/* {loading ? (
                 <div className="flex justify-center">
                   <div
                     className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
@@ -74,9 +74,9 @@ export default function Login() {
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
-              ) : (
+              ) : ( */}
                 <LoginForm loading={loading} setLoading={setLoading} />
-              )}
+              {/* )} */}
             </div>
           </div>
         </div>

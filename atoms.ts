@@ -11,7 +11,7 @@ export const threadAtom = atom<Thread | null>(null);
 const _threadIdAtom = atom<string | null>(null);
 const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
-export const newChatAtom = atom<boolean| null>(false);
+export const chatListAtom = atom([]);
 const _prevMessagesCountAtom = atom<number | null>(-1);
 
 export const showComponentAtom = atom<boolean | null>(false);
