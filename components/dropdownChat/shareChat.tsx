@@ -37,9 +37,7 @@ export const ShareChat: React.FC<ShareChatProps> = ({ id }) => {
     }
   }, [setNewChat]);
 
-  useEffect(() => {
-    getChatHistory();
-  }, [getChatHistory]);
+  
 
   const handleDelete = async () => {
     console.log("id: " + id);
@@ -61,6 +59,7 @@ export const ShareChat: React.FC<ShareChatProps> = ({ id }) => {
       if (!response.ok) {
         throw new Error("Failed to delete chat");
       }
+      getChatHistory()
       console.log("Chat deleted successfully");
     } catch (error: any) {
       console.error("Fetching delete error", error);

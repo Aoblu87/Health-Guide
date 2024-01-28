@@ -10,7 +10,7 @@ export default function SignUp() {
   const [successfullRegistration, setSuccessfullRegistration] = useState(false);
   const { setLogin } = useContext(LoginContext);
 
-  const [emailExists, setEmailExists] = useState(true);
+  const [invalidForm, setInvalidForm] = useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -22,12 +22,7 @@ export default function SignUp() {
   const handleRegistrer = async (e: any) => {
     e.preventDefault();
     setLoading(true);
-    setEmailExists(false);
-    // setSuccess("")
-    // setError("")
-    //salvo la data in cui avviene la registrazione
-    let date = new Date().toLocaleDateString();
-    console.log(date);
+
     try {
       const response = await fetch(`/api/users/register`, {
         headers: {
@@ -39,18 +34,17 @@ export default function SignUp() {
           password: user.password,
           firstName: user.firstName,
           lastName: user.lastName,
-          createdAt: date,
         }),
       });
 
       if (!response.ok) {
+        setInvalidForm(true);
         throw new Error(`HTTP error! Status: ${response.status}`);
       } else {
         setSuccessfullRegistration(true);
         setLogin(true);
       }
       const data = await response.json();
-      setEmailExists(true);
       router.push("/");
     } catch (error) {
       console.log("Error fetching data:", error);
@@ -149,41 +143,21 @@ export default function SignUp() {
                       />
                     </div>
                   </div>
-                    <div className="relative">
-                      <input
-                        type="email"
-                        id="email"
-                        disabled={loading}
-                        name="email"
-                        className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                        required
-                        placeholder="mario.rossi@gmail.com "
-                        value={user.email}
-                        onChange={(e) =>
-                          setUser({ ...user, email: e.target.value })
-                        }
-                      />
-                      {/* {!emailExists && ( */}
-                        <div className="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                          <svg
-                            className="h-5 w-5 text-red-500"
-                            width="16"
-                            height="16"
-                            fill="currentColor"
-                            viewBox="0 0 16 16"
-                            aria-hidden="true"
-                          >
-                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                          </svg>
-                        </div>
-                      {/* )} */}
-                    </div>
-                    {/* {!emailExists && (
-                      <p className="text-xs text-red-600 mt-2" id="email-error">
-                        Please include a valid email address so we can get back
-                        to you
-                      </p>
-                    )} */}
+                  <div className="relative">
+                    <input
+                      type="email"
+                      id="email"
+                      disabled={loading}
+                      name="email"
+                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      required
+                      placeholder="mario.rossi@gmail.com "
+                      value={user.email}
+                      onChange={(e) =>
+                        setUser({ ...user, email: e.target.value })
+                      }
+                    />
+                  </div>
 
                   <div className="relative">
                     <input
@@ -201,39 +175,27 @@ export default function SignUp() {
                       }
                     />
                   </div>
-
-                  {/* <!-- Checkbox --> */}
-                  <div className="flex items-center">
-                    <div className="flex">
-                      <input
-                        id="remember-me"
-                        name="remember-me"
-                        type="checkbox"
-                        className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                      />
-                    </div>
-                    <div className="ms-3">
-                      <label
-                        htmlFor="remember-me"
-                        className="text-sm dark:text-white"
-                      >
-                        I accept the{" "}
-                        <a
-                          className="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                          href="#"
-                        >
-                          Terms and Conditions
-                        </a>
-                      </label>
-                    </div>
-                  </div>
-                  {/* <!-- End Checkbox --> */}
+                  {invalidForm && (
+                    <p className="text-xs text-red-600 mt-2" id="email-error">
+                      The email address or password you entered is invalid
+                    </p>
+                  )}
 
                   <button
                     type="submit"
                     className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   >
-                    Sign up
+                    {loading ? (
+                      <div
+                        className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-white rounded-full"
+                        role="status"
+                        aria-label="loading"
+                      >
+                        <span className="sr-only">Loading...</span>
+                      </div>
+                    ) : (
+                      "Sign up"
+                    )}
                   </button>
                 </div>
               </form>

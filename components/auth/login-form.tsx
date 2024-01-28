@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export default function LoginForm(props: any) {
   const { loading, setLoading } = props;
-  const [emailExists, setEmailExists] = useState(true);
+  const [invalidForm, setInvalidForm] = useState(false);
   const [user, setUser] = useState({
     email: "gianni.gianni@gianni.it",
     password: "gianni",
@@ -32,24 +32,21 @@ export default function LoginForm(props: any) {
       });
 
       if (!response.ok) {
-        setEmailExists(false);
         setLogin(false);
+        setInvalidForm(true);
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const data = await response.json();
-      if (data.success) {
-        setLogin(true);
-        router.push("/");
-      }
 
-      if (data.token) {
-        localStorage.setItem(
-          "userId",
-          data.userId ? data.userId : data.payload.id
-        );
-        localStorage.setItem("token", data.token);
-      }
-      console.log(data);
+      const data = await response.json();
+      // Store the token and user ID in localStorage or context
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.userId);
+
+      // Update login state
+      setLogin(true);
+
+      // Redirect to home/dashboard
+      router.push("/");
     } catch (error) {
       console.log("Error fetching data:", error);
     } finally {
@@ -73,35 +70,16 @@ export default function LoginForm(props: any) {
             value={user.email}
             onChange={(e) => setUser({ ...user, email: e.target.value })}
           />
-          {!emailExists && (
-            <div className="absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-              <svg
-                className="h-5 w-5 text-red-500"
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-              >
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-              </svg>
-            </div>
-          )}
         </div>
-        {!emailExists && (
-          <p className="text-xs text-red-600 mt-2" id="email-error">
-            Please include a valid email address so we can get back to you
-          </p>
-        )}
 
-        <div className="flex justify-end items-center">
+        {/* <div className="flex justify-end items-center">
           <a
             className="text-sm text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
             href="../examples/html/recover-account.html"
           >
             Forgot password?
           </a>
-        </div>
+        </div> */}
         <div className="relative">
           <input
             type="password"
@@ -116,6 +94,11 @@ export default function LoginForm(props: any) {
             onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
         </div>
+        {invalidForm && (
+          <p className="text-xs text-red-600 mt-2" id="email-error">
+            The email address or password you entered is invalid
+          </p>
+        )}
 
         <button
           type="submit"

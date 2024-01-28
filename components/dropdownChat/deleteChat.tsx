@@ -40,9 +40,7 @@ export const DeleteChat: React.FC<DeleteChatProps> = ({ id}) => {
         }
       },[setDeleteChat,setNewChat])
 
-  useEffect(() => {
-    getChatHistory();
-  }, [getChatHistory]);
+ 
 
   const handleDelete = async () => {
     console.log("id: " + id);

@@ -38,9 +38,7 @@ export const RenameChat: React.FC<RenameChatProps> = ({ id }) => {
     }
   }, [setNewChat]);
 
-  useEffect(() => {
-    getChatHistory();
-  }, [getChatHistory]);
+
 
   const handleDelete = async () => {
     console.log("id: " + id);
