@@ -27,13 +27,14 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(""); // Aggiungi uno stato per gli errori
-  const [runState, setRunState] = useAtom(runStateAtom);
+  // const [runState, setRunState] = useAtom(runStateAtom);
+ 
   const [fetching, setFetching] = useState(true);
 
   console.log(`Run ID state on HomePage:${run?.id}`);
   console.log(`RunState on HomePage:${run?.status}`);
   console.log(`Thread state on HomePage:${threadId}`);
-  console.log(`Message state on HomePage:${messages}`);
+  console.log(`Message state on HomePage:${JSON.stringify(messages)}`);
 
   // Fetch messages associated with the current thread
 
@@ -85,8 +86,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
     setThreadId("");
     setMessages("");
     setRun("");
-    setRunState("N/A");
-  }, [setThreadId, setMessages, setRun, setRunState]);
+  }, [setThreadId, setMessages, setRun]);
 
   // Function to send first message
   const sendMessage = useCallback(
@@ -119,8 +119,8 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
         //Set new data
         setRun(newMessage);
         setThreadId(newMessage.thread_id);
-        setMessages({ ...messages, newMessage });
-        setRunState(newMessage.status);
+        // setMessages({ ...messages, newMessage });
+        // setRunState(newMessage.status);
       } catch (error) {
         console.error("Errore durante la chiamata Fetch:", error);
       } finally {
@@ -129,12 +129,12 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
     },
     [
       fetchMessages,
-      messages,
+    
       message,
 
-      setMessages,
+      
       setRun,
-      setRunState,
+     
       setThreadId,
     ]
   );

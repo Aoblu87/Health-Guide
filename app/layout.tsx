@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { authOptions } from "@/auth";
 import PrelineScript from "@/components/PrelineScript";
 import Navbar from "@/components/home/navbar";
+import Menu from "@/components/menu";
 import Sidebar from "@/components/sidebar/sidebar";
 import SessionProvider from "@/context/authContext";
 import { LoginContext, LoginProvider } from "@/context/loginContext";
@@ -25,7 +26,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   const session = await getServerSession(authOptions);
 
   return (
@@ -33,8 +33,7 @@ export default async function RootLayout({
       <LoginProvider>
         <body className={`${inter.className} antialiased`}>
           <SessionProvider>
-            {session ? <Sidebar /> : <Navbar />}
-
+            <Menu />
             <ThemeProvider>{children}</ThemeProvider>
           </SessionProvider>
         </body>
