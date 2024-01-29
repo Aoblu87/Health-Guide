@@ -12,6 +12,7 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    
     container: {
       center: true,
       padding: "2rem",
@@ -24,6 +25,34 @@ module.exports = {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
       colors: {
+        'ming': {
+          50: '#f2f9f9',
+          100: '#deefef',
+          200: '#c0dfe1',
+          300: '#95c9cb',
+          400: '#62a9ae',
+          500: '#478d93',
+          600: '#3d737b',
+          700: '#376067',
+          800: '#335057',
+          900: '#2e454b',
+          950: '#1b2c31',
+        },
+        'tradewind': {
+          '50': '#f2fbfa',
+          '100': '#d5f2f0',
+          '200': '#aae5e1',
+          '300': '#78d0ce',
+          '400': '#55b8b9',
+          '500': '#32989a',
+          '600': '#26767b',
+          '700': '#225f63',
+          '800': '#1f4c50',
+          '900': '#1e4043',
+          '950': '#0c2427',
+      },
+      
+    
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -73,6 +102,8 @@ module.exports = {
           to: { height: "0" },
         },
       },
+      
+    
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",

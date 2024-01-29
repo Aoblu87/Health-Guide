@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import SettingsModal from "../settings/settingsModal";
 import SignOut from "./signOut";
 import { useSession } from "next-auth/react";
+import  UserProfile  from "./userProfile";
 
 export default function ProfileDropdown() {
   const { data: session } = useSession();
@@ -52,15 +53,7 @@ export default function ProfileDropdown() {
         type="button"
         className="hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
       >
-        <Image
-          className="w-8 h-auto rounded-full"
-          src={session?.user.picture || userInfo.avatar || profilePhoto} // Use a default image if avatar is undefined
-          alt={session?.user.name || userInfo.name || "User"}
-        />
-
-        <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
-          {session?.user.name || userInfo.name || "User"}
-        </span>
+        <UserProfile />
       </button>
 
       <div

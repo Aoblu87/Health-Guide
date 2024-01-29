@@ -299,9 +299,9 @@ console.log("conteggio messaggi: ", prevMessagesCount);
           )}
           {/* )}   */}
         </div>
-        <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4">
+        <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4 lg:ps-64">
           <form onSubmit={sendMessage}>
-            <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
+            <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-full shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
               <div className="flex items-center cursor-pointer">
                 {/* Button upload file */}
                 <button
@@ -326,14 +326,12 @@ console.log("conteggio messaggi: ", prevMessagesCount);
               </div>
               <div className="flex-[1_0_0%]">
                 <label
-                  htmlFor="hs-search-article-1"
                   className="block text-sm text-gray-700 font-medium dark:text-white"
                 >
-                  <span className="sr-only">Search article</span>
                 </label>
                 <input
                   type="text"
-                  className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+                  className="py-2.5 px-4 block w-full border-transparent rounded-full focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
                   placeholder="Message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -365,7 +363,7 @@ console.log("conteggio messaggi: ", prevMessagesCount);
                 </button>
                 <button
                   type="submit"
-                  className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   disabled={sending || message === ""}
                 >
                   <svg

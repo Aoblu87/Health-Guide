@@ -2,7 +2,11 @@ import { atom } from "jotai";
 import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
-
+interface Chat {
+  id: number;
+  title: string;
+  time: string;
+}
 
 const _assistantAtom = atom<string | null>(null);
 export const fileAtom = atom<string | null>(null);
@@ -11,15 +15,16 @@ export const threadAtom = atom<Thread | null>(null);
 const _threadIdAtom = atom<string | null>(null);
 const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
-export const chatListAtom = atom([]);
+export const chatListAtom = atom<Chat[]>([]);
+
 const _prevMessagesCountAtom = atom<number | null>(-1);
 
 export const showComponentAtom = atom<boolean | null>(false);
 
-const atomWithLocalStorage = (key:string, initialValue:null) => {
+const atomWithLocalStorage = (key: string, initialValue: null) => {
   const getInitialValue = () => {
     // Check if the code is running in a browser environment
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const item = localStorage.getItem(key);
       if (item !== null) {
         return JSON.parse(item);
@@ -27,26 +32,38 @@ const atomWithLocalStorage = (key:string, initialValue:null) => {
     }
     return initialValue;
   };
-  const baseAtom = atom(getInitialValue())
+  const baseAtom = atom(getInitialValue());
   const derivedAtom = atom(
     (get) => get(baseAtom),
     (get, set, update) => {
       const nextValue =
-        typeof update === 'function' ? update(get(baseAtom)) : update
-      set(baseAtom, nextValue)
-      localStorage.setItem(key, JSON.stringify(nextValue))
-    },
-  )
-  return derivedAtom
-}
-export const threadIdAtom = atomWithLocalStorage(_threadIdAtom.toString(), null);
-export const messagesAtom = atomWithLocalStorage(JSON.stringify(_messagesAtom,null,2),null)
-export const runAtom = atomWithLocalStorage(JSON.stringify(_runAtom,null,2),null)
-export const assistantAtom = atomWithLocalStorage(JSON.stringify(_assistantAtom,null,2),null)
-export const prevMessagesCountAtomAtom = atomWithLocalStorage(JSON.stringify(_prevMessagesCountAtom,null,2),null)
-
-
-
+        typeof update === "function" ? update(get(baseAtom)) : update;
+      set(baseAtom, nextValue);
+      localStorage.setItem(key, JSON.stringify(nextValue));
+    }
+  );
+  return derivedAtom;
+};
+export const threadIdAtom = atomWithLocalStorage(
+  _threadIdAtom.toString(),
+  null
+);
+export const messagesAtom = atomWithLocalStorage(
+  JSON.stringify(_messagesAtom, null, 2),
+  null
+);
+export const runAtom = atomWithLocalStorage(
+  JSON.stringify(_runAtom, null, 2),
+  null
+);
+export const assistantAtom = atomWithLocalStorage(
+  JSON.stringify(_assistantAtom, null, 2),
+  null
+);
+export const prevMessagesCountAtomAtom = atomWithLocalStorage(
+  JSON.stringify(_prevMessagesCountAtom, null, 2),
+  null
+);
 
 export type RunState =
   | "queued"

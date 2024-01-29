@@ -8,7 +8,13 @@ import { RenameChat } from "../dropdownChat/renameChat";
 import { ShareChat } from "../dropdownChat/shareChat";
 import { chatListAtom } from "@/atoms";
 import { ConfirmRenameChat } from "../dropdownChat/confirmRenameChat";
+import categorizeChats from "@/app/helper/categorizeChats";
 
+interface Chat {
+  id: number;
+  title: string;
+  time: string;
+}
 interface ChatHistoryProps {
   id?: string;
 }
@@ -20,7 +26,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
   const [editingChatId, setEditingChatId] = useState<string | null>(null);
 
   const [todayChats, setTodayChats] = useState<Chat[]>([]);
-  const [weekChats, setWeekChats] = useState<Chat[]>([]);
+  const [olderChats, setOlderChats] = useState<Chat[]>([]);
 
   const handlerRenameInput = (chatId: string) => {
     setEditingChatId(chatId);
@@ -54,7 +60,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
       const [today, thisWeek] = categorizeChats(chat);
 
       setTodayChats(today);
-      setWeekChats(thisWeek);
+      setOlderChats(thisWeek);
       setNewChat(chat);
     } catch (error) {
       console.error("Error fetching chat history:", error);
@@ -79,11 +85,69 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
         </div>
       ) : (
         <ul>
-          {todayChats &&
-            todayChats.map((chat: any) => (
-              <>
-                <p className="text-xs">Today</p>
+          {todayChats.length > 0 && (
+            <>
+              <div>
+                <p className="font-semibold">Today</p>
+              </div>
+              {todayChats.map((chat: any) => (
+                <li key={chat._id} className="flex justify-between">
+                  <div className="flex justify-between text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                    {editingChatId === chat._id && renameChat ? ( // Render as input if this chat is being edited
+                      <input
+                        type="text"
+                        className="py-1 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                        onChange={(e) => {
+                          setTitleChat(e.target.value);
+                        }}
+                      />
+                    ) : (
+                      <Link
+                        className="flex items-center text-ellipsis gap-x-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        href={`/dashboard/${chat.threadId}`}
+                      >
+                        {chat.title}{" "}
+                      </Link>
+                    )}
+                  </div>
+                  {renameChat ? (
+                    <ConfirmRenameChat
+                      id={chat._id}
+                      threadId={chat.threadId}
+                      userId={chat.user}
+                      titleChat={titleChat}
+                      handlerRenameState={handlerRenameState}
+                      handlerRenameInput={() => handlerRenameInput(chat._id)}
+                    />
+                  ) : (
+                    <>
+                      <div className="flex">
+                        {/* <DropdownChat id={chat._id} /> */}
+                        <RenameChat
+                          handlerRenameInput={() =>
+                            handlerRenameInput(chat._id)
+                          }
+                          handlerRenameState={handlerRenameState}
+                          id={chat._id}
+                          // handlerLinkState={() => handlerLinkState(chat._id)}
+                        />
+                        <DeleteChat id={chat._id} />
+                        <ShareChat id={chat._id} />
+                      </div>
+                    </>
+                  )}
+                </li>
+              ))}
+            </>
+          )}
+          <hr className="my-3" />
 
+          {olderChats.length > 0 && (
+            <>
+              <div>
+                <p className="font-semibold">Last week</p>
+              </div>
+              {olderChats.map((chat: any) => (
                 <li key={chat._id} className="flex justify-between">
                   <div className="flex justify-between text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                     {editingChatId === chat._id ? ( // Render as input if this chat is being edited
@@ -96,7 +160,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
                       />
                     ) : (
                       <Link
-                        className="flex items-center truncate whitespace-nowrap gap-x-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        className="flex items-center text-ellipsis gap-x-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         href={`/dashboard/${chat.threadId}`}
                       >
                         {chat.title}{" "}
@@ -130,63 +194,9 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
                     </>
                   )}
                 </li>
-              </>
-            ))}
-          {weekChats &&
-            weekChats.map((chat: any) => (
-              <>
-                <p className="text-xs">Last week</p>
-                <li key={chat._id} className="flex justify-between">
-                  <div className="flex justify-between text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-                    {editingChatId === chat._id ? ( // Render as input if this chat is being edited
-                      <input
-                        type="text"
-                        className="py-1 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                        onChange={(e) => {
-                          setTitleChat(e.target.value);
-                        }}
-                      />
-                    ) : (
-                      <Link
-                        className="flex items-center truncate whitespace-nowrap gap-x-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                        href={`/dashboard/${chat.threadId}`}
-                      >
-                        {chat.title}{" "}
-                      </Link>
-                    )}
-                  </div>
-                  {renameChat ? (
-                    <ConfirmRenameChat
-                      id={chat._id}
-                      threadId={chat.threadId}
-                      userId={chat.user}
-                      titleChat={titleChat}
-                      handlerRenameState={handlerRenameState}
-                      handlerRenameInput={() => handlerRenameInput(chat._id)}
-                    />
-                  ) : (
-                    <>
-                      <div className="flex">
-                        {/* <DropdownChat id={chat._id} /> */}
-                        <RenameChat
-                          handlerRenameInput={() =>
-                            handlerRenameInput(chat._id)
-                          }
-                          handlerRenameState={handlerRenameState}
-                          id={chat._id}
-                          // handlerLinkState={() => handlerLinkState(chat._id)}
-                        />
-                        <DeleteChat id={chat._id} />
-                        <ShareChat id={chat._id} />
-                      </div>
-                    </>
-                  )}
-                </li>
-              </>
-            ))}
-          {/* {newChat?.map((chat: any) => (
-            
-          ))} */}
+              ))}
+            </>
+          )}
         </ul>
       )}
     </>

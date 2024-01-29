@@ -1,9 +1,9 @@
 import ChatBubble from "@/components/chat/chatBubble";
-import Sidebar from "@/components/sidebar/sidebar";
 
 export default function Page() {
   return (
     <>
+    
     <div className="lg:ps-64">
 
         <ChatBubble />

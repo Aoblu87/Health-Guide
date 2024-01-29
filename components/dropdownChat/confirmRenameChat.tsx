@@ -1,7 +1,7 @@
 import getCookies from "@/app/helper/getCookies";
 import { chatListAtom } from "@/atoms";
 import { useAtom } from "jotai";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface ConfirmRenameChatProps {
   id?: string;
@@ -11,6 +11,7 @@ interface ConfirmRenameChatProps {
   handlerRenameState: (data: boolean) => void;
   handlerRenameInput: (chatId: string) => void; // Add this line
 }
+
 export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
   id,
   handlerRenameState,
@@ -33,7 +34,7 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
 
   const handleChangeTitle = async () => {
     if (!id) {
-      console.log("Thread id not specified");
+      console.error("Thread id not specified");
       return null;
     }
     try {
@@ -45,13 +46,24 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
         body: JSON.stringify(newChatTitle),
       });
       if (!response.ok) {
-        throw new Error("Failed to delete chat");
+        throw new Error("Failed to update chat");
       }
+      const dataChat = await response.json();
+      setNewChat(dataChat);
+      // // Update the chat list with the new title
+      // setNewChat((prevChats: any) => {
+      //   return prevChats.map((chat: any) => {
+      //     if (chat.id === id) {
+      //       return { ...chat, title: titleChat };
+      //     }
+      //     return chat;
+      //   });
+      // });
 
       console.log("Chat updated successfully");
       getChatHistory();
-    } catch (error: any) {
-      console.error("Fetching delete error", error);
+    } catch (error) {
+      console.error("Fetching update error", error);
     } finally {
       handlerRenameState(false);
       handlerRenameInput(""); // Reset the editing chat ID
@@ -78,9 +90,11 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
     } catch (error) {
       console.error("Error fetching chat history:", error);
     } finally {
-      setLoading(false);
     }
   }, [setNewChat]);
+  useEffect(() => {
+    getChatHistory();
+  }, [getChatHistory]);
 
   return (
     <div className="flex">

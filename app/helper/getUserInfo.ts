@@ -6,7 +6,7 @@ import profilePhoto from "@/public/assets/person-circle.svg";
 export default async function getUserInfo() {
   // Try to get the 'name' and 'avatar' cookies
   const nameCookie = cookies().get("name");
-  const avatarCookie = cookies().get("avatar");
+  const avatarCookie = cookies().get("photo");
 
   // Check if the cookies exist and are strings
   const name = typeof nameCookie === "string" ? nameCookie : "User";

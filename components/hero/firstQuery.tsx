@@ -10,8 +10,10 @@ import {
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
-
-export default function FirstQuery() {
+interface FirstQueryProps {
+  shortcutQuery: string; // Assicurati che questo tipo corrisponda al tipo di dato effettivo
+}
+export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -27,6 +29,11 @@ export default function FirstQuery() {
   const [error, setError] = useState(""); // Aggiungi uno stato per gli errori
   const [runState, setRunState] = useAtom(runStateAtom);
   const [fetching, setFetching] = useState(true);
+
+  console.log(`Run ID state on HomePage:${run?.id}`);
+  console.log(`RunState on HomePage:${run?.status}`);
+  console.log(`Thread state on HomePage:${threadId}`);
+  console.log(`Message state on HomePage:${messages}`);
 
   // Fetch messages associated with the current thread
 
@@ -75,7 +82,6 @@ export default function FirstQuery() {
   // Effect to clear data on component mount
 
   useEffect(() => {
-
     setThreadId("");
     setMessages("");
     setRun("");
@@ -83,49 +89,96 @@ export default function FirstQuery() {
   }, [setThreadId, setMessages, setRun, setRunState]);
 
   // Function to send first message
+  const sendMessage = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      setFetching(true);
+      setError(""); // Reset error state on new request
 
-  async function sendMessage(e: any) {
-    e.preventDefault();
-    setFetching(true);
-    setError(""); // Reset error state on new request
-
-    if (!message) {
-      console.error("Message not found");
-    }
-
-    setSending(true);
-
-    try {
-      const response = await fetch(
-        `/api/openai/run/createRun-thread?assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN&message=${message}`
-      );
-      if (!response.ok) {
-        throw new Error(`Errore nella richiesta: ${response.status}`);
+      if (!message) {
+        console.error("Message not found");
       }
-      // Handle response and update state accordingly
 
-      const newMessage = await response.json();
+      setSending(true);
 
-      console.log("newMessage", newMessage);
+      try {
+        const response = await fetch(
+          `/api/openai/run/createRun-thread?assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN&message=${message}`
+        );
+        if (!response.ok) {
+          throw new Error(`Errore nella richiesta: ${response.status}`);
+        }
+        // Handle response and update state accordingly
 
-      await fetchMessages();
+        const newMessage = await response.json();
 
-      //Set new data
-      setRun(newMessage);
-      setThreadId(newMessage.thread_id);
-      setMessages({ ...messages, newMessage });
-      setRunState(newMessage.status);
-      console.log(`Thread state on HomePage:${threadId}`);
-      console.log(`Message state on HomePage:${messages}`);
-      console.log(`Run ID state on HomePage:${run.id}`);
-      console.log(`RunState on HomePage:${run.status}`);
+        console.log("newMessage", newMessage);
 
-    } catch (error) {
-      console.error("Errore durante la chiamata Fetch:", error);
-    } finally {
-      setSending(false);
-    }
-  }
+        await fetchMessages();
+
+        //Set new data
+        setRun(newMessage);
+        setThreadId(newMessage.thread_id);
+        setMessages({ ...messages, newMessage });
+        setRunState(newMessage.status);
+      } catch (error) {
+        console.error("Errore durante la chiamata Fetch:", error);
+      } finally {
+        setSending(false);
+      }
+    },
+    [
+      fetchMessages,
+      messages,
+      message,
+
+      setMessages,
+      setRun,
+      setRunState,
+      setThreadId,
+    ]
+  );
+  // async function sendMessage(e: any) {
+  //   e.preventDefault();
+  //   setFetching(true);
+  //   setError(""); // Reset error state on new request
+
+  //   if (!message) {
+  //     console.error("Message not found");
+  //   }
+
+  //   setSending(true);
+
+  //   try {
+  //     const response = await fetch(
+  //       `/api/openai/run/createRun-thread?assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN&message=${message}`
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error(`Errore nella richiesta: ${response.status}`);
+  //     }
+  //     // Handle response and update state accordingly
+
+  //     const newMessage = await response.json();
+
+  //     console.log("newMessage", newMessage);
+
+  //     await fetchMessages();
+
+  //     //Set new data
+  //     setRun(newMessage);
+  //     setThreadId(newMessage.thread_id);
+  //     setMessages({ ...messages, newMessage });
+  //     setRunState(newMessage.status);
+  //     console.log(`Thread state on HomePage:${threadId}`);
+  //     console.log(`Message state on HomePage:${messages}`);
+  //     console.log(`Run ID state on HomePage:${run.id}`);
+  //     console.log(`RunState on HomePage:${run.status}`);
+  //   } catch (error) {
+  //     console.error("Errore durante la chiamata Fetch:", error);
+  //   } finally {
+  //     setSending(false);
+  //   }
+  // }
   // Function to create a thread title and add to history
   const createTitleThread = useCallback(async () => {
     if (!message) {
@@ -133,14 +186,14 @@ export default function FirstQuery() {
     }
     const titleThread = message.substring(0, 20);
     console.log("title thread: ", titleThread);
-    
+
     const dataCookies = await getCookies("userId");
     const userId = dataCookies?.value;
     if (!userId) {
       console.error("UserId not found in cookies");
       return;
     }
-    
+
     const newThread = {
       threadId: threadId,
       title: titleThread,
@@ -148,7 +201,7 @@ export default function FirstQuery() {
         _id: userId,
       },
     };
-    
+
     try {
       const response = await fetch("/api/chatHistory", {
         headers: {
@@ -162,32 +215,35 @@ export default function FirstQuery() {
       }
       const newThreadCreated = await response.json();
       console.log(newThreadCreated);
-      
-      setNewChat(newThreadCreated);
 
+      setNewChat(newThreadCreated);
     } catch (error: any) {
       console.error("Errore durante la chiamata Create title thread≈:", error);
     } finally {
       setMessage("");
-
     }
   }, [message, threadId, setNewChat]);
 
-  useEffect(()=> {
+  useEffect(() => {
     if (threadId) {
       createTitleThread();
       router.push(`/dashboard/${threadId}`); // Navigate to dashboard after all operations
-
     }
-  }, [threadId, createTitleThread, router]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
-
+  }, [threadId, createTitleThread, router, setNewChat]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
+  // Aggiorna il messaggio quando la prop shortcutQuery cambia
+  useEffect(() => {
+    if (shortcutQuery) {
+      setMessage(shortcutQuery);
+      sendMessage(shortcutQuery);
+    }
+  }, [shortcutQuery, sendMessage]);
   return (
     <>
       {" "}
       {error && <div className="error-message">{error}</div>}{" "}
-      {/* Mostra l'errore se presente */}
+      {/* Mostra lerrore se presente */}
       <form onSubmit={sendMessage}>
-        <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
+        <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-full shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
           <div className="flex-[1_0_0%]">
             <label
               id="query"
@@ -208,7 +264,7 @@ export default function FirstQuery() {
           <div className="flex-[0_0_auto] cursor-pointer">
             <button
               type="submit"
-              className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               disabled={sending || message === ""}
             >
               <svg
@@ -227,4 +283,4 @@ export default function FirstQuery() {
       </form>
     </>
   );
-}
+};

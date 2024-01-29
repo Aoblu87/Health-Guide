@@ -8,16 +8,7 @@ export const RenameChat: React.FC<RenameChatProps> = ({
   handlerRenameInput,
   id,
 }) => {
-  // const handleRenameClick = () => {
-  //   handlerRenameState(true);
-  //   // Check if 'id' is not undefined before calling handlerLinkState
-  //   if (id !== undefined) {
-  //     handlerLinkState(id, true);
-  //   } else {
-  //     // Handle the undefined case here
-  //     console.error("Error: id is undefined");
-  //   }
-  // };
+
 
   return (
     <button

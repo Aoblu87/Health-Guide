@@ -3,14 +3,17 @@ import Animation from "@/components/ui/animation";
 import { LoginContext } from "@/context/loginContext";
 import { useSession } from "next-auth/react";
 import { useContext, useState } from "react";
-import FirstQuery from "./firstQuery";
+import {FirstQuery} from "./firstQuery";
 
 export const Hero = () => {
   const { login } = useContext(LoginContext);
 
   const { data: session } = useSession();
-  const [shortCutQuery, setShortCutQuery] = useState("");
-
+  const [shortcutQuery, setShortcutQuery] = useState("");
+  // Quando il bottone viene cliccato, impostiamo lo stato shortCutQuery
+  const handleShortcut = (query: string) => {
+    setShortcutQuery(query);
+  };
   return (
     <>
       <div
@@ -25,7 +28,7 @@ export const Hero = () => {
             <Animation />
 
             <div className="mt-7 mx-auto max-w-xl relative">
-              <FirstQuery />
+              <FirstQuery shortcutQuery={shortcutQuery} />
 
               {/* <!-- SVG Element --> */}
               <div className="hidden md:block absolute top-0 end-0 -translate-y-12 translate-x-20">
@@ -82,9 +85,9 @@ export const Hero = () => {
 
             <div className="mt-10 ">
               <button
-                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 onClick={() => {
-                  setShortCutQuery("farmacy");
+                  handleShortcut("farmacy");
                 }}
               >
                 <svg
@@ -100,9 +103,9 @@ export const Hero = () => {
                 Farmacy{" "}
               </button>
               <button
-                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 onClick={() => {
-                  setShortCutQuery("Hospital");
+                  handleShortcut("Hospital");
                 }}
               >
                 <svg
@@ -118,9 +121,9 @@ export const Hero = () => {
                 Hospital
               </button>
               <button
-                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 onClick={() => {
-                  setShortCutQuery("first aid");
+                  handleShortcut("first aid");
                 }}
               >
                 <svg
@@ -137,9 +140,9 @@ export const Hero = () => {
                 First Aid
               </button>
               <button
-                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 onClick={() => {
-                  setShortCutQuery("poisoning");
+                  handleShortcut("poisoning");
                 }}
               >
                 <svg
