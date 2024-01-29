@@ -1,12 +1,12 @@
 "use client";
+import { threadIdAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
+import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import ProfileDropdown from "../profile/profileDropdown";
 import { ChatHistory } from "../chatHistory/chatHistory";
-import { useAtom } from "jotai";
-import { threadIdAtom } from "@/atoms";
+import ProfileDropdown from "../profile/profileDropdown";
 
 export default function Sidebar() {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
@@ -15,6 +15,7 @@ export default function Sidebar() {
   const { login } = useContext(LoginContext);
 
   const { data: session } = useSession();
+
   return (
     <>
       <div
@@ -84,7 +85,7 @@ export default function Sidebar() {
             className="hs-accordion-group w-full flex flex-col flex-wrap"
             data-hs-accordion-always-open
           >
-            <ul className="space-y-1.5 p-4">
+            <ul className="space-y-1.5 p-3">
               <li>
                 <a
                   className="flex items-center gap-x-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
@@ -110,18 +111,15 @@ export default function Sidebar() {
               </li>
               <hr />
               <div className="py-3">
-                <p className="text-xs">Today</p>
+                <ChatHistory />
               </div>
-              <ChatHistory />
             </ul>
 
             {/* Footer */}
             <div className="flex flex-col fixed bottom-0 w-full">
               <div className="p-2 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex ">
-                 
-                      <ProfileDropdown />
-                   
+                  <ProfileDropdown />
                 </div>
               </div>
             </div>

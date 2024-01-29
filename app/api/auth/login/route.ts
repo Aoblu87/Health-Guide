@@ -55,8 +55,19 @@ export async function POST(request: NextRequest) {
         name: "userId",
         value: user._id,
         httpOnly: true,
-        maxAge: 48 * 60 * 60,
       });
+    
+      response.cookies.set({
+        name: "name",
+        value: user.firstName,
+        httpOnly: true,
+      });
+      response.cookies.set({
+        name: "avatar",
+        value: user.photo,
+        httpOnly: true,
+      });
+ 
       return response;
     }
   } catch (error: any) {

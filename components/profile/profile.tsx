@@ -1,10 +1,10 @@
 "use client";
+import { LoginContext } from "@/context/loginContext";
 import profilePhoto from "@/public/assets/img1.jpg";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useContext, useState } from "react";
 import DeleteModal from "./deleteModal";
-import { LoginContext } from "@/context/loginContext";
-import { useSession } from "next-auth/react";
 export default function Profile() {
   const { login } = useContext(LoginContext);
 
@@ -160,20 +160,15 @@ export default function Profile() {
                 htmlFor="af-account-password"
                 className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200"
               >
-                Password
+                Change Password
               </label>
             </div>
 
             <div className="sm:col-span-9">
               <div className="space-y-2">
                 <input
-                  id="af-account-password"
                   type="text"
                   className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                  placeholder="Enter current password"
-                />
-                <input
-                  type="text"
                   placeholder="Enter current password"
                   value={user.password}
                   onChange={(e) =>
@@ -183,12 +178,6 @@ export default function Profile() {
                 />
               </div>
             </div>
-
-         
-
-       
-
-          
           </div>
           <div className="mt-5 flex justify-between gap-x-2">
             <div className="mt-5 flex">
@@ -218,7 +207,17 @@ export default function Profile() {
                 type="button"
                 className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               >
-                Save changes
+                {loading ? (
+                  <div
+                    className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-white rounded-full"
+                    role="status"
+                    aria-label="loading"
+                  >
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : (
+                  " Save changes"
+                )}
               </button>
             </div>
           </div>

@@ -1,33 +1,31 @@
 "use client";
+import Animation from "@/components/ui/animation";
 import { LoginContext } from "@/context/loginContext";
 import { useSession } from "next-auth/react";
 import { useContext, useState } from "react";
-import Animation from "@/components/ui/animation"
 import FirstQuery from "./firstQuery";
-import { useAtom } from "jotai";
-import { showComponentAtom } from "@/atoms";
-import ChatBubble from "../chat/chatBubble";
 
 export const Hero = () => {
   const { login } = useContext(LoginContext);
 
   const { data: session } = useSession();
-
+  const [shortCutQuery, setShortCutQuery] = useState("");
 
   return (
     <>
       <div
         className={`${
-          session || login ? "relative flex lg:ps-64" : "relative flex md:justify-center "
+          session || login
+            ? "relative flex lg:ps-64"
+            : "relative flex md:justify-center "
         }`}
       >
-
         <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 sm:py-24 md:py-9 mt-4 mb-2">
           <div className="text-center">
             <Animation />
 
             <div className="mt-7 mx-auto max-w-xl relative">
-              <FirstQuery  />
+              <FirstQuery />
 
               {/* <!-- SVG Element --> */}
               <div className="hidden md:block absolute top-0 end-0 -translate-y-12 translate-x-20">
@@ -83,9 +81,11 @@ export const Hero = () => {
             </div>
 
             <div className="mt-10 ">
-              <a
+              <button
                 className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
+                onClick={() => {
+                  setShortCutQuery("farmacy");
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -98,10 +98,12 @@ export const Hero = () => {
                   <path d="M11.02 5.364a3 3 0 0 0-4.242-4.243L1.121 6.778a3 3 0 1 0 4.243 4.243l5.657-5.657Zm-6.413-.657 2.878-2.879a2 2 0 1 1 2.829 2.829L7.435 7.536zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8m-.5 1.042a3 3 0 0 0 0 5.917zm1 5.917a3 3 0 0 0 0-5.917z" />
                 </svg>
                 Farmacy{" "}
-              </a>
-              <a
+              </button>
+              <button
                 className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
+                onClick={() => {
+                  setShortCutQuery("Hospital");
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -114,10 +116,12 @@ export const Hero = () => {
                   <path d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-5-3.998V12H9.67V8.455H6.33V12H5V4.002h1.33v3.322h3.34V4.002z" />
                 </svg>
                 Hospital
-              </a>
-              <a
+              </button>
+              <button
                 className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
+                onClick={() => {
+                  setShortCutQuery("first aid");
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -131,10 +135,12 @@ export const Hero = () => {
                   <path d="M5.56 7.646a.5.5 0 1 1-.706.708.5.5 0 0 1 .707-.708Zm1.415-1.414a.5.5 0 1 1-.707.707.5.5 0 0 1 .707-.707M8.39 4.818a.5.5 0 1 1-.708.707.5.5 0 0 1 .707-.707Zm0 5.657a.5.5 0 1 1-.708.707.5.5 0 0 1 .707-.707ZM9.803 9.06a.5.5 0 1 1-.707.708.5.5 0 0 1 .707-.707Zm1.414-1.414a.5.5 0 1 1-.706.708.5.5 0 0 1 .707-.708ZM6.975 9.06a.5.5 0 1 1-.707.708.5.5 0 0 1 .707-.707ZM8.39 7.646a.5.5 0 1 1-.708.708.5.5 0 0 1 .707-.708Zm1.413-1.414a.5.5 0 1 1-.707.707.5.5 0 0 1 .707-.707" />
                 </svg>
                 First Aid
-              </a>
-              <a
+              </button>
+              <button
                 className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
+                onClick={() => {
+                  setShortCutQuery("poisoning");
+                }}
               >
                 <svg
                   className="flex-shrink-0 w-3 h-auto"
@@ -147,11 +153,8 @@ export const Hero = () => {
                   <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z" />
                 </svg>
                 Poisoning{" "}
-              </a>
-
-              
+              </button>
             </div>
-            
           </div>
         </div>
       </div>

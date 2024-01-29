@@ -1,12 +1,11 @@
-
 interface RenameChatProps {
   handlerRenameState: (data: boolean) => void;
-  // handlerLinkState: (data: string, condition: boolean) => void;
-  id?: string;
+  handlerRenameInput: (chatId: string) => void; // Add this line
+  id: string;
 }
 export const RenameChat: React.FC<RenameChatProps> = ({
   handlerRenameState,
-  // handlerLinkState,
+  handlerRenameInput,
   id,
 }) => {
   // const handleRenameClick = () => {
@@ -22,9 +21,12 @@ export const RenameChat: React.FC<RenameChatProps> = ({
 
   return (
     <button
-      className="flex items-center gap-x-3.5 py-2 px-1rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+      className="flex items-center gap-x-3.5 py-2 px-1 rounded-lg text-sm text-gray-800 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
       onClick={() => {
-        handlerRenameState(true)}}>
+        handlerRenameState(true);
+        handlerRenameInput(id);
+      }}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
