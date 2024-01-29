@@ -18,13 +18,12 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* <div
+      <div
         className={`${
           session || login
             ? "hs-tooltip inline-block [--placement:right] z-10 p-2"
             : "hidden"
-        } `} */}
-      <div className="hs-tooltip inline-block [--placement:right] z-10 p-2">
+        } `}>
         <button
           type="button"
           className="hs-tooltip-toggle w-10 h-10 inline-flex justify-center items-center gap-2 text-gray-600 dark:text-gray-400 dark:hover:bg-white/[.05] dark:hover:border-white/[.1] dark:hover:text-white"

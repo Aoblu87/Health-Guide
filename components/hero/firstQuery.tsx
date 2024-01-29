@@ -255,7 +255,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
             <input
               name="query"
               type="text"
-              className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+              className="py-2.5 px-4 block w-full border-transparent rounded-full focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
               placeholder="Message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
