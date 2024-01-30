@@ -1,7 +1,7 @@
 import { DeleteChat } from "./deleteChat";
 
 interface DropdownChatProps {
-  id: string; // Assicurati che questo tipo corrisponda al tipo di dato effettivo
+  id: string; 
 }
 export const DropdownChat: React.FC<DropdownChatProps> = ({ id }) => {
   return (

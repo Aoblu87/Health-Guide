@@ -1,47 +1,13 @@
-import getCookies from "@/app/helper/getCookies";
-import { chatListAtom } from "@/atoms";
-import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+"use client";
+import { useChatHistory } from "@/hooks/useChatHistory";
 
 interface DeleteChatProps {
-  id?: string; // Assicurati che questo tipo corrisponda al tipo di dato effettivo
+  id?: string; 
 }
 export const DeleteChat: React.FC<DeleteChatProps> = ({ id }) => {
-  const [loading, setLoading] = useState(true);
-  const [deleteChat, setDeleteChat] = useState(false);
-
-  // Atom State
-  const [newChat, setNewChat] = useAtom(chatListAtom);
-
-  const getChatHistory = useCallback(async () => {
-    setDeleteChat(true);
-    const dataCookies = await getCookies("userId");
-    const userId = dataCookies?.value;
-    if (!userId) {
-      console.error("UserId not found in cookies");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/users/${userId}/threads`);
-      if (!response.ok) {
-        throw new Error("Error getting chat history");
-      }
-
-      const chat = await response.json();
-      setNewChat(chat);
-    } catch (error) {
-      console.error("Error fetching chat history:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [setDeleteChat, setNewChat]);
-
-
+  const { loading, fetchChatHistory } = useChatHistory();
 
   const handleDelete = async () => {
-    console.log("id: " + id);
     const confirmDeletion = confirm("Are you sure you want to delete?");
     if (!confirmDeletion) {
       return;
@@ -61,7 +27,7 @@ export const DeleteChat: React.FC<DeleteChatProps> = ({ id }) => {
         throw new Error("Failed to delete chat");
       }
       console.log("Chat deleted successfully");
-      getChatHistory();
+      fetchChatHistory();
     } catch (error: any) {
       console.error("Fetching delete error", error);
     }

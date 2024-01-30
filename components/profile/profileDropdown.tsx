@@ -1,11 +1,9 @@
 import getCookies from "@/app/helper/getCookies";
-import profilePhoto from "@/public/assets/person-circle.svg";
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import SettingsModal from "../settings/settingsModal";
-import SignOut from "./signOut";
+import { Flex, Switch } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
-import  UserProfile  from "./userProfile";
+import { useCallback, useEffect, useState } from "react";
+import SignOut from "./signOut";
+import UserProfile from "./userProfile";
 
 export default function ProfileDropdown() {
   const { data: session } = useSession();
@@ -69,12 +67,9 @@ export default function ProfileDropdown() {
         <div className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700">
           <button data-hs-overlay="#hs-bg-gray-on-hover-cards">Settings</button>
         </div>
-        <div
-          id="hs-bg-gray-on-hover-cards"
-          className="hs-overlay hidden w-full h-full fixed top-0 start-0 overflow-x-hidden overflow-y-auto pointer-events-none"
-        >
-          <SettingsModal />
-        </div>
+        {/* <Flex direction="column" gap="3">
+          <Switch variant="soft" defaultChecked />
+        </Flex> */}
         <div className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700">
           <SignOut />
           <svg

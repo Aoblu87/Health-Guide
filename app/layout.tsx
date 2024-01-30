@@ -1,16 +1,14 @@
 import { inter } from "@/app/fonts";
-
+import '@radix-ui/themes/styles.css';
 import "@/app/globals.css";
 import { authOptions } from "@/auth";
 import PrelineScript from "@/components/PrelineScript";
-import Navbar from "@/components/home/navbar";
 import Menu from "@/components/menu";
-import Sidebar from "@/components/sidebar/sidebar";
 import SessionProvider from "@/context/authContext";
-import { LoginContext, LoginProvider } from "@/context/loginContext";
+import { LoginProvider } from "@/context/loginContext";
 import { ThemeProvider } from "@/context/themeContext";
 import { getServerSession } from "next-auth";
-import { useContext } from "react";
+import { Theme } from '@radix-ui/themes';
 
 require("dotenv").config();
 
@@ -33,6 +31,7 @@ export default async function RootLayout({
       <LoginProvider>
         <body className={`${inter.className} antialiased`}>
           <SessionProvider>
+
             <Menu />
             <ThemeProvider>{children}</ThemeProvider>
           </SessionProvider>

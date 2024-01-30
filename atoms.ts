@@ -15,7 +15,7 @@ export const threadAtom = atom<Thread | null>(null);
 const _threadIdAtom = atom<string | null>(null);
 const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
-export const chatListAtom = atom<Chat[]>([]);
+const _chatListAtom = atom<Chat[]>([]);
 
 const _prevMessagesCountAtom = atom<number | null>(0);
 
@@ -60,8 +60,12 @@ export const assistantAtom = atomWithLocalStorage(
   JSON.stringify(_assistantAtom, null, 2),
   null
 );
-export const prevMessagesCountAtomAtom = atomWithLocalStorage(
+export const prevMessagesCountAtom = atomWithLocalStorage(
   JSON.stringify(_prevMessagesCountAtom, null, 2),
+  null
+);
+export const chatListAtom = atomWithLocalStorage(
+  JSON.stringify(_chatListAtom, null, 2),
   null
 );
 

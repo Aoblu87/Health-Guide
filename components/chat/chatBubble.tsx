@@ -1,11 +1,9 @@
 "use client";
 import {
   messagesAtom,
-  prevMessagesCountAtomAtom,
   runAtom,
-  runStateAtom,
   threadAtom,
-  threadIdAtom,
+  threadIdAtom
 } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
@@ -27,9 +25,7 @@ export default function ChatBubble() {
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
-  // const [prevMessagesCount, setPrevMessagesCount] = useAtom(
-  //   prevMessagesCountAtomAtom
-  // );
+
   const prevMessagesCount = messages?.length;
 
   // State

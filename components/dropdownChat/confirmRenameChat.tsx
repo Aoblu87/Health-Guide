@@ -1,13 +1,12 @@
-import getCookies from "@/app/helper/getCookies";
 import { chatListAtom } from "@/atoms";
+import { useChatHistory } from "@/hooks/useChatHistory";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
 
 interface ConfirmRenameChatProps {
   id?: string;
   threadId?: string;
   titleChat?: string;
-  userId: string;
+  userId?: string;
   handlerRenameState: (data: boolean) => void;
   handlerRenameInput: (chatId: string) => void; // Add this line
 }
@@ -20,11 +19,11 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
   userId,
   titleChat,
 }) => {
-  const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { fetchChatHistory } = useChatHistory();
+
 
   // Atom State
-  const [newChat, setNewChat] = useAtom(chatListAtom);
+  const [chatList, setChatList] = useAtom(chatListAtom);
 
   const newChatTitle = {
     title: titleChat,
@@ -49,52 +48,16 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
         throw new Error("Failed to update chat");
       }
       const dataChat = await response.json();
-      setNewChat(dataChat);
-      // // Update the chat list with the new title
-      // setNewChat((prevChats: any) => {
-      //   return prevChats.map((chat: any) => {
-      //     if (chat.id === id) {
-      //       return { ...chat, title: titleChat };
-      //     }
-      //     return chat;
-      //   });
-      // });
-
+      setChatList(dataChat);
       console.log("Chat updated successfully");
-      getChatHistory();
+      fetchChatHistory();
     } catch (error) {
       console.error("Fetching update error", error);
     } finally {
-      handlerRenameState(false);
       handlerRenameInput(""); // Reset the editing chat ID
+      handlerRenameState(false);
     }
   };
-
-  const getChatHistory = useCallback(async () => {
-    const dataCookies = await getCookies("userId");
-    const userId = dataCookies?.value;
-    if (!userId) {
-      console.error("UserId not found in cookies");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/users/${userId}/threads`);
-      if (!response.ok) {
-        throw new Error("Error getting chat history");
-      }
-      const chat = await response.json();
-      setChats(chat);
-      setNewChat(chat);
-    } catch (error) {
-      console.error("Error fetching chat history:", error);
-    } finally {
-    }
-  }, [setNewChat]);
-  useEffect(() => {
-    getChatHistory();
-  }, [getChatHistory]);
 
   return (
     <div className="flex">
