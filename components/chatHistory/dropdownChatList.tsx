@@ -1,35 +1,265 @@
-import { ChatHistoryProps } from "@/app/types/chatSidebar";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { DotsHorizontalIcon, Pencil2Icon, Share2Icon, TrashIcon } from "@radix-ui/react-icons";
+import { Menu, Transition } from "@headlessui/react";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Fragment } from "react";
+import { ChatItemProps } from "@/app/types/chatSidebar";
+import { ConfirmRenameChat } from "../dropdownChat/confirmRenameChat";
+import { useChatHistory } from "@/hooks/useChatHistory";
 
-export const DropdownChatList: React.FC<ChatHistoryProps> = ({ id }) => {
+interface DropdownChatListProps {
+  handlerRenameState: (data: boolean) => void;
+  handlerRenameInput: (chatId: string) => void; // Add this line
+  id: string;
+  setLoading: (state: boolean) => void;
+  loading: boolean;
+}
+
+export const DropdownChatList: React.FC<DropdownChatListProps> = ({
+  handlerRenameState,
+  handlerRenameInput,
+  loading,
+  setLoading,
+  id,
+}) => {
+  const { fetchChatHistory } = useChatHistory();
+
+  //Delete Chat
+  const handleDelete = async () => {
+    setLoading(true);
+    const confirmDeletion = confirm("Are you sure you want to delete?");
+    if (!confirmDeletion) {
+      return;
+    }
+    if (!id) {
+      console.log("Id not specified");
+      return null;
+    }
+    try {
+      const response = await fetch(`/api/chatHistory/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete chat");
+      }
+      console.log("Chat deleted successfully");
+      fetchChatHistory();
+    } catch (error: any) {
+      console.error("Fetching delete error", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button
-          className="rounded-full w-[35px] h-[35px] inline-flex items-center justify-center text-violet11 bg-white shadow-[0_2px_10px] shadow-blackA4 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-black"
-          aria-label="Customise options"
+    <div className="flex">
+      <Menu as="div" className="relative inline-block text-left">
+        <div>
+          <Menu.Button className="inline-flex w-full justify-center rounded-md  px-4 py-2 text-sm font-medium text-white  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+            <MoreHorizIcon className="text-black" />
+          </Menu.Button>
+        </div>
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
         >
-          <DotsHorizontalIcon />
-        </button>
-      </DropdownMenu.Trigger>
-        <DropdownMenu.Content
-          className="min-w-[220px] bg-white rounded-md p-[5px] shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade"
-          sideOffset={5}
-        >
-          <DropdownMenu.Item className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-matisse-800 data-[highlighted]:text-violet1">
-          <Share2Icon/> Share
-           
-          </DropdownMenu.Item>
-          <DropdownMenu.Item className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-matisse-800 data-[highlighted]:text-violet1">
-          <Pencil2Icon/> Edit
-           
-          </DropdownMenu.Item>
-          <DropdownMenu.Item className="group text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] px-[5px] relative pl-[25px] select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-matisse-800 data-[highlighted]:text-violet1">
-          <TrashIcon/> Delete
-           
-          </DropdownMenu.Item>
-        </DropdownMenu.Content>
-    </DropdownMenu.Root>
+          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+            <div className="px-1 py-1 ">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active ? "bg-matisse-500 text-white" : "text-gray-900"
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    onClick={() => {
+                      handlerRenameState(true);
+                      handlerRenameInput(id);
+                    }}
+                  >
+                    {active ? (
+                      <EditActiveIcon
+                        className="mr-2 h-5 w-5"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <EditInactiveIcon
+                        className="mr-2 h-5 w-5"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Edit
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  className={`${
+                    active ? "bg-matisse-500 text-white" : "text-gray-900"
+                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                >
+                  {active ? (
+                    <MoveActiveIcon
+                      className="mr-2 h-5 w-5"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <MoveInactiveIcon
+                      className="mr-2 h-5 w-5"
+                      aria-hidden="true"
+                    />
+                  )}
+                  Share
+                </button>
+              )}
+            </Menu.Item>
+            <div className="px-1 py-1">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active ? "bg-matisse-500 text-white" : "text-gray-900"
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    onClick={handleDelete}
+                  >
+                    {active ? (
+                      <DeleteActiveIcon
+                        className="mr-2 h-5 w-5 text-matisse-400"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <DeleteInactiveIcon
+                        className="mr-2 h-5 w-5 text-matisse-400"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Delete
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+          </Menu.Items>
+        </Transition>
+      </Menu>
+    </div>
   );
 };
+
+function EditInactiveIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4 13V16H7L16 7L13 4L4 13Z"
+        fill="##9fbcda"
+        stroke="#A78BFA"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
+
+function EditActiveIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4 13V16H7L16 7L13 4L4 13Z"
+        fill="#8B5CF6"
+        stroke="#C4B5FD"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
+
+function MoveInactiveIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M10 4H16V10" stroke="#A78BFA" strokeWidth="2" />
+      <path d="M16 4L8 12" stroke="#A78BFA" strokeWidth="2" />
+      <path d="M8 6H4V16H14V12" stroke="#A78BFA" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function MoveActiveIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M10 4H16V10" stroke="#C4B5FD" strokeWidth="2" />
+      <path d="M16 4L8 12" stroke="#C4B5FD" strokeWidth="2" />
+      <path d="M8 6H4V16H14V12" stroke="#C4B5FD" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function DeleteInactiveIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="5"
+        y="6"
+        width="10"
+        height="10"
+        fill="##9fbcda"
+        stroke="#A78BFA"
+        strokeWidth="2"
+      />
+      <path d="M3 6H17" stroke="#A78BFA" strokeWidth="2" />
+      <path d="M8 6V4H12V6" stroke="#A78BFA" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function DeleteActiveIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="5"
+        y="6"
+        width="10"
+        height="10"
+        fill="#8B5CF6"
+        stroke="#C4B5FD"
+        strokeWidth="2"
+      />
+      <path d="M3 6H17" stroke="#C4B5FD" strokeWidth="2" />
+      <path d="M8 6V4H12V6" stroke="#C4B5FD" strokeWidth="2" />
+    </svg>
+  );
+}

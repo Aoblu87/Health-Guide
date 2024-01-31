@@ -9,6 +9,8 @@ interface ConfirmRenameChatProps {
   userId?: string;
   handlerRenameState: (data: boolean) => void;
   handlerRenameInput: (chatId: string) => void; // Add this line
+  setLoading: (state: boolean) => void;
+  loading: boolean;
 }
 
 export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
@@ -18,9 +20,10 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
   threadId,
   userId,
   titleChat,
+  loading,
+  setLoading,
 }) => {
   const { fetchChatHistory } = useChatHistory();
-
 
   // Atom State
   const [chatList, setChatList] = useAtom(chatListAtom);
@@ -56,6 +59,7 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
     } finally {
       handlerRenameInput(""); // Reset the editing chat ID
       handlerRenameState(false);
+      setLoading(false);
     }
   };
 

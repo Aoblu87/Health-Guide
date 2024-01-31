@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.0.12",
-    "@headlessui/react": "^1.7.17",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
+    "@mui/icons-material": "^5.15.7",
     "@preline/dropdown": "^2.0.2",
     "@preline/overlay": "^2.0.2",
     "@radix-ui/colors": "^3.0.0",
