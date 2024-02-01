@@ -28,7 +28,7 @@ export default function NewSidebar() {
       <div
         className={`${
           session || login
-            ? "inline-block [--placement:right] z-10 p-2"
+            ? "inline-block [--placement:right] z-10 p-2 lg:block"
             : "hidden"
         } `}
       >
@@ -40,62 +40,61 @@ export default function NewSidebar() {
         >
           <MenuIcon />
         </button>
-      </div>
+        <Transition appear show={isOpen} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black/25" />
+            </Transition.Child>
 
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/25" />
-          </Transition.Child>
-
-          <div className="fixed top-0 start-0 bottom-0 z-[60] w-64">
-            <div className="flex h-full items-center justify-center py-1 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="transition ease-in-out duration-300 transform"
-                enterFrom="-translate-x-full"
-                enterTo="translate-x-0"
-                leave="transition ease-in-out duration-300 transform"
-                leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full"
-              >
-                <Dialog.Panel className="w-full h-full max-w-md transform overflow-hidden rounded-r-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Payment successful
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Your payment has been successfully submitted. We’ve sent
-                      you an email with all of the details of your order.
-                    </p>
-                  </div>
-
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
+            <div className="fixed top-0 start-0 bottom-0 z-[60] w-64">
+              <div className="flex h-full items-center justify-center py-1 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="transition ease-in-out duration-300 transform"
+                  enterFrom="-translate-x-full"
+                  enterTo="translate-x-0"
+                  leave="transition ease-in-out duration-300 transform"
+                  leaveFrom="translate-x-0"
+                  leaveTo="-translate-x-full"
+                >
+                  <Dialog.Panel className="w-full h-full max-w-md transform overflow-hidden rounded-r-lg bg-white p-6 text-left align-middle shadow-xl transition-all">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg font-medium leading-6 text-gray-900"
                     >
-                      Got it, thanks!
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
+                      Payment successful
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Your payment has been successfully submitted. We’ve sent
+                        you an email with all of the details of your order.
+                      </p>
+                    </div>
+
+                    <div className="mt-4">
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={closeModal}
+                      >
+                        Got it, thanks!
+                      </button>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
             </div>
-          </div>
-        </Dialog>
-      </Transition>
+          </Dialog>
+        </Transition>
+      </div>
     </>
   );
 }
