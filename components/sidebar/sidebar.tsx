@@ -86,10 +86,12 @@ export default function Sidebar() {
           >
             <ul className="space-y-1.5 p-3">
               <li>
-                <a
+                <button
                   className="flex items-center gap-x-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                  href="/"
-                >
+                  onClick={() => {
+                    setThreadId("");
+                    router.push("/");
+                  }}                >
                   <svg
                     className="flex-shrink-0 w-4 h-4"
                     xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +108,7 @@ export default function Sidebar() {
                     <path d="M12 5v14"></path>
                   </svg>
                   New chat
-                </a>
+                </button>
               </li>
               <hr />
               <div className="py-3">

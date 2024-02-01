@@ -11,5 +11,5 @@ export default function Menu() {
   const { login } = useContext(LoginContext);
 
   const { data: session } = useSession();
-  return <> {session || login ? <NewSidebar /> : <Navbar />}</>;
+  return <> {session || login ? <Sidebar /> : <Navbar />}</>;
 }

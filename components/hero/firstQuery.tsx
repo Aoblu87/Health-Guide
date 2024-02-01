@@ -28,13 +28,13 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(""); // Aggiungi uno stato per gli errori
   // const [runState, setRunState] = useAtom(runStateAtom);
- 
+
   const [fetching, setFetching] = useState(true);
 
   console.log(`Run ID state on HomePage:${run?.id}`);
   console.log(`RunState on HomePage:${run?.status}`);
   console.log(`Thread state on HomePage:${threadId}`);
-  console.log(`Message state on HomePage:${JSON.stringify(messages)}`);
+  // console.log(`Message state on HomePage:${JSON.stringify(messages)}`);
 
   // Fetch messages associated with the current thread
 
@@ -127,58 +127,9 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
         setSending(false);
       }
     },
-    [
-      fetchMessages,
-    
-      message,
-
-      
-      setRun,
-     
-      setThreadId,
-    ]
+    [fetchMessages, message, setRun, setThreadId]
   );
-  // async function sendMessage(e: any) {
-  //   e.preventDefault();
-  //   setFetching(true);
-  //   setError(""); // Reset error state on new request
 
-  //   if (!message) {
-  //     console.error("Message not found");
-  //   }
-
-  //   setSending(true);
-
-  //   try {
-  //     const response = await fetch(
-  //       `/api/openai/run/createRun-thread?assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN&message=${message}`
-  //     );
-  //     if (!response.ok) {
-  //       throw new Error(`Errore nella richiesta: ${response.status}`);
-  //     }
-  //     // Handle response and update state accordingly
-
-  //     const newMessage = await response.json();
-
-  //     console.log("newMessage", newMessage);
-
-  //     await fetchMessages();
-
-  //     //Set new data
-  //     setRun(newMessage);
-  //     setThreadId(newMessage.thread_id);
-  //     setMessages({ ...messages, newMessage });
-  //     setRunState(newMessage.status);
-  //     console.log(`Thread state on HomePage:${threadId}`);
-  //     console.log(`Message state on HomePage:${messages}`);
-  //     console.log(`Run ID state on HomePage:${run.id}`);
-  //     console.log(`RunState on HomePage:${run.status}`);
-  //   } catch (error) {
-  //     console.error("Errore durante la chiamata Fetch:", error);
-  //   } finally {
-  //     setSending(false);
-  //   }
-  // }
   // Function to create a thread title and add to history
   const createTitleThread = useCallback(async () => {
     if (!message) {
@@ -225,18 +176,20 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   }, [message, threadId, setNewChat]);
 
   useEffect(() => {
-    if (threadId) {
+    if (threadId ) {
       createTitleThread();
       router.push(`/dashboard/${threadId}`); // Navigate to dashboard after all operations
+
     }
   }, [threadId, createTitleThread, router, setNewChat]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
   // Aggiorna il messaggio quando la prop shortcutQuery cambia
-  useEffect(() => {
-    if (shortcutQuery) {
-      setMessage(shortcutQuery);
-      sendMessage(shortcutQuery);
-    }
-  }, [shortcutQuery, sendMessage]);
+
+  // useEffect(() => {
+  //   if (shortcutQuery) {
+  //     setMessage(shortcutQuery);
+  //     sendMessage(shortcutQuery);
+  //   }
+  // }, [shortcutQuery, sendMessage]);
   return (
     <>
       {" "}

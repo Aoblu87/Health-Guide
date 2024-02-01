@@ -55,8 +55,8 @@ export const DropdownChatList: React.FC<DropdownChatListProps> = ({
     <div className="flex">
       <Menu as="div" className="relative inline-block text-left">
         <div>
-          <Menu.Button className="inline-flex w-full justify-center rounded-md  px-4 py-2 text-sm font-medium text-white  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
-            <MoreHorizIcon className="text-black" />
+          <Menu.Button className="inline-flex  w-full justify-center rounded-md  px-4 py-2 text-sm font-medium text-white  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+            <MoreHorizIcon className="text-black " />
           </Menu.Button>
         </div>
         <Transition

@@ -4,31 +4,39 @@ import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import SignOut from "./signOut";
 import UserProfile from "./userProfile";
+import { useAtom } from "jotai";
+import { userInfoAtom } from "@/atoms";
 
 export default function ProfileDropdown() {
   const { data: session } = useSession();
-  console.log(session?.user.name);
   interface UserInfo {
+    _id: string;
     name: string | undefined;
     avatar: string | undefined;
   }
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: undefined,
-    avatar: undefined,
-  });
+  // const [userInfo, setUserInfo] = useState<UserInfo>({
+  //   name: undefined,
+  //   avatar: undefined,
+  //   _id: "",
+  // });
 
   const fetchUserInfo = useCallback(async () => {
     try {
       if (session) {
         return;
       } else {
+        
+        const idCookie = await getCookies("userId");
         const nameCookie = await getCookies("name");
         const avatarCookie = await getCookies("avatar");
-
+        
+        const _id = idCookie?.value;
         const name = nameCookie?.value;
         const avatar = avatarCookie?.value;
         setUserInfo({
+          _id,
           name,
           avatar,
         });
@@ -42,7 +50,7 @@ export default function ProfileDropdown() {
 
   useEffect(() => {
     fetchUserInfo();
-  }, [fetchUserInfo]);
+  });
 
   return (
     <div className="hs-dropdown relative inline-flex">

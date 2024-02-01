@@ -7,6 +7,11 @@ interface Chat {
   title: string;
   time: string;
 }
+interface UserInfo {
+  _id: string
+  name: string | undefined;
+  avatar: string | undefined;
+}
 
 const _assistantAtom = atom<string | null>(null);
 export const fileAtom = atom<string | null>(null);
@@ -16,8 +21,7 @@ const _threadIdAtom = atom<string | null>(null);
 const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
 const _chatListAtom = atom<Chat[]>([]);
-
-const _prevMessagesCountAtom = atom<number | null>(0);
+const _userInfoAtom = atom<UserInfo[]>([]);
 
 export const showComponentAtom = atom<boolean | null>(false);
 
@@ -60,12 +64,13 @@ export const assistantAtom = atomWithLocalStorage(
   JSON.stringify(_assistantAtom, null, 2),
   null
 );
-export const prevMessagesCountAtom = atomWithLocalStorage(
-  JSON.stringify(_prevMessagesCountAtom, null, 2),
-  null
-);
+
 export const chatListAtom = atomWithLocalStorage(
   JSON.stringify(_chatListAtom, null, 2),
+  null
+);
+export const userInfoAtom = atomWithLocalStorage(
+  JSON.stringify(_userInfoAtom, null, 2),
   null
 );
 

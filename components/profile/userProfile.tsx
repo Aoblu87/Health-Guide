@@ -1,21 +1,22 @@
 "use client";
+import { userInfoAtom } from "@/atoms";
+import profilePhoto from "@/public/assets/person-circle.svg";
+import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
-import profilePhoto from "@/public/assets/person-circle.svg";
 
 export default function UserProfile() {
   const { data: session } = useSession();
-  console.log(session?.user.name);
   interface UserInfo {
     name: string | undefined;
     avatar: string | undefined;
   }
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: undefined,
-    avatar: undefined,
-  });
+  // const [userInfo, setUserInfo] = useState<UserInfo>({
+  //   name: undefined,
+  //   avatar: undefined,
+  // });
   return (
     <div className="flex-shrink-0 group block">
       <div className="flex items-center">
