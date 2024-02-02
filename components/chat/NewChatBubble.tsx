@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ChatMessage } from "./chatMessage";
 import { useMarkdown } from '@/hooks/useMarkdown'; // Assicurati che il percorso sia corretto
 import getCookies from "@/app/helper/getCookies";
@@ -204,12 +204,23 @@ export const NewChatBubble= () => {
       setSending(false);
     }
   };
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  };
+
+  // Effetto per scrollare alla fine ogni volta che i messaggi cambiano
+  useLayoutEffect(() => {
+    scrollToBottom();
+  }, [messages]); // Dipendenza dai messaggi per scatenare lo scroll
   useEffect(() => {
     const scrollToEnd = () => {
       if (chatContainerRef.current) {
-        const { scrollHeight, clientHeight } = chatContainerRef.current;
-        const isAtBottom = chatContainerRef.current.scrollTop + clientHeight >= scrollHeight - 100; // 100 è una soglia per "vicino al fondo"
+        const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // 100 è una soglia per "vicino al fondo"
   
+        // Aggiorna lo scroll solo se l'utente si trova già in fondo alla chat
         if (isAtBottom) {
           chatContainerRef.current.scrollTop = scrollHeight;
         }
