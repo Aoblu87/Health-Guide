@@ -16,7 +16,7 @@ interface FirstQueryProps {
 export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
+  const [init, setInit] = useState(false);
   // Using Jotai atoms to manage global state
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
@@ -83,10 +83,14 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   // Effect to clear data on component mount
 
   useEffect(() => {
+    if (init) {
+      return;
+    }
     setThreadId("");
     setMessages("");
     setRun("");
-  }, [setThreadId, setMessages, setRun]);
+    setInit(true)
+  }, [init,setThreadId,setMessages, setRun]);
 
   // Function to send first message
   const sendMessage = useCallback(
@@ -176,10 +180,9 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   }, [message, threadId, setNewChat]);
 
   useEffect(() => {
-    if (threadId ) {
+    if (threadId) {
       createTitleThread();
       router.push(`/dashboard/${threadId}`); // Navigate to dashboard after all operations
-
     }
   }, [threadId, createTitleThread, router, setNewChat]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
   // Aggiorna il messaggio quando la prop shortcutQuery cambia
