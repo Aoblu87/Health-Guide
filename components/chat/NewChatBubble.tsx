@@ -8,19 +8,22 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatMessage } from "./chatMessage";
-export default function ChatBubble() {
-  const { chatId } = useParams();
+import { useMarkdown } from '@/hooks/useMarkdown'; // Assicurati che il percorso sia corretto
+
+export const NewChatBubble= () => {
+    const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-
+  
   const { login } = useContext(LoginContext);
-
+  
   const { data: session } = useSession();
   // Atom State
   const [thread] = useAtom(threadAtom);
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
-
+  
+  const contentHtml = useMarkdown(messages.content);
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -199,18 +202,24 @@ export default function ChatBubble() {
     }
   };
   useEffect(() => {
-    if (chatContainerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } =
-        chatContainerRef.current;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // 100 è una soglia per "vicino al fondo"
-
-      if (isAtBottom) {
-        // Scrolla automaticamente verso il basso solo se l'utente è vicino al fondo
-        chatContainerRef.current.scrollTop = scrollHeight;
+    const scrollToEnd = () => {
+      if (chatContainerRef.current) {
+        const { scrollHeight, clientHeight } = chatContainerRef.current;
+        const isAtBottom = chatContainerRef.current.scrollTop + clientHeight >= scrollHeight - 100; // 100 è una soglia per "vicino al fondo"
+  
+        if (isAtBottom) {
+          chatContainerRef.current.scrollTop = scrollHeight;
+        }
       }
-    }
+    };
+  
+    // Usa requestAnimationFrame per ritardare lo scroll fino al prossimo ciclo di painting
+    const animationFrameId = requestAnimationFrame(scrollToEnd);
+  
+    // Pulizia: annulla l'animation frame quando il componente si smonta o prima che l'effetto venga rieseguito
+    return () => cancelAnimationFrame(animationFrameId);
   }, [messages]); // Dipendenza da messages per aggiornare lo scroll ogni volta che cambiano
-
+  
   return (
     <>
       <div
