@@ -1,19 +1,20 @@
 "use client";
-import { messagesAtom, runAtom, threadAtom, threadIdAtom } from "@/atoms";
+import { chatListAtom, messagesAtom, runAtom, threadAtom, threadIdAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChatMessage } from "./chatMessage";
 import { useMarkdown } from '@/hooks/useMarkdown'; // Assicurati che il percorso sia corretto
+import getCookies from "@/app/helper/getCookies";
 
 export const NewChatBubble= () => {
     const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  
+  const router= useRouter
   const { login } = useContext(LoginContext);
   
   const { data: session } = useSession();
@@ -22,6 +23,7 @@ export const NewChatBubble= () => {
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
+  const [newChatTitle, setNewChatTitle] = useAtom(chatListAtom);
   
   const contentHtml = useMarkdown(messages.content);
   // State
@@ -37,6 +39,8 @@ export const NewChatBubble= () => {
   console.log(`Thread state:${chatId}`);
   console.log(`Run ID from RUN state:${run?.id}`);
 
+
+  
   // CLEAN UP POLLING
   useEffect(() => {
     // Clean up polling on unmountnpm
@@ -219,6 +223,7 @@ export const NewChatBubble= () => {
     return () => cancelAnimationFrame(animationFrameId);
   }, [messages]); // Dipendenza da messages per aggiornare lo scroll ogni volta che cambiano
   
+
   return (
     <>
       <div

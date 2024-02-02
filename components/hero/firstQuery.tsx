@@ -21,7 +21,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
-  const [newChat, setNewChat] = useAtom(chatListAtom);
+  const [newChatTitle, setNewChatTitle] = useAtom(chatListAtom);
 
   // Local state management for component
   const [message, setMessage] = useState("");
@@ -73,28 +73,75 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
       });
       console.log("Formatted Messages:", formattedMessages);
       setMessages(formattedMessages);
+
+      
     } catch (error: any) {
       console.error("Fetching messages error", error);
     } finally {
       setFetching(false);
+
     }
   }, [setMessages, threadId, setFetching]);
 
   // Effect to clear data on component mount
 
   useEffect(() => {
-    if (init) {
-      return;
-    }
+  
     setThreadId("");
+    setNewChatTitle("");
     setMessages("");
     setRun("");
-    setInit(true)
-  }, [init,setThreadId,setMessages, setRun]);
+  }, [setThreadId, setMessages, setRun, setNewChatTitle]);
 
-  // Function to send first message
-  const sendMessage = useCallback(
-    async (e: any) => {
+  // // Function to create a thread title and add to history
+  // const createTitleThread = useCallback(async () => {
+  //   if (!message) {
+  //     console.error("Message not found");
+  //   }
+  //   const titleThread = message.substring(0, 20);
+  //   console.log("title thread: ", titleThread);
+
+  //   const dataCookies = await getCookies("userId");
+  //   const userId = dataCookies?.value;
+  //   if (!userId) {
+  //     console.error("UserId not found in cookies");
+  //     return;
+  //   }
+
+  //   const newThread = {
+  //     threadId: threadId,
+  //     title: titleThread,
+  //     user: {
+  //       _id: userId,
+  //     },
+  //   };
+
+  //   try {
+  //     const response = await fetch("/api/chatHistory", {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       method: "POST",
+  //       body: JSON.stringify(newThread),
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error(`Errore nella richiesta: ${response.status}`);
+  //     }
+  //     const newThreadCreated = await response.json();
+  //     console.log(newThreadCreated);
+      
+
+  //       setNewChatTitle(newThreadCreated);
+      
+  //   } catch (error: any) {
+  //     console.error("Errore durante la chiamata Create title thread≈:", error);
+  //   } finally {
+  //     setMessage("");
+  //     setSending(false);
+  //   }
+  // }, [message, threadId, setNewChatTitle]);
+  // // Function to send first message
+  async function sendMessage (e: any) {
       e.preventDefault();
       setFetching(true);
       setError(""); // Reset error state on new request
@@ -125,66 +172,68 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
         setThreadId(newMessage.thread_id);
         // setMessages({ ...messages, newMessage });
         // setRunState(newMessage.status);
+        // await createTitleThread();
+    
       } catch (error) {
         console.error("Errore durante la chiamata Fetch:", error);
       } finally {
         setSending(false);
+
       }
-    },
-    [fetchMessages, message, setRun, setThreadId]
-  );
-
-  // Function to create a thread title and add to history
-  const createTitleThread = useCallback(async () => {
-    if (!message) {
-      console.error("Message not found");
     }
-    const titleThread = message.substring(0, 20);
-    console.log("title thread: ", titleThread);
-
-    const dataCookies = await getCookies("userId");
-    const userId = dataCookies?.value;
-    if (!userId) {
-      console.error("UserId not found in cookies");
-      return;
-    }
-
-    const newThread = {
-      threadId: threadId,
-      title: titleThread,
-      user: {
-        _id: userId,
-      },
-    };
-
-    try {
-      const response = await fetch("/api/chatHistory", {
-        headers: {
-          "Content-Type": "application/json",
+    // Function to create a thread title and add to history
+    const createTitleThread = useCallback(async () => {
+      if (!message) {
+        console.error("Message not found");
+      }
+      const titleThread = message.substring(0, 20);
+      console.log("title thread: ", titleThread);
+  
+      const dataCookies = await getCookies("userId");
+      const userId = dataCookies?.value;
+      if (!userId) {
+        console.error("UserId not found in cookies");
+        return;
+      }
+  
+      const newThread = {
+        threadId: threadId,
+        title: titleThread,
+        user: {
+          _id: userId,
         },
-        method: "POST",
-        body: JSON.stringify(newThread),
-      });
-      if (!response.ok) {
-        throw new Error(`Errore nella richiesta: ${response.status}`);
+      };
+  
+      try {
+        const response = await fetch("/api/chatHistory", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(newThread),
+        });
+        if (!response.ok) {
+          throw new Error(`Errore nella richiesta: ${response.status}`);
+        }
+        const newThreadCreated = await response.json();
+        console.log(newThreadCreated);
+        
+  
+          setNewChatTitle(newThreadCreated);
+        
+      } catch (error: any) {
+        console.error("Errore durante la chiamata Create title thread≈:", error);
+      } finally {
+        setMessage("");
+        setSending(false);
       }
-      const newThreadCreated = await response.json();
-      console.log(newThreadCreated);
-
-      setNewChat(newThreadCreated);
-    } catch (error: any) {
-      console.error("Errore durante la chiamata Create title thread≈:", error);
-    } finally {
-      setMessage("");
-    }
-  }, [message, threadId, setNewChat]);
-
+    }, [message, threadId, setNewChatTitle]);
   useEffect(() => {
-    if (threadId) {
+    if (threadId&&newChatTitle) {
       createTitleThread();
       router.push(`/dashboard/${threadId}`); // Navigate to dashboard after all operations
     }
-  }, [threadId, createTitleThread, router, setNewChat]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
+  }, [threadId, newChatTitle,createTitleThread, router, setNewChatTitle]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
   // Aggiorna il messaggio quando la prop shortcutQuery cambia
 
   // useEffect(() => {
