@@ -7,7 +7,7 @@ interface ChatMessageProps {
 }
 
 export const ChatMessage: React.FC<ChatMessageProps> = React.memo(({ message }) => {
-  return <div>{message.content}</div>;
+  return message.content;
 });
 
 ChatMessage.displayName = "ChatMessage";

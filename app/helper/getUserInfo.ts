@@ -7,6 +7,8 @@ export default async function getUserInfo() {
   // Try to get the 'name' and 'avatar' cookies
   const nameCookie = cookies().get("name");
   const avatarCookie = cookies().get("photo");
+  const userIdCookie = cookies().get("userId");
+
 
   // Check if the cookies exist and are strings
   const name = typeof nameCookie === "string" ? nameCookie : "User";
@@ -16,6 +18,7 @@ export default async function getUserInfo() {
   const userInfo = {
     name: nameCookie?.value,
     avatar: avatarCookie?.value,
+    id: userIdCookie?.value
   };
 
   return userInfo;

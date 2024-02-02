@@ -50,7 +50,7 @@ export default function ProfileDropdown() {
 
   useEffect(() => {
     fetchUserInfo();
-  });
+  },[fetchUserInfo]);
 
   return (
     <div className="hs-dropdown relative inline-flex">

@@ -15,18 +15,20 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { ChatMessage } from "./chatMessage";
 export default function ChatBubble() {
   const { chatId } = useParams();
-  console.log(chatId);
-
   const { login } = useContext(LoginContext);
-
+  
   const { data: session } = useSession();
   // Atom State
   const [thread] = useAtom(threadAtom);
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
+  // Assicurati che `messages` sia definito e abbia elementi prima di accedere alla proprietà `content`
+// const lastMessageContent = messages?.length > 0 ? messages[messages.length - 1].content : "";
 
-  const prevMessagesCount = messages?.length;
+// // Usa `lastMessageContent` per controllare se è vuoto
+// const isLastMessageContentEmpty = lastMessageContent === "";
+
 
   // State
   const [message, setMessage] = useState("");
@@ -119,7 +121,6 @@ export default function ChatBubble() {
           clearInterval(intervalId);
           setPollingIntervalId(null);
         }
-        fetchMessages();
       } catch (error) {
         console.error("Error polling run status:", error);
         clearInterval(intervalId);
@@ -128,19 +129,20 @@ export default function ChatBubble() {
     }, 4000);
 
     setPollingIntervalId(intervalId);
-  }, [run?.id, setRun,  threadId, fetchMessages]);
+  }, [run?.id, setRun,  threadId]);
 
 useEffect(()=>{
   fetchMessages();
 },[fetchMessages]);
 
   useEffect(() => {
+    fetchMessages
     
     // Inizia il polling solo se il run non è completato
-    if (!run.id || run.status !== "completed") {
+    if (!run.id||run.status !== "completed" ) {
       startPolling();
     }
-  }, [run?.id, run?.status, startPolling]);
+  }, [run?.id, run?.status, startPolling,fetchMessages]);
 
   //   AVVIA RUN----------------------------------------------------------------
   const handleCreate = async () => {
@@ -169,7 +171,6 @@ useEffect(()=>{
       localStorage.setItem("run", JSON.stringify(newRun));
       // Start polling after creation
 
-      startPolling();
     } catch (error) {
       console.error(error);
     } finally {
@@ -203,7 +204,6 @@ useEffect(()=>{
       setMessages([...messages, newMessage]);
       setMessage("");
       await handleCreate();
-      fetchMessages();
     } catch (error) {
       console.error("Sending message error", error);
     } finally {
@@ -260,9 +260,11 @@ useEffect(()=>{
                   <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
                     <div className="space-y-1.5">
                       {message.content ? (
+                        <div>
                         <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
                           <ChatMessage key={message.id} message={message} />
                         </p>
+                        </div>
                       ) : (
                         <>
                           <div className="flex">
@@ -285,11 +287,13 @@ useEffect(()=>{
                   <div className="flex justify-end items-center grow text-end space-y-3">
                     <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
                       {message?.content ? (
+                        <div>
                         <p className="text-sm text-white">
                           {" "}
                           <ChatMessage key={message.id} message={message} />
                           {/* {message?.content}{" "} */}
                         </p>
+                        </div>
                       ) : (
                         <>
                           <div className="flex">

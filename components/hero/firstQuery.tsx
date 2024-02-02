@@ -83,14 +83,12 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   // Effect to clear data on component mount
 
   useEffect(() => {
-    if (init) {
-      return;
-    }
+   
     setThreadId("");
     setMessages("");
     setRun("");
-    setInit(true)
-  }, [init,setThreadId,setMessages, setRun]);
+    setInit(true);
+  }, [setThreadId, setMessages, setRun]);
 
   // Function to send first message
   const sendMessage = useCallback(
@@ -131,7 +129,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
         setSending(false);
       }
     },
-    [fetchMessages, message, setRun, setThreadId]
+    [message, setRun, setThreadId, fetchMessages]
   );
 
   // Function to create a thread title and add to history
@@ -180,11 +178,11 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   }, [message, threadId, setNewChat]);
 
   useEffect(() => {
-    if (threadId) {
+    if (threadId && newChat) {
       createTitleThread();
       router.push(`/dashboard/${threadId}`); // Navigate to dashboard after all operations
     }
-  }, [threadId, createTitleThread, router, setNewChat]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
+  }, [threadId, createTitleThread, router, newChat]); // Aggiungi `createTitleThread` alle dipendenze se è definita fuori da useEffect
   // Aggiorna il messaggio quando la prop shortcutQuery cambia
 
   // useEffect(() => {

@@ -36,13 +36,5 @@ export default function UserProfile() {
   );
 }
 {
-  /* <Image
-          className="w-8 h-auto rounded-full"
-          src={session?.user.picture || userInfo.avatar || profilePhoto} // Use a default image if avatar is undefined
-          alt={session?.user.name || userInfo.name || "User"}
-        />
-
-        <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
-          {session?.user.name || userInfo.name || "User"}
-        </span> */
+ 
 }
