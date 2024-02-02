@@ -13,9 +13,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = React.memo(
     const contentHtml = useMarkdown(message.content);
 
     return message.role === "user" ? (
-      <div>{message.content}</div>
+      <div className="text-sm text-white">{message.content}</div>
       ) : (
-      <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+      <div dangerouslySetInnerHTML ={{ __html: contentHtml }}className="text-sm text-black" />
     );
   }
 );

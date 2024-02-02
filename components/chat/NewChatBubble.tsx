@@ -122,19 +122,18 @@ export const NewChatBubble= () => {
 
     setPollingIntervalId(intervalId);
   }, [run.id, setRun, threadId]);
-  const lastMessageContent = messages[messages.length - 1].content;
-  const isLastMessageContentEmpty = lastMessageContent === "";
 
-  // useEffect(()=>{
-  //   fetchMessages();
-  // },[fetchMessages]);
+
+  useEffect(()=>{
+    fetchMessages();
+  },[fetchMessages, setMessages, run]);
 
   useEffect(() => {
     // Inizia il polling solo se il run non è completato
-    if (run.status === "completed" && isLastMessageContentEmpty) {
+    if (!run.id||run.status === "completed"&& messages[messages.length - 1].content===""||run.status!=="completed") {
       startPolling();
     }
-  }, [run.status, startPolling, isLastMessageContentEmpty]);
+  }, [run.status, startPolling,run.id,messages]);
 
   //   AVVIA RUN----------------------------------------------------------------
   const handleCreate = async () => {
@@ -161,7 +160,7 @@ export const NewChatBubble= () => {
       console.log("New run:", newRun, newRun.id);
       setRun(newRun.NewRun);
 
-      // await fetchMessages();
+      await fetchMessages();
     } catch (error) {
       console.error(error);
     } finally {
@@ -246,9 +245,7 @@ export const NewChatBubble= () => {
                     <div className="space-y-1.5">
                       {message.content ? (
                         <div>
-                          <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
                             <ChatMessage key={message.id} message={message} />
-                          </p>
                         </div>
                       ) : (
                         <>
@@ -272,11 +269,7 @@ export const NewChatBubble= () => {
                   <div className="flex justify-end items-center grow text-end space-y-3">
                     <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
                       {message?.content ? (
-                        <p className="text-sm text-white">
-                          {" "}
                           <ChatMessage key={message.id} message={message} />
-                          {/* {message?.content}{" "} */}
-                        </p>
                       ) : (
                         <>
                           <div className="flex">

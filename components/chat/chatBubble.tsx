@@ -260,9 +260,7 @@ useEffect(()=>{
                   <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
                     <div className="space-y-1.5">
                       {message.content ? (
-                        <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
                           <ChatMessage key={message.id} message={message} />
-                        </p>
                       ) : (
                         <>
                           <div className="flex">
@@ -285,11 +283,9 @@ useEffect(()=>{
                   <div className="flex justify-end items-center grow text-end space-y-3">
                     <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
                       {message?.content ? (
-                        <p className="text-sm text-white">
-                          {" "}
+                       
                           <ChatMessage key={message.id} message={message} />
-                          {/* {message?.content}{" "} */}
-                        </p>
+                        
                       ) : (
                         <>
                           <div className="flex">
