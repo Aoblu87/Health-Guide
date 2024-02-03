@@ -1,26 +1,31 @@
 "use client";
-import { messagesAtom, runAtom, threadAtom, threadIdAtom } from "@/atoms";
+import { chatListAtom, messagesAtom, runAtom, threadAtom, threadIdAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ChatMessage } from "./chatMessage";
-export default function ChatBubble() {
-  const { chatId } = useParams();
+import { useMarkdown } from '@/hooks/useMarkdown'; // Assicurati che il percorso sia corretto
+import getCookies from "@/app/helper/getCookies";
+
+export const NewChatBubble= () => {
+    const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-
+  const router= useRouter
   const { login } = useContext(LoginContext);
-
+  
   const { data: session } = useSession();
   // Atom State
   const [thread] = useAtom(threadAtom);
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
-
+  const [newChatTitle, setNewChatTitle] = useAtom(chatListAtom);
+  
+  const contentHtml = useMarkdown(messages.content);
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -34,6 +39,8 @@ export default function ChatBubble() {
   console.log(`Thread state:${chatId}`);
   console.log(`Run ID from RUN state:${run?.id}`);
 
+
+  
   // CLEAN UP POLLING
   useEffect(() => {
     // Clean up polling on unmountnpm
@@ -119,19 +126,18 @@ export default function ChatBubble() {
 
     setPollingIntervalId(intervalId);
   }, [run.id, setRun, threadId]);
-  const lastMessageContent = messages[messages.length - 1].content;
-  const isLastMessageContentEmpty = lastMessageContent === "";
 
-  // useEffect(()=>{
-  //   fetchMessages();
-  // },[fetchMessages]);
+
+  useEffect(()=>{
+    fetchMessages();
+  },[fetchMessages, setMessages, run]);
 
   useEffect(() => {
     // Inizia il polling solo se il run non è completato
-    if (run.status === "completed" && isLastMessageContentEmpty) {
+    if (!run.id||run.status === "completed"&& messages[messages.length - 1].content===""||run.status!=="completed") {
       startPolling();
     }
-  }, [run.status, startPolling, isLastMessageContentEmpty]);
+  }, [run.status, startPolling,run.id,messages]);
 
   //   AVVIA RUN----------------------------------------------------------------
   const handleCreate = async () => {
@@ -158,7 +164,7 @@ export default function ChatBubble() {
       console.log("New run:", newRun, newRun.id);
       setRun(newRun.NewRun);
 
-      // await fetchMessages();
+      await fetchMessages();
     } catch (error) {
       console.error(error);
     } finally {
@@ -198,18 +204,36 @@ export default function ChatBubble() {
       setSending(false);
     }
   };
-  useEffect(() => {
+  const scrollToBottom = () => {
     if (chatContainerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } =
-        chatContainerRef.current;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // 100 è una soglia per "vicino al fondo"
-
-      if (isAtBottom) {
-        // Scrolla automaticamente verso il basso solo se l'utente è vicino al fondo
-        chatContainerRef.current.scrollTop = scrollHeight;
-      }
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
+  };
+
+  // Effetto per scrollare alla fine ogni volta che i messaggi cambiano
+  useLayoutEffect(() => {
+    scrollToBottom();
+  }, [messages]); // Dipendenza dai messaggi per scatenare lo scroll
+  useEffect(() => {
+    const scrollToEnd = () => {
+      if (chatContainerRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // 100 è una soglia per "vicino al fondo"
+  
+        // Aggiorna lo scroll solo se l'utente si trova già in fondo alla chat
+        if (isAtBottom) {
+          chatContainerRef.current.scrollTop = scrollHeight;
+        }
+      }
+    };
+  
+    // Usa requestAnimationFrame per ritardare lo scroll fino al prossimo ciclo di painting
+    const animationFrameId = requestAnimationFrame(scrollToEnd);
+  
+    // Pulizia: annulla l'animation frame quando il componente si smonta o prima che l'effetto venga rieseguito
+    return () => cancelAnimationFrame(animationFrameId);
   }, [messages]); // Dipendenza da messages per aggiornare lo scroll ogni volta che cambiano
+  
 
   return (
     <>
@@ -237,9 +261,7 @@ export default function ChatBubble() {
                     <div className="space-y-1.5">
                       {message.content ? (
                         <div>
-                          <p className="mb-1.5 text-sm text-gray-800 dark:text-white">
                             <ChatMessage key={message.id} message={message} />
-                          </p>
                         </div>
                       ) : (
                         <>
@@ -263,11 +285,7 @@ export default function ChatBubble() {
                   <div className="flex justify-end items-center grow text-end space-y-3">
                     <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
                       {message?.content ? (
-                        <p className="text-sm text-white">
-                          {" "}
                           <ChatMessage key={message.id} message={message} />
-                          {/* {message?.content}{" "} */}
-                        </p>
                       ) : (
                         <>
                           <div className="flex">

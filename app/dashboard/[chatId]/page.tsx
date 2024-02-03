@@ -1,4 +1,4 @@
-import NewChatBubble from "@/components/chat/chatBubble";
+import {NewChatBubble} from "@/components/chat/NewChatBubble";
 
 export default function Page() {
   return (
