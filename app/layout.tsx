@@ -1,4 +1,4 @@
-import { inter } from "@/app/fonts";
+import { roboto } from "@/app/fonts";
 import "@/app/globals.css";
 import { authOptions } from "@/auth";
 import PrelineScript from "@/components/PrelineScript";
@@ -28,11 +28,11 @@ export default async function RootLayout({
     <LoginProvider>
       <SessionProvider>
         <html lang="en">
-          <body className={`${inter.className} antialiased`}>
-            <div className="h-full w-full flex flex-col gap-y-10 items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-400 to-blue-800">
-              <Navbar />
-              {children}{" "}
-            </div>
+          <body
+            className={`${roboto.className} antialiased bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-matisse-50 to-matisse-500`}
+          >
+            <Navbar />
+            {children}{" "}
           </body>
           <PrelineScript />
         </html>

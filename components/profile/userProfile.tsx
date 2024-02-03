@@ -8,27 +8,25 @@ import Image from "next/image";
 export default function UserProfile() {
   const { data: session } = useSession();
   interface UserInfo {
-    name: string | undefined;
-    avatar: string | undefined;
+    name: string | null;
+    avatar: string | null;
   }
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [userInfo, setUserInfo] = useAtom<UserInfo>(userInfoAtom);
 
-  // const [userInfo, setUserInfo] = useState<UserInfo>({
-  //   name: undefined,
-  //   avatar: undefined,
-  // });
   return (
     <div className="flex-shrink-0 group block">
       <div className="flex items-center">
         <Image
           className="inline-block flex-shrink-0 h-auto w-8 rounded-full"
-          src={session?.user.picture || userInfo.avatar || profilePhoto} // Use a default image if avatar is undefined
-          alt={session?.user.name || userInfo.name || "User"}
+          src={session?.user.picture || userInfo?.avatar || profilePhoto}
+          alt={session?.user.name || userInfo?.name || "User"}
+          width={32}
+          height={32}
         ></Image>
         <div className="ms-3">
           <h3 className="font-semibold text-gray-800 dark:text-white">
             {" "}
-            {session?.user.name || userInfo.name || "User"}
+            {session?.user.name || userInfo?.name || "User"}
           </h3>
         </div>
       </div>
@@ -36,5 +34,4 @@ export default function UserProfile() {
   );
 }
 {
- 
 }

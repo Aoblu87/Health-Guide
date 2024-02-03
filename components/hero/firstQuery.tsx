@@ -1,36 +1,18 @@
 "use client";
 import getCookies from "@/app/helper/getCookies";
-import {
-  chatListAtom,
-  messagesAtom,
-  runAtom,
-  runStateAtom,
-  threadIdAtom,
-} from "@/atoms";
-import { LoginContext } from "@/context/loginContext";
-import { useAtom } from "jotai";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  useTransition,
-} from "react";
+import { chatListAtom, messagesAtom, runAtom, threadIdAtom } from "@/atoms";
 import useAuthRedirect from "@/hooks/useAuthRedirect"; // Aggiusta il percorso in base alla struttura del tuo progetto
+import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 interface FirstQueryProps {
-  shortcutQuery: string; // Assicurati che questo tipo corrisponda al tipo di dato effettivo
+  shortcutQuery: string;
 }
 export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const router = useRouter();
   const [isReadyForNewSearch, setIsReadyForNewSearch] = useState(false);
   const [isReadyToNavigate, setIsReadyToNavigate] = useState(false);
-
-  const { login } = useContext(LoginContext);
-
-  const { data: session } = useSession();
 
   // Using Jotai atoms to manage global state
   const [messages, setMessages] = useAtom(messagesAtom);
@@ -41,8 +23,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   // Local state management for component
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState(""); // Aggiungi uno stato per gli errori
-  // const [runState, setRunState] = useAtom(runStateAtom);
+  const [error, setError] = useState("");
 
   const [fetching, setFetching] = useState(true);
   const path = useAuthRedirect();
@@ -50,7 +31,6 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   console.log(`Run ID state on HomePage:${run?.id}`);
   console.log(`RunState on HomePage:${run?.status}`);
   console.log(`Thread state on HomePage:${threadId}`);
-  // console.log(`Message state on HomePage:${JSON.stringify(messages)}`);
 
   // Fetch messages associated with the current thread
 
@@ -211,19 +191,12 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
     fetchMessages();
   }, [navigateToChat, fetchMessages]);
 
-  // useEffect(() => {
-  //   if (shortcutQuery) {
-  //     setMessage(shortcutQuery);
-  //     sendMessage(shortcutQuery);
-  //   }
-  // }, [shortcutQuery, sendMessage]);
   return (
     <>
       {" "}
       {error && <div className="error-message">{error}</div>}{" "}
-      {/* Mostra lerrore se presente */}
       <form onSubmit={sendMessage}>
-        <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-full shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
+        <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-full shadow-md shadow-gray-300 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
           <div className="flex-[1_0_0%]">
             <label
               id="query"
@@ -236,7 +209,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
               name="query"
               type="text"
               className="py-2.5 px-4 block w-full border-transparent rounded-full focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
-              placeholder="Message"
+              placeholder="Find an open pharmacy"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />

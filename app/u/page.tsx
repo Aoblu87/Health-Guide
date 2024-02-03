@@ -1,8 +1,7 @@
 import Footer from "@/components/footer";
 import { Hero } from "@/components/hero/hero";
-import Sidebar from "./_components/sidebar";
 
-export default function Home() {
+export default function Page() {
   return (
     <>
       <Hero />

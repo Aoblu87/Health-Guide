@@ -1,28 +1,19 @@
 "use client";
 import Animation from "@/components/ui/animation";
-import { LoginContext } from "@/context/loginContext";
-import { useSession } from "next-auth/react";
-import { useContext, useState } from "react";
-import {FirstQuery} from "./firstQuery";
+import { useState } from "react";
+import { FirstQuery } from "./firstQuery";
 
 export const Hero = () => {
-  const { login } = useContext(LoginContext);
-
-  const { data: session } = useSession();
   const [shortcutQuery, setShortcutQuery] = useState("");
   // Quando il bottone viene cliccato, impostiamo lo stato shortCutQuery
   const handleShortcut = (query: string) => {
     setShortcutQuery(query);
   };
+
+  // lg:ps-64
   return (
     <>
-      <div
-        className={`${
-          session || login
-            ? "relative flex lg:ps-64"
-            : "relative flex md:justify-center "
-        }`}
-      >
+      <div className="relative flex">
         <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 sm:py-24 md:py-9 mt-4 mb-2">
           <div className="text-center">
             <Animation />
@@ -33,7 +24,7 @@ export const Hero = () => {
               {/* <!-- SVG Element --> */}
               <div className="hidden md:block absolute top-0 end-0 -translate-y-12 translate-x-20">
                 <svg
-                  className="w-16 h-auto text-orange-500"
+                  className="w-16 h-auto text-tanPlan-100"
                   width="121"
                   height="135"
                   viewBox="0 0 121 135"
@@ -65,7 +56,7 @@ export const Hero = () => {
               {/* <!-- SVG Element --> */}
               <div className="hidden md:block absolute bottom-0 start-0 translate-y-10 -translate-x-32">
                 <svg
-                  className="w-40 h-auto text-cyan-500"
+                  className="w-40 h-auto text-veriBerri-700"
                   width="347"
                   height="188"
                   viewBox="0 0 347 188"
