@@ -7,19 +7,30 @@ import {
   runStateAtom,
   threadIdAtom,
 } from "@/atoms";
+import { LoginContext } from "@/context/loginContext";
 import { useAtom } from "jotai";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
+import useAuthRedirect from "@/hooks/useAuthRedirect"; // Aggiusta il percorso in base alla struttura del tuo progetto
+
 interface FirstQueryProps {
   shortcutQuery: string; // Assicurati che questo tipo corrisponda al tipo di dato effettivo
 }
 export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [init, setInit] = useState(false);
   const [isReadyForNewSearch, setIsReadyForNewSearch] = useState(false);
   const [isReadyToNavigate, setIsReadyToNavigate] = useState(false);
 
+  const { login } = useContext(LoginContext);
+
+  const { data: session } = useSession();
 
   // Using Jotai atoms to manage global state
   const [messages, setMessages] = useAtom(messagesAtom);
@@ -34,6 +45,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   // const [runState, setRunState] = useAtom(runStateAtom);
 
   const [fetching, setFetching] = useState(true);
+  const path = useAuthRedirect();
 
   console.log(`Run ID state on HomePage:${run?.id}`);
   console.log(`RunState on HomePage:${run?.status}`);
@@ -77,20 +89,17 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
       });
       console.log("Formatted Messages:", formattedMessages);
       setMessages(formattedMessages);
-
-      
     } catch (error: any) {
       console.error("Fetching messages error", error);
     } finally {
       setFetching(false);
-setIsReadyForNewSearch(true)
+      setIsReadyForNewSearch(true);
     }
   }, [setMessages, threadId, setFetching]);
 
   // Effect to clear data on component mount
 
   useEffect(() => {
-  
     setThreadId("");
     setNewChatTitle("");
     setMessages("");
@@ -98,108 +107,109 @@ setIsReadyForNewSearch(true)
   }, [setThreadId, setMessages, setRun, setNewChatTitle]);
 
   // // Function to send first message
-  async function sendMessage (e: any) {
-      e.preventDefault();
-      setFetching(true);
-      setError(""); // Reset error state on new request
+  async function sendMessage(e: any) {
+    e.preventDefault();
+    setFetching(true);
+    setError(""); // Reset error state on new request
 
-      if (!message) {
-        console.error("Message not found");
-      }
-
-      setSending(true);
-
-      try {
-        const response = await fetch(
-          `/api/openai/run/createRun-thread?assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN&message=${message}`
-        );
-        if (!response.ok) {
-          throw new Error(`Errore nella richiesta: ${response.status}`);
-        }
-        // Handle response and update state accordingly
-
-        const newMessage = await response.json();
-
-        console.log("newMessage", newMessage);
-
-
-        //Set new data
-        setRun(newMessage);
-        setThreadId(newMessage.thread_id);
-        // setMessages({ ...messages, newMessage });
-        // setRunState(newMessage.status);
-        // await createTitleThread();
-        setIsReadyToNavigate(true);
-
-      } catch (error) {
-        console.error("Errore durante la chiamata Fetch:", error);
-      } finally {
-        setSending(false);
-
-      }
+    if (!message) {
+      console.error("Message not found");
     }
-    // Function to create a thread title and add to history
-    const createTitleThread = useCallback(async () => {
-      if (!message) {
-        console.error("Message not found");
+
+    setSending(true);
+
+    try {
+      const response = await fetch(
+        `/api/openai/run/createRun-thread?assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN&message=${message}`
+      );
+      if (!response.ok) {
+        throw new Error(`Errore nella richiesta: ${response.status}`);
       }
-      const titleThread = message.substring(0, 20);
-      console.log("title thread: ", titleThread);
-  
-      const dataCookies = await getCookies("userId");
-      const userId = dataCookies?.value;
-      if (!userId) {
-        console.error("UserId not found in cookies");
-        return;
-      }
-  
-      const newThread = {
-        threadId: threadId,
-        title: titleThread,
-        user: {
-          _id: userId,
+      // Handle response and update state accordingly
+
+      const newMessage = await response.json();
+
+      console.log("newMessage", newMessage);
+
+      //Set new data
+      setRun(newMessage);
+      setThreadId(newMessage.thread_id);
+      // setMessages({ ...messages, newMessage });
+      // setRunState(newMessage.status);
+      // await createTitleThread();
+      setIsReadyToNavigate(true);
+    } catch (error) {
+      console.error("Errore durante la chiamata Fetch:", error);
+    } finally {
+      setSending(false);
+    }
+  }
+  // Function to create a thread title and add to history
+  const createTitleThread = useCallback(async () => {
+    if (!message) {
+      console.error("Message not found");
+    }
+    const titleThread = message.substring(0, 20);
+    console.log("title thread: ", titleThread);
+
+    const dataCookies = await getCookies("userId");
+    const userId = dataCookies?.value;
+    if (!userId) {
+      console.error("UserId not found in cookies");
+      return;
+    }
+
+    const newThread = {
+      threadId: threadId,
+      title: titleThread,
+      user: {
+        _id: userId,
+      },
+    };
+
+    try {
+      const response = await fetch("/api/chatHistory", {
+        headers: {
+          "Content-Type": "application/json",
         },
-      };
-  
-      try {
-        const response = await fetch("/api/chatHistory", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify(newThread),
-        });
-        if (!response.ok) {
-          throw new Error(`Errore nella richiesta: ${response.status}`);
-        }
-        const newThreadCreated = await response.json();
-        console.log(newThreadCreated);
-        
-  
-          setNewChatTitle(newThreadCreated);
-        
-      } catch (error: any) {
-        console.error("Errore durante la chiamata Create title thread≈:", error);
-      } finally {
-        setMessage("");
-        setSending(false);
+        method: "POST",
+        body: JSON.stringify(newThread),
+      });
+      if (!response.ok) {
+        throw new Error(`Errore nella richiesta: ${response.status}`);
       }
-    }, [message, threadId, setNewChatTitle]);
+      const newThreadCreated = await response.json();
+      console.log(newThreadCreated);
 
-const navigateToChat= useCallback(() =>{ if (threadId && isReadyForNewSearch && isReadyToNavigate) {
-  createTitleThread();
-  router.push(`/dashboard/${threadId}`);
-  // Resetta gli stati per la prossima ricerca
-  setIsReadyForNewSearch(false);
-  setIsReadyToNavigate(false); // Assicurati di resettare anche questo
-}    }, [threadId, isReadyForNewSearch, isReadyToNavigate, createTitleThread, router]);
+      setNewChatTitle(newThreadCreated);
+    } catch (error: any) {
+      console.error("Errore durante la chiamata Create title thread≈:", error);
+    } finally {
+      setMessage("");
+      setSending(false);
+    }
+  }, [message, threadId, setNewChatTitle]);
 
-    useEffect(() => {
-     navigateToChat()
-     fetchMessages();
-    }, [navigateToChat,fetchMessages]);
-    
-    
+  const navigateToChat = useCallback(() => {
+    if (threadId && isReadyForNewSearch && isReadyToNavigate) {
+      createTitleThread();
+      router.push(`${path}/dashboard/${threadId}`);
+      setIsReadyForNewSearch(false);
+      setIsReadyToNavigate(false); // Assicurati di resettare anche questo
+    }
+  }, [
+    threadId,
+    isReadyForNewSearch,
+    isReadyToNavigate,
+    createTitleThread,
+    router,
+    path,
+  ]);
+
+  useEffect(() => {
+    navigateToChat();
+    fetchMessages();
+  }, [navigateToChat, fetchMessages]);
 
   // useEffect(() => {
   //   if (shortcutQuery) {

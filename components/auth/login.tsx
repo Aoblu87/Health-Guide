@@ -22,7 +22,7 @@ export default function Login() {
                 type="button"
                 className="flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:border-transparent dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 onClick={() => {
-                  router.push("/");
+                  router.push("/u");
                 }}
               >
                 <span className="sr-only">Close</span>

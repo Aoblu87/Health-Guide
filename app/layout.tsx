@@ -2,12 +2,11 @@ import { inter } from "@/app/fonts";
 import "@/app/globals.css";
 import { authOptions } from "@/auth";
 import PrelineScript from "@/components/PrelineScript";
-import Menu from "@/components/menu";
 import SessionProvider from "@/context/authContext";
 import { LoginProvider } from "@/context/loginContext";
-import { ThemeProvider } from "@/context/themeContext";
-import '@radix-ui/themes/styles.css';
+import "@radix-ui/themes/styles.css";
 import { getServerSession } from "next-auth";
+import Navbar from "./public/_components/navbar";
 
 require("dotenv").config();
 
@@ -26,17 +25,18 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="en">
-      <LoginProvider>
-        <body className={`${inter.className} antialiased`}>
-          <SessionProvider>
-
-            <Menu />
-            <ThemeProvider>{children}</ThemeProvider>
-          </SessionProvider>
-        </body>
-      </LoginProvider>
-      <PrelineScript />
-    </html>
+    <LoginProvider>
+      <SessionProvider>
+        <html lang="en">
+          <body className={`${inter.className} antialiased`}>
+            <div className="h-full w-full flex flex-col gap-y-10 items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-400 to-blue-800">
+              <Navbar />
+              {children}{" "}
+            </div>
+          </body>
+          <PrelineScript />
+        </html>
+      </SessionProvider>
+    </LoginProvider>
   );
 }

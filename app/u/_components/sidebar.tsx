@@ -5,8 +5,8 @@ import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import { ChatHistory } from "../chatHistory/chatHistory";
-import ProfileDropdown from "../profile/profileDropdown";
+import { ChatHistory } from "../../../components/chatHistory/chatHistory";
+import ProfileDropdown from "../../../components/profile/profileDropdown";
 
 export default function Sidebar() {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
@@ -59,7 +59,7 @@ export default function Sidebar() {
             <button
               onClick={() => {
                 setThreadId("");
-                router.push("/");
+                router.push("/u");
               }}
               className="flex-none text-xl font-semibold dark:text-white"
               aria-label="Brand"
@@ -90,7 +90,7 @@ export default function Sidebar() {
                   className="flex items-center gap-x-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   onClick={() => {
                     setThreadId("");
-                    router.push("/");
+                    router.push("/u");
                   }}                >
                   <svg
                     className="flex-shrink-0 w-4 h-4"

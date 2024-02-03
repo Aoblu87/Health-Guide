@@ -1,22 +1,35 @@
 "use client";
-import { chatListAtom, messagesAtom, runAtom, threadAtom, threadIdAtom } from "@/atoms";
+import {
+  chatListAtom,
+  messagesAtom,
+  runAtom,
+  threadAtom,
+  threadIdAtom,
+} from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
+import { useMarkdown } from "@/hooks/useMarkdown"; // Assicurati che il percorso sia corretto
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { ChatMessage } from "./chatMessage";
-import { useMarkdown } from '@/hooks/useMarkdown'; // Assicurati che il percorso sia corretto
-import getCookies from "@/app/helper/getCookies";
+import { Skeleton } from "../ui/skeleton";
 
-export const NewChatBubble= () => {
-    const { chatId } = useParams();
+export const NewChatBubble = () => {
+  const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const router= useRouter
+  const router = useRouter;
   const { login } = useContext(LoginContext);
-  
+
   const { data: session } = useSession();
   // Atom State
   const [thread] = useAtom(threadAtom);
@@ -24,8 +37,8 @@ export const NewChatBubble= () => {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
   const [newChatTitle, setNewChatTitle] = useAtom(chatListAtom);
-  
-  const contentHtml = useMarkdown(messages.content);
+
+  const contentHtml = useMarkdown(messages?.content);
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -39,8 +52,6 @@ export const NewChatBubble= () => {
   console.log(`Thread state:${chatId}`);
   console.log(`Run ID from RUN state:${run?.id}`);
 
-
-  
   // CLEAN UP POLLING
   useEffect(() => {
     // Clean up polling on unmountnpm
@@ -125,19 +136,23 @@ export const NewChatBubble= () => {
     }, 4000);
 
     setPollingIntervalId(intervalId);
-  }, [run.id, setRun, threadId]);
+  }, [run?.id, setRun, threadId]);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     fetchMessages();
-  },[fetchMessages, setMessages, run]);
+  }, [fetchMessages, setMessages, run]);
 
   useEffect(() => {
     // Inizia il polling solo se il run non è completato
-    if (!run.id||run.status === "completed"&& messages[messages.length - 1].content===""||run.status!=="completed") {
+    if (
+      !run?.id ||
+      (run?.status === "completed" &&
+        messages[messages.length - 1].content === "") ||
+      run?.status !== "completed"
+    ) {
       startPolling();
     }
-  }, [run.status, startPolling,run.id,messages]);
+  }, [run?.status, startPolling, run?.id, messages]);
 
   //   AVVIA RUN----------------------------------------------------------------
   const handleCreate = async () => {
@@ -206,7 +221,8 @@ export const NewChatBubble= () => {
   };
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   };
 
@@ -217,31 +233,31 @@ export const NewChatBubble= () => {
   useEffect(() => {
     const scrollToEnd = () => {
       if (chatContainerRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+        const { scrollTop, scrollHeight, clientHeight } =
+          chatContainerRef.current;
         const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // 100 è una soglia per "vicino al fondo"
-  
+
         // Aggiorna lo scroll solo se l'utente si trova già in fondo alla chat
         if (isAtBottom) {
           chatContainerRef.current.scrollTop = scrollHeight;
         }
       }
     };
-  
+
     // Usa requestAnimationFrame per ritardare lo scroll fino al prossimo ciclo di painting
     const animationFrameId = requestAnimationFrame(scrollToEnd);
-  
+
     // Pulizia: annulla l'animation frame quando il componente si smonta o prima che l'effetto venga rieseguito
     return () => cancelAnimationFrame(animationFrameId);
   }, [messages]); // Dipendenza da messages per aggiornare lo scroll ogni volta che cambiano
-  
 
   return (
     <>
       <div
         ref={chatContainerRef}
-        className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 rounded-lg"
+        className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 p-6 rounded-lg"
       >
-        {messages && (
+        {messages ? (
           <ul className="space-y-5">
             {messages?.map((message: any) =>
               message.role === "assistant" ? (
@@ -261,7 +277,7 @@ export const NewChatBubble= () => {
                     <div className="space-y-1.5">
                       {message.content ? (
                         <div>
-                            <ChatMessage key={message.id} message={message} />
+                          <ChatMessage key={message.id} message={message} />
                         </div>
                       ) : (
                         <>
@@ -285,7 +301,7 @@ export const NewChatBubble= () => {
                   <div className="flex justify-end items-center grow text-end space-y-3">
                     <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
                       {message?.content ? (
-                          <ChatMessage key={message.id} message={message} />
+                        <ChatMessage key={message.id} message={message} />
                       ) : (
                         <>
                           <div className="flex">
@@ -307,6 +323,8 @@ export const NewChatBubble= () => {
               )
             )}
           </ul>
+        ) : (
+          <Skeleton />
         )}
       </div>
       <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4 lg:ps-64">
@@ -390,4 +408,4 @@ export const NewChatBubble= () => {
       </div>
     </>
   );
-}
+};

@@ -1,11 +1,11 @@
 "use client";
 import { useSession } from "next-auth/react";
-import Navbar from "./home/navbar";
-import Sidebar from "./sidebar/sidebar";
+import Navbar from "../app/public/_components/navbar";
+import Sidebar from "../app/u/_components/sidebar";
 import { useContext } from "react";
 import { LoginContext } from "@/context/loginContext";
-import NewSidebarl from "./sidebar/newSidebar";
-import NewSidebar from "./sidebar/newSidebar";
+import NewSidebarl from "../app/u/_components/newSidebar";
+import NewSidebar from "../app/u/_components/newSidebar";
 
 export default function Menu() {
   const { login } = useContext(LoginContext);
