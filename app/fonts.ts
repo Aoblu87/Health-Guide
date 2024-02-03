@@ -1,7 +1,7 @@
-import { Inter, Roboto_Serif } from 'next/font/google'
+import { Inter, Roboto } from 'next/font/google'
  
-export const roboto = Roboto_Serif({
-    weight: ['400', '700','600','800','300'],
+export const roboto = Roboto({
+    weight: ['300', '400','500','700','900'],
     style: ['normal', 'italic', ],
     subsets: ['latin'],
     display: 'swap',

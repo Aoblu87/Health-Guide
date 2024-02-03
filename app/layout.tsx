@@ -29,7 +29,7 @@ export default async function RootLayout({
       <SessionProvider>
         <html lang="en">
           <body
-            className={`${roboto.className} antialiased bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-matisse-50 to-matisse-500`}
+            className={`${roboto.className} bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-matisse-50 to-matisse-300`}
           >
             <Navbar />
             {children}{" "}

@@ -5,6 +5,7 @@ import { useChatHistory } from "@/hooks/useChatHistory";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { ChatItem } from "./chatItem";
+import SkeletonSimple from "../ui/skeletonSimple";
 
 export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
   const [renameChat, setRenameChat] = useState(false);
@@ -49,20 +50,17 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
   return (
     <>
       {loading && !chatList ? (
-        <div
-          className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-gray-400 rounded-full"
-          role="status"
-          aria-label="loading"
-        >
-          <span className="sr-only">Loading...</span>
+        <div className="p-3">
+
+          <SkeletonSimple/>
         </div>
       ) : (
-        <div>
-          <ul className="max-h-[500px] overflow-y-auto">
+        <div className="max-h-[500px] overflow-y-auto py-3">
+          <ul >
             {todayChats.length > 0 && (
               <>
                 <div>
-                  <p className="font-semibold">Today</p>
+                  <p className="subpixel-antialiased">Today</p>
                 </div>
                 {todayChats.map((chat) => (
                   <ChatItem
@@ -83,7 +81,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
             {yesterdayChats.length > 0 && (
               <>
                 <div>
-                  <p className="font-semibold">Yesterday</p>
+                  <p className="subpixel-antialiased">Yesterday</p>
                 </div>
                 {yesterdayChats.map((chat) => (
                   <ChatItem
@@ -104,7 +102,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
             {olderChats.length > 0 && (
               <>
                 <div>
-                  <p className="font-semibold">Last week</p>
+                  <p className="subpixel-antialiased">Last week</p>
                 </div>
                 {olderChats.map((chat) => (
                   <ChatItem

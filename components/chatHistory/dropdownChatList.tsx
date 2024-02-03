@@ -1,9 +1,7 @@
+import { useChatHistory } from "@/hooks/useChatHistory";
 import { Menu, Transition } from "@headlessui/react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Fragment } from "react";
-import { ChatItemProps } from "@/app/types/chatSidebar";
-import { ConfirmRenameChat } from "../dropdownChat/confirmRenameChat";
-import { useChatHistory } from "@/hooks/useChatHistory";
 
 interface DropdownChatListProps {
   handlerRenameState: (data: boolean) => void;
@@ -68,13 +66,13 @@ export const DropdownChatList: React.FC<DropdownChatListProps> = ({
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-matisse-50 shadow-lg ring-1 ring-black/5 focus:outline-none">
             <div className="px-1 py-1 ">
               <Menu.Item>
                 {({ active }) => (
                   <button
                     className={`${
-                      active ? "bg-matisse-500 text-white" : "text-gray-900"
+                      active ? "bg-matisse-100 text-black" : "text-gray-900"
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                     onClick={() => {
                       handlerRenameState(true);
@@ -102,8 +100,8 @@ export const DropdownChatList: React.FC<DropdownChatListProps> = ({
               {({ active }) => (
                 <button
                   className={`${
-                    active ? "bg-matisse-500 text-white" : "text-gray-900"
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    active ? "bg-matisse-100 text-black" : "text-gray-900"
+                  } group flex w-full items-center rounded-2xl px-2 py-2 text-sm`}
                 >
                   {active ? (
                     <MoveActiveIcon
@@ -125,7 +123,7 @@ export const DropdownChatList: React.FC<DropdownChatListProps> = ({
                 {({ active }) => (
                   <button
                     className={`${
-                      active ? "bg-matisse-500 text-white" : "text-gray-900"
+                      active ? "bg-matisse-100 text-black" : "text-gray-900"
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                     onClick={handleDelete}
                   >
@@ -162,8 +160,8 @@ function EditInactiveIcon(props: any) {
     >
       <path
         d="M4 13V16H7L16 7L13 4L4 13Z"
-        fill="##9fbcda"
-        stroke="#A78BFA"
+        fill="#f4f7fb"
+        stroke="#000000"
         strokeWidth="2"
       />
     </svg>
@@ -180,8 +178,8 @@ function EditActiveIcon(props: any) {
     >
       <path
         d="M4 13V16H7L16 7L13 4L4 13Z"
-        fill="#8B5CF6"
-        stroke="#C4B5FD"
+        fill="#f4f7fb"
+        stroke="#000000"
         strokeWidth="2"
       />
     </svg>
@@ -231,8 +229,8 @@ function DeleteInactiveIcon(props: any) {
         y="6"
         width="10"
         height="10"
-        fill="##9fbcda"
-        stroke="#A78BFA"
+        fill="#f4f7fb"
+        stroke="#000000"
         strokeWidth="2"
       />
       <path d="M3 6H17" stroke="#A78BFA" strokeWidth="2" />
@@ -254,8 +252,8 @@ function DeleteActiveIcon(props: any) {
         y="6"
         width="10"
         height="10"
-        fill="#8B5CF6"
-        stroke="#C4B5FD"
+        fill="#f4f7fb"
+        stroke="#000000"
         strokeWidth="2"
       />
       <path d="M3 6H17" stroke="#C4B5FD" strokeWidth="2" />
