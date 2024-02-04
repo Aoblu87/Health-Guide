@@ -22,6 +22,7 @@ const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
 const _chatListAtom = atom<Chat[]>([]);
 const _userInfoAtom = atom<UserInfo[]>([]);
+export const sidebarToggleAtom = atom < boolean>(true);
 
 export const showComponentAtom = atom<boolean | null>(false);
 

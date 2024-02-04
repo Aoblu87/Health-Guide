@@ -46,7 +46,7 @@ export default function LoginForm(props: any) {
       setLogin(true);
 
       // Redirect to home/dashboard
-      router.push("/u");
+      router.push("/");
     } catch (error) {
       console.log("Error fetching data:", error);
     } finally {

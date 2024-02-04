@@ -45,7 +45,7 @@ export default function SignUp() {
         setLogin(true);
       }
       const data = await response.json();
-      router.push("/u");
+      router.push("/");
     } catch (error) {
       console.log("Error fetching data:", error);
     } finally {
@@ -67,7 +67,7 @@ export default function SignUp() {
                 className="flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:border-transparent dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 data-hs-overlay="#hs-sign-up-modal"
                 onClick={() => {
-                  router.push("/u");
+                  router.push("/");
                 }}
               >
                 <span className="sr-only">Close</span>

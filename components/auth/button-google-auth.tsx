@@ -5,7 +5,7 @@ export default function ButtonGoogleAuth(){
     const handleOAuthSignIn = () => {
         try {
          
-          signIn('google', { callbackUrl: '/u', });
+          signIn('google', { callbackUrl: '/', });
         } catch (error) {
          console.log("Error login:", error);
         }

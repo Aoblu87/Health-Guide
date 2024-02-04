@@ -7,8 +7,8 @@ import SessionProvider from "@/context/authContext";
 import { LoginProvider } from "@/context/loginContext";
 import "@radix-ui/themes/styles.css";
 import { getServerSession } from "next-auth";
-import Navbar from "./u/_components/navbar";
-import NewSidebar from "./u/_components/newSidebar";
+import Navbar from "./_components/navbar";
+import NewSidebar from "./_components/newSidebar";
 
 require("dotenv").config();
 
@@ -34,19 +34,14 @@ export default async function RootLayout({
             className={`${roboto.className} bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-matisse-50 to-matisse-100`}
           >
             <div className="grid grid-cols-[0.6fr_1.4fr_1fr] grid-rows-[0.3fr_2.5fr_0.2fr] gap-0 min-h-screen">
-              <div className="col-start-1 col-end-2 row-start-1 row-end-4 bg-blue-500">
+              <div className="col-start-1 col-end-2 row-start-1 row-end-4 ">
                 <NewSidebar />
               </div>
-              <div className="col-start-1 col-end-4 row-start-1 row-end-2 bg-red-500">
+              <div className="col-start-1 col-end-4 row-start-1 row-end-2 ">
                 <Navbar />
               </div>
-              {children}
-
-              <div className="col-start-1 col-end-4 row-start-3 row-end-4 bg-green-500">
-                <Footer />
-              </div>
+              {children} <Footer />
             </div>
-            {children}{" "}
           </body>
           <PrelineScript />
         </html>

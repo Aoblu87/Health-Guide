@@ -1,7 +1,6 @@
 "use client";
 import getCookies from "@/app/helper/getCookies";
 import { chatListAtom, messagesAtom, runAtom, threadIdAtom } from "@/atoms";
-import useAuthRedirect from "@/hooks/useAuthRedirect"; // Aggiusta il percorso in base alla struttura del tuo progetto
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -26,7 +25,6 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const [error, setError] = useState("");
 
   const [fetching, setFetching] = useState(true);
-  const path = useAuthRedirect();
 
   console.log(`Run ID state on HomePage:${run?.id}`);
   console.log(`RunState on HomePage:${run?.status}`);
@@ -173,7 +171,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const navigateToChat = useCallback(() => {
     if (threadId && isReadyForNewSearch && isReadyToNavigate) {
       createTitleThread();
-      router.push(`${path}/dashboard/${threadId}`);
+      router.push(`/dashboard/${threadId}`);
       setIsReadyForNewSearch(false);
       setIsReadyToNavigate(false); // Assicurati di resettare anche questo
     }
@@ -183,7 +181,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
     isReadyToNavigate,
     createTitleThread,
     router,
-    path,
+    
   ]);
 
   useEffect(() => {

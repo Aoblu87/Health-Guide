@@ -1,6 +1,6 @@
 "use client";
-import { ChatHistory } from "@/app/u/_components/sidebar/chatHistory/chatHistory";
-import { threadIdAtom } from "@/atoms";
+import { ChatHistory } from "@/app/_components/sidebar/chatHistory/chatHistory";
+import { sidebarToggleAtom, threadIdAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
 import { Dialog, Transition } from "@headlessui/react";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -11,9 +11,10 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import ProfilePopover from "./sidebar/profile/profilePopover";
 
 export default function NewSidebar() {
-  let [isOpen, setIsOpen] = useState(true);
+  let [isOpen, setIsOpen] = useAtom(sidebarToggleAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
-
+  const { login } = useContext(LoginContext);
+  const { data: session } = useSession();
   const router = useRouter();
 
   function closeModalButton() {
@@ -34,7 +35,7 @@ export default function NewSidebar() {
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [setIsOpen]);
 
   function closeModal() {
     setIsOpen(false);
@@ -43,12 +44,10 @@ export default function NewSidebar() {
   function openModal() {
     setIsOpen(true);
   }
-  const { login } = useContext(LoginContext);
 
-  const { data: session } = useSession();
   return session || login ? (
     <>
-      <div className="relative z-20 ms-2">
+      <div className="relative z-30 ms-2">
         <button
           type="button"
           onClick={openModal}
@@ -64,7 +63,7 @@ export default function NewSidebar() {
         <Dialog
           static
           as="div"
-          className="relative z-10 lg:block"
+          className="relative z-30 lg:block"
           onClose={closeModal}
         >
           <Transition.Child
@@ -98,7 +97,7 @@ export default function NewSidebar() {
                     <button
                       onClick={() => {
                         setThreadId("");
-                        router.push("/u");
+                        router.push("/");
                       }}
                       className="flex-none shadow-2xl "
                       aria-label="Brand"
@@ -122,7 +121,7 @@ export default function NewSidebar() {
                       className="flex items-center w-full gap-x-3 py-2 ps-1 text-sm text-slate-700 rounded-lg hover:bg-matisse-200 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                       onClick={() => {
                         setThreadId("");
-                        router.push("/u");
+                        router.push("/");
                       }}
                     >
                       <svg

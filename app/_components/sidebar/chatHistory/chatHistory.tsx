@@ -5,7 +5,7 @@ import { useChatHistory } from "@/hooks/useChatHistory";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { ChatItem } from "./chatItem";
-import SkeletonSimple from "../../../../../components/ui/skeletonSimple";
+import SkeletonSimple from "../../../../components/ui/skeletonSimple";
 
 export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
   const [renameChat, setRenameChat] = useState(false);
