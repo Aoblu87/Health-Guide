@@ -17,6 +17,7 @@ module.exports = {
           light: "#ebe7fc",
           dark: "#2a272a",
         },
+        currentColor: "#1f2937",
         seabrook: {
           50: "#cfd3f6",
           100: "#b8c3ef",

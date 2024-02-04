@@ -4,21 +4,16 @@ import { cookies } from "next/headers";
 import profilePhoto from "@/public/assets/person-circle.svg";
 
 export default async function getUserInfo() {
-  // Try to get the 'name' and 'avatar' cookies
+  // Assumi che queste funzioni restituiscano i valori dei cookie o null se non esistono
   const nameCookie = cookies().get("name");
   const avatarCookie = cookies().get("photo");
   const userIdCookie = cookies().get("userId");
 
-
-  // Check if the cookies exist and are strings
-  const name = typeof nameCookie === "string" ? nameCookie : "User";
-  const avatar =
-    typeof avatarCookie === "object" ? avatarCookie : { profilePhoto }; // Provide a path to a default avatar image
-
+  // Crea l'oggetto userInfo pulito con i valori diretti
   const userInfo = {
-    name: nameCookie?.value,
-    avatar: avatarCookie?.value,
-    id: userIdCookie?.value
+    name: nameCookie?.value || "User", // Fallback a "User" se non esiste
+    avatar: avatarCookie?.value || profilePhoto, // Fornisci l'URL diretto come fallback
+    id: userIdCookie?.value || "", // Fallback a stringa vuota se non esiste
   };
 
   return userInfo;

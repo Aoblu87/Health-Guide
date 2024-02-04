@@ -1,5 +1,5 @@
 "use client";
-import ProfileDropdown from "@/components/profile/profileDropdown";
+import ProfileDropdown from "@/app/u/_components/sidebar/profile/profileDropdown";
 import { LoginContext } from "@/context/loginContext";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

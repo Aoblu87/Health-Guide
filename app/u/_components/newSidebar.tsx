@@ -1,13 +1,13 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useContext, useState } from "react";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useRouter } from "next/navigation";
-import { LoginContext } from "@/context/loginContext";
-import { useAtom } from "jotai";
+import { ChatHistory } from "@/app/u/_components/sidebar/chatHistory/chatHistory";
 import { threadIdAtom } from "@/atoms";
+import { LoginContext } from "@/context/loginContext";
+import { Dialog, Transition } from "@headlessui/react";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
-import { ChatHistory } from "@/components/chatHistory/chatHistory";
-import ProfileDropdown from "@/components/profile/profileDropdown";
+import { useRouter } from "next/navigation";
+import { Fragment, useContext, useState } from "react";
+import ProfilePopover from "./sidebar/profile/profilePopover";
 
 export default function NewSidebar() {
   let [isOpen, setIsOpen] = useState(true);
@@ -64,7 +64,7 @@ export default function NewSidebar() {
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel className="w-full h-full max-w-md transform overflow-hidden rounded-2xl lg:bg-transparent bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-matisse-50 to-matisse-200 p-3 text-left align-middle shadow-xl  transition-all">
+                <Dialog.Panel className="w-full h-full max-w-md transform rounded-2xl lg:bg-transparent bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white to-matisse-50 p-3 text-left align-middle shadow-xl  transition-all">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 "
@@ -91,41 +91,37 @@ export default function NewSidebar() {
                       </svg>{" "}
                     </button>
                   </Dialog.Title>
-                  <Dialog.Description className="space-y-1.5">
-                        <button
-                          className="flex items-center w-full gap-x-3 py-2 ps-1 text-sm text-slate-700 rounded-lg hover:bg-matisse-200 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                          onClick={() => {
-                            setThreadId("");
-                            router.push("/u");
-                          }}
-                        >
-                          <svg
-                            className="flex-shrink-0 w-4 h-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M5 12h14"></path>
-                            <path d="M12 5v14"></path>
-                          </svg>
-                          New chat
-                        </button>
-                      <hr />
-                        <ChatHistory />
+                  <div className="space-y-1.5">
+                    <button
+                      className="flex items-center w-full gap-x-3 py-2 ps-1 text-sm text-slate-700 rounded-lg hover:bg-matisse-200 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                      onClick={() => {
+                        setThreadId("");
+                        router.push("/u");
+                      }}
+                    >
+                      <svg
+                        className="flex-shrink-0 w-4 h-4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M5 12h14"></path>
+                        <path d="M12 5v14"></path>
+                      </svg>
+                      New chat
+                    </button>
+                    <hr />
+                    <ChatHistory />
                     {/* Footer */}
-                    <div className="flex flex-col fixed bottom-0 w-full">
-                      <div className="p-1 border-t border-gray-200 dark:border-gray-700">
-                          <ProfileDropdown />
-                      </div>
-                    </div>
-                  </Dialog.Description>
-                 
+
+                    <ProfilePopover />
+                  </div>
 
                   <div className="mt-4">
                     {/* <button

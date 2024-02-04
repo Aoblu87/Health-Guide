@@ -1,18 +1,32 @@
 "use client";
+import getUserInfo from "@/app/helper/getUserInfo";
 import { userInfoAtom } from "@/atoms";
 import profilePhoto from "@/public/assets/person-circle.svg";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export default function UserProfile() {
   const { data: session } = useSession();
-  interface UserInfo {
-    name: string | null;
-    avatar: string | null;
-  }
-  const [userInfo, setUserInfo] = useAtom<UserInfo>(userInfoAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
+  useEffect(() => {
+    async function fetchUserInfo() {
+      try {
+        const userInfo = await getUserInfo();
+        if (!userInfo) {
+          throw new Error("User info not found");
+        } else {
+          setUserInfo(userInfo);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    }
+
+    fetchUserInfo();
+  }, [setUserInfo]);
   return (
     <div className="flex-shrink-0 group block">
       <div className="flex items-center">
@@ -24,7 +38,7 @@ export default function UserProfile() {
           height={32}
         ></Image>
         <div className="ms-3">
-          <h3 className="font-semibold text-gray-800 dark:text-white">
+          <h3 className="text-base font-medium text-grey-800 dark:text-white">
             {" "}
             {session?.user.name || userInfo?.name || "User"}
           </h3>

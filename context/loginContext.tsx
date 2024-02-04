@@ -32,9 +32,7 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
     }
   }, []);
   console.log(login);
-  // useEffect(() => {
-  //   localStorage.setItem("login", login.toString());
-  // }, [login]);
+ 
 
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
