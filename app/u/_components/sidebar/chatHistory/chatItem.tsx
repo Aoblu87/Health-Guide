@@ -3,6 +3,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { ConfirmRenameChat } from "./dropdownChat/confirmRenameChat";
 import { DropdownChatList } from "./dropdownChatList";
+import {MenuDropdownList} from "./menuDropdownList";
+import ProfilePopover from "../profile/profilePopover";
 
 export const ChatItem: React.FC<ChatItemProps> = ({
   chat,
@@ -47,7 +49,7 @@ export const ChatItem: React.FC<ChatItemProps> = ({
           />
         ) : (
           <>
-            <DropdownChatList
+            <MenuDropdownList
               handlerRenameInput={() =>
                 chat._id && handlerRenameInput(chat._id)
               }
@@ -56,6 +58,15 @@ export const ChatItem: React.FC<ChatItemProps> = ({
               loading={loading}
               setLoading={setLoading}
             />
+            {/* <DropdownChatList
+              handlerRenameInput={() =>
+                chat._id && handlerRenameInput(chat._id)
+              }
+              handlerRenameState={handlerRenameState}
+              id={chat._id || ""}
+              loading={loading}
+              setLoading={setLoading}
+            /> */}
           </>
         )}
       </div>

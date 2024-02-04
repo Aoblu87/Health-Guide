@@ -1,10 +1,9 @@
 "use client";
-import ProfileDropdown from "@/app/u/_components/sidebar/profile/profileDropdown";
 import { LoginContext } from "@/context/loginContext";
+import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import { useAtom } from "jotai";
 
 import { threadIdAtom } from "@/atoms";
 
@@ -47,21 +46,17 @@ export default function Navbar() {
         </div>
 
         <div className="flex flex-row justify-end min-h-12">
-          {session || login ? (
-            <ProfileDropdown />
-          ) : (
-            <div className="flex items-center gap-x-2 sm:ms-auto">
-              <button
-                type="button"
-                className="flex items-center gap-x-2 font-medium text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500"
-                onClick={() => {
-                  router.push("/auth/login");
-                }}
-              >
-                Sign in <span aria-hidden="true">&rarr;</span>
-              </button>
-            </div>
-          )}
+          <div className="flex items-center gap-x-2 sm:ms-auto">
+            <button
+              type="button"
+              className="flex items-center gap-x-2 font-medium text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500"
+              onClick={() => {
+                router.push("/auth/login");
+              }}
+            >
+              Sign in <span aria-hidden="true">&rarr;</span>
+            </button>
+          </div>
         </div>
       </nav>
     </header>
