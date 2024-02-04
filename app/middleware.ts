@@ -8,8 +8,8 @@ export async function middleware(req: NextRequest) {
   const path = url.pathname;
 
   // Definisci i percorsi consentiti per utenti autenticati e non autenticati
-  const allowedPathsForGuests = ['/', '/public/dashboard'];
-  const allowedPathsForAuthenticatedUsers = ['/u', '/u/dashboard'];
+  const allowedPathsForGuests = ['/', '/public/dashboard', '/auth/login', '/auth/signup'];
+  const allowedPathsForAuthenticatedUsers = ['/u', '/u/dashboard','/u/profile',];
 
   // Se l'utente è autenticato e tenta di accedere a pagine non consentite, reindirizzalo a '/u'
   if (session && !allowedPathsForAuthenticatedUsers.includes(path)) {
@@ -31,6 +31,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/((?!_next).*)', // Esclude file statici sotto /_next
-    '/api/:path*', // Esclude tutte le API routes
+    
   ],
 };

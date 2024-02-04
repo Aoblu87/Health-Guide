@@ -14,13 +14,14 @@ export default function Navbar() {
   const router = useRouter();
 
   const { data: session } = useSession();
-  console.log("session", session);
-  return session || login ? null : (
-    <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-20 w-full bg-white border-b border-gray-200 text-sm py-3 dark:bg-gray-800 dark:border-gray-700">
+  return <header className="flex flex-wrap sm:justify-start sm:flex-nowrap z-10 w-full bg-white border-b border-gray-200 text-sm py-3 dark:bg-gray-800 dark:border-gray-700">
+  
+  {/* <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-20 w-full bg-white border-b border-gray-200 text-sm py-3 dark:bg-gray-800 dark:border-gray-700"> */}
       <nav
         className="relative flex justify-between max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8"
         aria-label="Global"
       >
+        
         <div className="flex items-center justify-between">
           <button
             className="flex-none text-xl font-semibold dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
@@ -60,5 +61,5 @@ export default function Navbar() {
         </div>
       </nav>
     </header>
-  );
+ 
 }

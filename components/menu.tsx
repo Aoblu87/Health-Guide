@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-import Navbar from "../app/public/_components/navbar";
+import Navbar from "../app/u/_components/navbar";
 import Sidebar from "../app/u/_components/sidebar";
 import { useContext } from "react";
 import { LoginContext } from "@/context/loginContext";

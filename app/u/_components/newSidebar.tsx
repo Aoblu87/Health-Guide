@@ -1,3 +1,4 @@
+"use client";
 import { ChatHistory } from "@/app/u/_components/sidebar/chatHistory/chatHistory";
 import { threadIdAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
@@ -6,7 +7,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import ProfilePopover from "./sidebar/profile/profilePopover";
 
 export default function NewSidebar() {
@@ -14,9 +15,27 @@ export default function NewSidebar() {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
 
   const router = useRouter();
-  const { login } = useContext(LoginContext);
 
-  const { data: session } = useSession();
+  function closeModalButton() {
+    // Controlla se la larghezza della finestra è inferiore a 1024px prima di chiudere il modale
+    if (window.innerWidth < 1024) {
+      setIsOpen(false);
+    }
+  }
+
+  //Check the viewport size and setIsOpen to true when the viewport size is lg
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   function closeModal() {
     setIsOpen(false);
   }
@@ -24,10 +43,12 @@ export default function NewSidebar() {
   function openModal() {
     setIsOpen(true);
   }
+  const { login } = useContext(LoginContext);
 
-  return (
+  const { data: session } = useSession();
+  return session || login ? (
     <>
-      <div className="inline-block  ">
+      <div className="relative z-20 ms-2">
         <button
           type="button"
           onClick={openModal}
@@ -35,12 +56,17 @@ export default function NewSidebar() {
             isOpen ? "hidden" : ""
           }`}
         >
-          <MenuIcon />
+          <MenuIcon className="w-35 h-35" />
         </button>
       </div>
 
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog
+          static
+          as="div"
+          className="relative z-10 lg:block"
+          onClose={closeModal}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -53,8 +79,8 @@ export default function NewSidebar() {
             <div className="fixed inset-0" />
           </Transition.Child>
 
-          <div className="fixed top-0 start-0 bottom-4 z-[60] w-64 lg:block">
-            <div className="flex h-full items-center justify-center  text-center rounded-2xl my-2 ms-3">
+          <div className="fixed top-0 start-0 bottom-2 lg:bottom-0 z-[60] w-64 lg:block">
+            <div className="flex h-full items-center justify-center  text-center rounded-2xl my-1 lg:m-0">
               <Transition.Child
                 as={Fragment}
                 enter="transition ease-in-out duration-300 transform"
@@ -64,7 +90,7 @@ export default function NewSidebar() {
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel className="w-full h-full max-w-md transform rounded-2xl lg:bg-transparent bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white to-matisse-50 p-3 text-left align-middle shadow-xl  transition-all">
+                <Dialog.Panel className="w-full h-full  max-w-md transform rounded-2xl lg:rounded-none lg:bg-transparent bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white to-matisse-50 p-3 text-left align-middle shadow-xl  transition-all">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 "
@@ -123,15 +149,7 @@ export default function NewSidebar() {
                     <ProfilePopover />
                   </div>
 
-                  <div className="mt-4">
-                    {/* <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
-                    >
-                      Got it, thanks!
-                    </button> */}
-                  </div>
+                  <div className="mt-4"></div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -139,5 +157,5 @@ export default function NewSidebar() {
         </Dialog>
       </Transition>
     </>
-  );
+  ) : null;
 }

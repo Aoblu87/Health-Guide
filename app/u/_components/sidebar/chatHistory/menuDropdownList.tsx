@@ -1,4 +1,3 @@
-"use client";
 import { useChatHistory } from "@/hooks/useChatHistory";
 import { useFloating } from "@floating-ui/react";
 import { offset } from "@floating-ui/react-dom";
@@ -15,17 +14,17 @@ interface MenuDropdownListProps {
 }
 
 export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
-  //   handlerRenameState,
-  //   handlerRenameInput,
-  //   loading,
-  //   setLoading,
+  handlerRenameState,
+  handlerRenameInput,
+  loading,
+  setLoading,
   id,
 }) => {
   const { fetchChatHistory } = useChatHistory();
 
   //Delete Chat
   const handleDelete = async () => {
-    // setLoading(true);
+    setLoading(true);
     const confirmDeletion = confirm("Are you sure you want to delete?");
     if (!confirmDeletion) {
       return;
@@ -49,7 +48,7 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
     } catch (error: any) {
       console.error("Fetching delete error", error);
     } finally {
-      //   setLoading(false);
+      setLoading(false);
     }
   };
   const { refs, floatingStyles } = useFloating({
@@ -86,13 +85,13 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
               className="absolute z-99 mt-3 w-full max-w-sm -translate-x-1/2 px-4 sm:px-0 lg:max-w-3xl"
             >
               <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
-                <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-2">
+                <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-1">
                   {/* EDIT */}
                   <button
                     className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
                     onClick={() => {
-                      //   handlerRenameState(true);
-                      //   handlerRenameInput(id);
+                      handlerRenameState(true);
+                      handlerRenameInput(id);
                     }}
                   >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
