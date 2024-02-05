@@ -31,7 +31,6 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
       setOlderChats(older);
     }
   }, [chatList]);
-
   //Memorizzo nuovo titolo nello stato titleChat
   const handlerTitleChat = (data: string) => {
     setTitleChat(data);

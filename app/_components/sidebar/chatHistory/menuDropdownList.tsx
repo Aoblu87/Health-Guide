@@ -84,17 +84,17 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
               style={{ ...floatingStyles, zIndex: 99 }}
               className="absolute z-99 mt-3 w-full max-w-sm -translate-x-1/2 px-4 sm:px-0 lg:max-w-3xl"
             >
-              <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
-                <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-1">
+              <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5">
+                <div className="relative grid gap-5 bg-matisse-50 p-2 lg:grid-cols-1">
                   {/* EDIT */}
                   <button
-                    className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
                     onClick={() => {
                       handlerRenameState(true);
                       handlerRenameInput(id);
                     }}
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
+                    <div className="flex h-10 w-5 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -115,7 +115,7 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
                     </div>
                   </button>
                   {/* SHARE */}
-                  <button className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50">
+                  <button className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +138,7 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
                   </button>
                   {/* DELETE */}
                   <button
-                    className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
                     onClick={handleDelete}
                   >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
@@ -158,7 +158,7 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
                       </svg>
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">Share</p>
+                      <p className="text-sm font-medium text-gray-900">Delete</p>
                     </div>
                   </button>
                 </div>

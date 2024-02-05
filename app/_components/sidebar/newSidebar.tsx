@@ -89,8 +89,8 @@ export default function NewSidebar() {
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel className="w-full h-full  max-w-md transform rounded-2xl lg:rounded-none lg:bg-transparent bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white to-matisse-50 p-3 text-left align-middle shadow-xl  transition-all">
-                  <div className="flex items-center justify-between text-ellipsis gap-x-3 py-1  px-2 text-sm text-slate-700 rounded-lg  hover:bg-matisse-100  dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                <Dialog.Panel className="w-full h-full  max-w-md transform rounded-2xl lg:rounded-none bg-matisse-50 p-3 text-left align-middle shadow-xl  transition-all">
+                  <div className="flex items-center justify-between text-ellipsis gap-x-3 py-1  px-2 text-sm text-slate-700 rounded-lg  hover:bg-white  dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                     <div className="text-lg font-medium leading-6 text-gray-900 ms-1">
                       <button
                         onClick={() => {

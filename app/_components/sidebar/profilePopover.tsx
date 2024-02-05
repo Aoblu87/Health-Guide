@@ -39,7 +39,7 @@ export default function ProfilePopover() {
             <>
               <Popover.Button
                 ref={refs.setReference}
-                className={`group inline-flex items-center rounded-2xl px-3 py-2 mb-2 w-full text-base font-medium  bg-transparent text-gray-800 shadow-sm hover:bg-matisse-100 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+                className={`group inline-flex items-center rounded-2xl px-3 py-2 mb-2 w-full text-base font-medium  bg-transparent text-gray-800 shadow-sm hover:bg-white disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
               >
                 <UserProfile />{" "}
               </Popover.Button>
@@ -57,15 +57,15 @@ export default function ProfilePopover() {
                   style={floatingStyles}
                   className="absolute z-70 mt-3 w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
                 >
-                  <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
-                    <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-1">
+                  <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5">
+                    <div className="relative grid gap-5 bg-matisse-50 p-2 lg:grid-cols-1">
                       {solutions.map((item) => (
                         <a
                           key={item.name}
                           href={item.href}
-                          className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                          className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring "
                         >
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
+                          <div className="flex h-10 w-5 shrink-0 items-center justify-center sm:h-12 sm:w-12">
                             <item.icon aria-hidden="true" />
                           </div>
                           <div className="ml-4">
@@ -75,11 +75,11 @@ export default function ProfilePopover() {
                           </div>
                         </a>
                       ))}
-                    </div>
-                    <div className="relative grid gap-8 bg-gray-50 p-7 lg:grid-cols-2">
+                    
                       <SignOut />
                     </div>
                   </div>
+                
                 </Popover.Panel>
               </Transition>
             </>

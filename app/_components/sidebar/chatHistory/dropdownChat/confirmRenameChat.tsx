@@ -66,7 +66,7 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
   return (
     <div className="flex">
       <button
-        className="flex items-center gap-x-3.5 py-2 px-3 rounded-md text-sm text-gray-800  focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+        className="flex items-center gap-x-3.5 py-2 px-2 rounded-2xl hover:bg-white text-sm text-gray-800  focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
         onClick={handleChangeTitle}
       >
         <svg
@@ -81,7 +81,7 @@ export const ConfirmRenameChat: React.FC<ConfirmRenameChatProps> = ({
         </svg>
       </button>
       <button
-        className="flex items-center gap-x-3.5 py-2 px-1 rounded-lg text-sm text-gray-800  focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+        className="flex items-center gap-x-3.5 py-2 px-2  rounded-2xl hover:bg-white text-sm text-gray-800  focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
         onClick={() => {
           handlerRenameState(false);
         }}

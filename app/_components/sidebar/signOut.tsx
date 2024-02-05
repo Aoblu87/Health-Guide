@@ -38,9 +38,9 @@ export default function SignOut() {
     <button
       type="button"
       onClick={logout}
-      className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+      className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring "
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
+      <div className="flex h-10 w-5 shrink-0 items-center justify-center sm:h-12 sm:w-12">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
