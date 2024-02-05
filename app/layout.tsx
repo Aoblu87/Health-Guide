@@ -2,13 +2,13 @@ import { inter } from "@/app/fonts";
 import "@/app/globals.css";
 import { authOptions } from "@/auth";
 import PrelineScript from "@/components/PrelineScript";
-import Footer from "@/components/footer";
+import Footer from "@/app/_components/footer";
 import SessionProvider from "@/context/authContext";
 import { LoginProvider } from "@/context/loginContext";
 import "@radix-ui/themes/styles.css";
 import { getServerSession } from "next-auth";
 import Navbar from "./_components/navbar";
-import NewSidebar from "./_components/newSidebar";
+import NewSidebar from "./_components/sidebar/newSidebar";
 
 require("dotenv").config();
 

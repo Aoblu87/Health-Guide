@@ -3,7 +3,7 @@ import { LoginContext } from "@/context/loginContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import ButtonGoogleAuth from "./button-google-auth";
+import ButtonGoogleAuth from "../../_components/button-google-auth";
 
 export default function SignUp() {
   const [loading, setLoading] = useState(false);

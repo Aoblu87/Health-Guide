@@ -8,7 +8,7 @@ import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Fragment, useContext, useEffect } from "react";
-import ProfilePopover from "./sidebar/profile/profilePopover";
+import ProfilePopover from "./profilePopover";
 
 export default function NewSidebar() {
   let [isOpen, setIsOpen] = useAtom(sidebarToggleAtom);

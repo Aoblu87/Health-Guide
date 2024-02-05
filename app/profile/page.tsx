@@ -1,4 +1,4 @@
-import Profile from "@/app/_components/sidebar/profile/profile";
+import Profile from "@/app/profile/_components/profile";
 
 export default function Page() {
   return <Profile />;

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ButtonGoogleAuth from "./button-google-auth";
+import ButtonGoogleAuth from "../../_components/button-google-auth";
 import LoginForm from "./login-form";
 
 export default function Login() {
