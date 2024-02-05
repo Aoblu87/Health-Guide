@@ -1,6 +1,3 @@
-import defaultTheme from "tailwindcss/defaultTheme";
-const { blackA, mauve, violet } = require("@radix-ui/colors");
-
 module.exports = {
   darkMode: ["class", "media"], // Abilita sia la classe che la preferenza media per la modalità dark
   content: [
@@ -80,9 +77,6 @@ module.exports = {
           900: "#263b54",
           950: "#1a2637",
         },
-        ...blackA,
-        ...mauve,
-        ...violet,
       },
       keyframes: {
         slideDownAndFade: {
@@ -113,5 +107,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"),require('@tailwindcss/forms')],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
 };
