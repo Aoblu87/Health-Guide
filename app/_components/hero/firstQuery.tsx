@@ -14,21 +14,21 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const [isReadyToNavigate, setIsReadyToNavigate] = useState(false);
 
   // Using Jotai atoms to manage global state
-  const [messages, setMessages] = useAtom(messagesAtom);
+  const [, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
-  const [run, setRun] = useAtom(runAtom);
-  const [newChatTitle, setNewChatTitle] = useAtom(chatListAtom);
+  const [, setRun] = useAtom(runAtom);
+  const [, setNewChatTitle] = useAtom(chatListAtom);
 
   // Local state management for component
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
-  const [fetching, setFetching] = useState(true);
+  const [, setFetching] = useState(true);
 
-  console.log(`Run ID state on HomePage:${run?.id}`);
-  console.log(`RunState on HomePage:${run?.status}`);
-  console.log(`Thread state on HomePage:${threadId}`);
+  // console.log(`Run ID state on HomePage:${run?.id}`);
+  // console.log(`RunState on HomePage:${run?.status}`);
+  // console.log(`Thread state on HomePage:${threadId}`);
 
   // Fetch messages associated with the current thread
 
@@ -37,7 +37,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
     setError(""); // Reset error state on new request
 
     if (!threadId) {
-      console.log("no ThreadID");
+      // console.log("no ThreadID");
       return;
     }
 
@@ -50,12 +50,11 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
       }
       const getMessages = await response.json();
 
-      console.log("Data Response fetch messages:", getMessages);
+      // console.log("Data Response fetch messages:", getMessages);
       // Sort messages by created_at timestamp in ascending order
       const sortedMessages = getMessages.messages.sort(
         (a: any, b: any) => a.created_at - b.created_at
       );
-      console.log("Sorted messages:", sortedMessages);
       // Format the sorted messages
       const formattedMessages = sortedMessages.map((msg: any) => {
         return {
@@ -65,7 +64,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
             .join(" "),
         };
       });
-      console.log("Formatted Messages:", formattedMessages);
+      // console.log("Formatted Messages:", formattedMessages);
       setMessages(formattedMessages);
     } catch (error: any) {
       console.error("Fetching messages error", error);
@@ -107,14 +106,12 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
 
       const newMessage = await response.json();
 
-      console.log("newMessage", newMessage);
+      // console.log("newMessage", newMessage);
 
       //Set new data
       setRun(newMessage);
       setThreadId(newMessage.thread_id);
-      // setMessages({ ...messages, newMessage });
-      // setRunState(newMessage.status);
-      // await createTitleThread();
+
       setIsReadyToNavigate(true);
     } catch (error) {
       console.error("Errore durante la chiamata Fetch:", error);
@@ -128,7 +125,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
       console.error("Message not found");
     }
     const titleThread = message.substring(0, 20);
-    console.log("title thread: ", titleThread);
+    // console.log("title thread: ", titleThread);
 
     const dataCookies = await getCookies("userId");
     const userId = dataCookies?.value;
@@ -157,7 +154,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
         throw new Error(`Errore nella richiesta: ${response.status}`);
       }
       const newThreadCreated = await response.json();
-      console.log(newThreadCreated);
+      // console.log(newThreadCreated);
 
       setNewChatTitle(newThreadCreated);
     } catch (error: any) {
@@ -173,7 +170,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
       createTitleThread();
       router.push(`/dashboard/${threadId}`);
       setIsReadyForNewSearch(false);
-      setIsReadyToNavigate(false); // Assicurati di resettare anche questo
+      setIsReadyToNavigate(false);
     }
   }, [
     threadId,
@@ -181,7 +178,6 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
     isReadyToNavigate,
     createTitleThread,
     router,
-    
   ]);
 
   useEffect(() => {

@@ -72,7 +72,6 @@ export const authOptions: NextAuthOptions = {
           httpOnly: true,
           // maxAge: 48 * 60 * 60,
         });
-          // cookies.set('userId', user._id)
 
     
 

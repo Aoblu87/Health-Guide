@@ -1,4 +1,4 @@
-import { ChatItemProps } from "@/app/types/chatSidebar";
+import { ChatItemProps } from "@/types/chatSidebar";
 import Link from "next/link";
 import React, { useState } from "react";
 import { ConfirmRenameChat } from "./dropdownChat/confirmRenameChat";

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
     //Check if the password is correct
     const isPasswordCorrect = await bcryptjs.compare(password, user.password);
-    if (!isPasswordCorrect) { 
+    if (!isPasswordCorrect) {
       return NextResponse.json({ error: "Invalid password" }, { status: 404 });
     } else {
       //Create a payload object with the id of the user
@@ -33,10 +33,11 @@ export async function POST(request: NextRequest) {
       });
 
       // Create a JSON response indicating successful login
-      const response = NextResponse.json(
-        { message: "Login successfull" },
-        { status: 200 }
-      );
+      const response = NextResponse.json({
+        message: "Login successful",
+        success: true,
+        isAuthenticated: true,
+      });
 
       // const response = NextResponse.json({
       //   message: "Login successful",
@@ -49,14 +50,13 @@ export async function POST(request: NextRequest) {
       response.cookies.set("token", token, {
         httpOnly: true,
         maxAge: 48 * 60 * 60,
-
       });
       response.cookies.set({
         name: "userId",
         value: user._id,
         httpOnly: true,
       });
-    
+
       response.cookies.set({
         name: "name",
         value: user.firstName,
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         value: user.photo,
         httpOnly: true,
       });
- 
+
       return response;
     }
   } catch (error: any) {

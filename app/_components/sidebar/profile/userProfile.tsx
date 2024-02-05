@@ -10,7 +10,6 @@ import { useEffect } from "react";
 export default function UserProfile() {
   const { data: session } = useSession();
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-
   useEffect(() => {
     async function fetchUserInfo() {
       try {

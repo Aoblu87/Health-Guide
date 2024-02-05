@@ -1,13 +1,14 @@
 "use client";
 import {
-  chatListAtom,
   messagesAtom,
   runAtom,
+  sidebarToggleAtom,
   threadAtom,
   threadIdAtom,
+  userInfoAtom,
 } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
-import { useMarkdown } from "@/hooks/useMarkdown"; // Assicurati che il percorso sia corretto
+import profilePhoto from "@/public/assets/person-circle.svg";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
@@ -21,36 +22,31 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChatMessage } from "./chatMessage";
 import { Skeleton } from "../ui/skeleton";
+import { ChatMessage } from "./chatMessage";
 
 export const NewChatBubble = () => {
   const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const router = useRouter;
   const { login } = useContext(LoginContext);
+  const [userInfo] = useAtom(userInfoAtom);
 
   const { data: session } = useSession();
   // Atom State
-  const [thread] = useAtom(threadAtom);
   const [messages, setMessages] = useAtom(messagesAtom);
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
-  const [newChatTitle, setNewChatTitle] = useAtom(chatListAtom);
+  const [isOpen] = useAtom(sidebarToggleAtom);
 
-  const contentHtml = useMarkdown(messages?.content);
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-  const [fetching, setFetching] = useState(true);
-  const [creating, setCreating] = useState(false);
+  const [, setFetching] = useState(true);
+  const [, setCreating] = useState(false);
 
   const [pollingIntervalId, setPollingIntervalId] =
     useState<NodeJS.Timeout | null>(null);
 
-  console.log(`Messages state:${messages}`);
-  console.log(`Thread state:${chatId}`);
-  console.log(`Run ID from RUN state:${run?.id}`);
 
   // CLEAN UP POLLING
   useEffect(() => {
@@ -74,7 +70,7 @@ export const NewChatBubble = () => {
       }
       const getMessages = await response.json();
 
-      console.log("Data Response fetch messages:", getMessages);
+      // console.log("Data Response fetch messages:", getMessages);
       // Sort messages by created_at timestamp in ascending order
       const sortedMessages = getMessages.messages.sort(
         (a: any, b: any) => a.created_at - b.created_at
@@ -88,7 +84,7 @@ export const NewChatBubble = () => {
             .join(" "),
         };
       });
-      console.log("Formatted Messages:", formattedMessages);
+      // console.log("Formatted Messages:", formattedMessages);
       setMessages(formattedMessages);
 
       setMessage("");
@@ -116,8 +112,8 @@ export const NewChatBubble = () => {
           throw new Error(`Errore nella richiesta: ${response.status}`);
         }
         const updatedRun = await response.json();
-        console.log("Updated run:", updatedRun);
-        console.log("status run: ", updatedRun.run.status);
+        // console.log("Updated run:", updatedRun);
+        // console.log("status run: ", updatedRun.run.status);
         setRun(updatedRun.run);
 
         if (
@@ -164,19 +160,17 @@ export const NewChatBubble = () => {
         `/api/openai/run/create?threadId=${chatId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
       );
       if (!response.ok) {
-        // Gestisci qui l'errore specifico per run attivi
+        // Gestisco l'errore specifico per run attivi
         if (response.status === 400) {
           const errorData = await response.json();
           console.error("Run already active:", errorData.error);
-          // Qui potresti, ad esempio, mostrare un messaggio all'utente
-          // o gestire il run attivo in altro modo
-          // ...
-          return; // Interrompi l'esecuzione ulteriore in caso di errore
+
+          return;
         }
         throw new Error(`Errore nella richiesta: ${response.status}`);
       }
       const newRun = await response.json();
-      console.log("New run:", newRun, newRun.id);
+      // console.log("New run:", newRun, newRun.id);
       setRun(newRun.NewRun);
 
       await fetchMessages();
@@ -209,7 +203,7 @@ export const NewChatBubble = () => {
         throw new Error(`Errore nella richiesta: ${response.status}`);
       }
       const newMessage = await response.json();
-      console.log("Message sent", newMessage);
+      // console.log("Message sent", newMessage);
       setMessages([...messages, newMessage]);
       setMessage("");
       await handleCreate();
@@ -229,7 +223,7 @@ export const NewChatBubble = () => {
   // Effetto per scrollare alla fine ogni volta che i messaggi cambiano
   useLayoutEffect(() => {
     scrollToBottom();
-  }, [messages]); // Dipendenza dai messaggi per scatenare lo scroll
+  }, [messages]);
   useEffect(() => {
     const scrollToEnd = () => {
       if (chatContainerRef.current) {
@@ -249,86 +243,101 @@ export const NewChatBubble = () => {
 
     // Pulizia: annulla l'animation frame quando il componente si smonta o prima che l'effetto venga rieseguito
     return () => cancelAnimationFrame(animationFrameId);
-  }, [messages]); // Dipendenza da messages per aggiornare lo scroll ogni volta che cambiano
+  }, [messages]);
 
   return (
     <>
       <div
         ref={chatContainerRef}
-        className="flex flex-col h-full w-full max-h-[calc(100vh-250px)] mt-8  overflow-y-auto  md:p-6 p-6 rounded-lg"
+        className={`${
+          isOpen && (login || session) ? "col-start-2" : "col-start-1"
+        } container mx-auto col-end-4 row-start-2 row-end-3 w-full mt-8  lg:px-20 p-6 rounded-lg`}
       >
-        {messages ? (
-          <ul className="space-y-5">
-            {messages?.map((message: any) =>
-              message.role === "assistant" ? (
-                // Assistant Messages
-                <li
-                  className="flex ms-auto gap-x-2 sm:gap-x-4"
-                  key={message._id}
-                >
-                  <Image
-                    className="inline-block h-9 w-9 rounded-full"
-                    src={avatar}
-                    alt="Image Description"
-                    width={30}
-                    height={30}
-                  />
-                  <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
-                    <div className="space-y-1.5">
-                      {message.content ? (
-                        <div>
-                          <ChatMessage key={message.id} message={message} />
-                        </div>
-                      ) : (
-                        <>
-                          <div className="flex">
-                            <span className="sr-only">Loading...</span>
-                            <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                            <div className="h-2 w-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                            <div className="h-2 w-2 bg-black rounded-full animate-bounce"></div>
+        <div className="h-[calc(100vh-305px)] overflow-y-auto">
+          <ul className="space-y-8">
+            {messages ? (
+              messages.map((message: any) =>
+                message.role === "assistant" ? (
+                  // Assistant Messages
+                  <li
+                    className="flex ms-auto gap-x-2 sm:gap-x-4"
+                    key={message._id}
+                  >
+                    <Image
+                      className="inline-block h-9 w-9 rounded-full"
+                      src={avatar}
+                      alt="Image Description"
+                      width={30}
+                      height={30}
+                    />
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
+                      <div className="space-y-1.5">
+                        {message.content ? (
+                          <div>
+                            <ChatMessage key={message.id} message={message} />
                           </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              ) : (
-                // User Messages
-                <li
-                  className="flex ms-auto gap-x-2 sm:gap-x-4"
-                  key={message._id}
-                >
-                  <div className="flex justify-end items-center grow text-end space-y-3">
-                    <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
-                      {message?.content ? (
-                        <ChatMessage key={message.id} message={message} />
-                      ) : (
-                        <>
+                        ) : (
                           <div className="flex">
                             <span className="sr-only">Loading...</span>
-                            <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                            <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                            <div
+                              className="h-2 w-2 bg-slate-700 rounded-full animate-bounce"
+                              style={{ animationDelay: "-0.3s" }}
+                            ></div>
+                            <div
+                              className="h-2 w-2 mx-1 bg-slate-700 rounded-full animate-bounce"
+                              style={{ animationDelay: "-0.15s" }}
+                            ></div>
+                            <div className="h-2 w-2 bg-slate-700 rounded-full animate-bounce"></div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ) : (
+                  // User Messages
+                  <li
+                    className="flex ms-auto gap-x-2 sm:gap-x-4"
+                    key={message._id}
+                  >
+                    <div className="flex justify-end items-center grow text-end space-y-3">
+                      <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
+                        {message?.content ? (
+                          <ChatMessage key={message.id} message={message} />
+                        ) : (
+                          <div className="flex">
+                            <span className="sr-only">Loading...</span>
+                            <div
+                              className="h-2 w-2 bg-white rounded-full animate-bounce"
+                              style={{ animationDelay: "-0.3s" }}
+                            ></div>
+                            <div
+                              className="h-2 w-2 mx-1 bg-white rounded-full animate-bounce"
+                              style={{ animationDelay: "-0.15s" }}
+                            ></div>
                             <div className="h-2 w-2 bg-white rounded-full animate-bounce"></div>
                           </div>
-                        </>
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <span className="flex-shrink-0 inline-flex items-center justify-center h-[2.375rem] w-[2.375rem] rounded-full bg-gray-600">
-                    <span className="text-sm font-medium text-white leading-none">
-                      AZ
+                    <span className="flex-shrink-0 inline-flex items-center justify-center h-[2.375rem] w-[2.375rem] rounded-full">
+                      <Image
+                        className="inline-block h-9 w-9 rounded-full"
+                        src={userInfo?.avatar || profilePhoto}
+                        alt={userInfo?.name || "user"}
+                        width={32}
+                        height={32}
+                      ></Image>{" "}
                     </span>
-                  </span>
-                </li>
+                  </li>
+                )
               )
+            ) : (
+              <Skeleton />
             )}
           </ul>
-        ) : (
-          <Skeleton />
-        )}
-      </div>
-      <div className="flex flex-col my-8 fixed bottom-0 left-0 right-0 p-3 md:p-4 lg:ps-64">
-        <form onSubmit={sendMessage}>
+        </div>
+
+        <form className="mt-9 sticky bottom-0" onSubmit={sendMessage}>
           <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-full shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
             <div className="flex items-center cursor-pointer">
               {/* Button upload file */}
@@ -357,7 +366,7 @@ export const NewChatBubble = () => {
               <input
                 type="text"
                 className="py-2.5 px-4 block w-full border-transparent rounded-full focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
-                placeholder="Message"
+                placeholder="Find an open pharmacy"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />

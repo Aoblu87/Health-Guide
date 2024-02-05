@@ -31,8 +31,6 @@ export const LoginProvider = ({ children }: LoginProviderProps) => {
       console.error(error);
     }
   }, []);
-  console.log(login);
- 
 
   return (
     <LoginContext.Provider value={{ login, setLogin }}>

@@ -1,4 +1,4 @@
-import { Chat } from "@/app/types/chatSidebar";
+import { Chat } from "@/types/chatSidebar";
 
 function parseIsoDateTime(dtStr: string): Date {
   return new Date(dtStr);

@@ -1,19 +1,18 @@
 "use client";
 import { sidebarToggleAtom } from "@/atoms";
 import Animation from "@/components/ui/animation";
+import { LoginContext } from "@/context/loginContext";
 import { useAtom } from "jotai";
+import { useSession } from "next-auth/react";
 import { useContext, useState } from "react";
 import { FirstQuery } from "./firstQuery";
-import { LoginContext } from "@/context/loginContext";
-import { useSession } from "next-auth/react";
 
 export const Hero = () => {
   const [shortcutQuery, setShortcutQuery] = useState("");
-  const [isOpen, setIsOpen] = useAtom(sidebarToggleAtom);
+  const [isOpen] = useAtom(sidebarToggleAtom);
   const { login } = useContext(LoginContext);
-
   const { data: session } = useSession();
-  // Quando il bottone viene cliccato, impostiamo lo stato shortCutQuery
+
   const handleShortcut = (query: string) => {
     setShortcutQuery(query);
   };
@@ -22,7 +21,7 @@ export const Hero = () => {
     <>
       <div
         className={`${
-          isOpen? "col-start-2 " : "col-start-1"
+          isOpen && (login || session) ? "col-start-2" : "col-start-1"
         } col-end-4 row-start-2 row-end-3`}
       >
         <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 sm:py-24 md:py-9 mt-4 mb-2">
@@ -163,7 +162,6 @@ export const Hero = () => {
           </div>
         </div>
       </div>
-      {/* <!-- End Hero --> */}
     </>
   );
 };

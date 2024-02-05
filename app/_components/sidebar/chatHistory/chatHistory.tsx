@@ -1,5 +1,5 @@
 import categorizeChats from "@/app/helper/categorizeChats";
-import { Chat, ChatHistoryProps } from "@/app/types/chatSidebar";
+import { Chat, ChatHistoryProps } from "@/types/chatSidebar";
 import { chatListAtom } from "@/atoms";
 import { useChatHistory } from "@/hooks/useChatHistory";
 import { useAtom } from "jotai";
@@ -55,7 +55,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
           <SkeletonSimple/>
         </div>
       ) : (
-        <div className="max-h-[500px] overflow-y-auto py-3">
+        <div className="max-h-[515px] overflow-y-auto py-3">
           <ul >
             {todayChats.length > 0 && (
               <>
