@@ -4,7 +4,6 @@ import "@/app/globals.css";
 import { authOptions } from "@/auth";
 import SessionProvider from "@/context/authContext";
 import { LoginProvider } from "@/context/loginContext";
-import "@radix-ui/themes/styles.css";
 import { getServerSession } from "next-auth";
 import Navbar from "./_components/navbar";
 import NewSidebar from "./_components/sidebar/newSidebar";
