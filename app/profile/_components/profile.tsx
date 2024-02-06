@@ -13,42 +13,69 @@ import { UploadAvatar } from "./uploadAvatar";
 
 export default function Profile() {
   const { id } = useParams();
+  const userId = Array.isArray(id) ? id[0] : id;
+
   const router = useRouter();
   const { login } = useContext(LoginContext);
   const { data: session } = useSession();
   const [isOpen] = useAtom(sidebarToggleAtom);
   const [selectUpdate, setSelectUpdate] = useState(false);
-  const [fetching, setFetching] = useState(false);
-  const [updateProfile, setUpdateProfile] = useState(false);
+  const [fetchingUpdate, setFetchingUpdate] = useState(false);
   const [loadingAvatar, setLoadingAvatar] = useState(false);
-  const [fetchingUser, setfetchingUser] = useState(false);
-  const [updatedPhoto, setUpdatedPhoto] = useState("");
+  const [fetchingUser, setFetchingUser] = useState(false);
   const [getUser, setGetUser] = useState<User | null>(null);
+  const [userDataChanged, setUserDataChanged] = useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
-    firstName: "",
-    lastName: "",
   });
-  console.log(updateProfile);
   interface User {
     email: string;
     firstName: string;
     lastName: string;
+    avatar: string;
+    id: string;
   }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setFetchingUpdate(true);
+    try {
+      if (!id) {
+        console.error("ID utente non disponibile.");
+        setFetchingUpdate(false);
+        return;
+      }
+      const response = await fetch(`/api/users/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      if (!response.ok) {
+        throw new Error(`Errore nell'aggiornamento: ${response.statusText}`);
+      }
+      const userUpdated = await response.json();
+      setGetUser(userUpdated); // Aggiorna lo stato con i nuovi dati dell'utente
+      setUserDataChanged(true);
+      // console.log(userUpdated)
+    } catch (error) {
+      console.error("Fetch update user error");
+    } finally {
+      setFetchingUpdate(false);
+      setSelectUpdate(false);
+    }
   };
 
   const fetchUser = useCallback(async () => {
-    setfetchingUser(true);
+    setFetchingUser(true);
     try {
       if (!id) {
         throw new Error("User not found");
       }
 
-      const response = await fetch(`/api/users/${id}`);
+      const response = await fetch(`/api/users/${id}/`);
       if (!response.ok) {
         throw new Error("Error getting user");
       } else {
@@ -59,13 +86,19 @@ export default function Profile() {
     } catch (error) {
       console.log("Error fetchUser");
     } finally {
-      setfetchingUser(false);
+      setFetchingUser(false);
     }
   }, [id]);
 
   useEffect(() => {
     fetchUser();
-  }, [fetchUser]);
+  }, [fetchUser, setFetchingUpdate]);
+  useEffect(() => {
+    if (userDataChanged) {
+      fetchUser();
+      setUserDataChanged(false);
+    }
+  }, [fetchUser, userDataChanged]);
 
   return (
     <div
@@ -94,7 +127,7 @@ export default function Profile() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="w-6 h-6"
               >
@@ -108,7 +141,7 @@ export default function Profile() {
           </div>
         </div>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="grid sm:grid-cols-12 gap-2 sm:gap-6">
             <div className="sm:col-span-3">
               <label className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
@@ -119,7 +152,7 @@ export default function Profile() {
               <div className="shrink-0 relative">
                 <Image
                   className="inline-block h-16 w-16 rounded-full ring-2 ring-white dark:ring-gray-800"
-                  src={updatedPhoto !== "" ? updatedPhoto : profilePhoto}
+                  src={getUser?.avatar || profilePhoto}
                   alt="Image Description"
                   width={30}
                   height={30}
@@ -133,11 +166,13 @@ export default function Profile() {
                   </div>
                 )}
               </div>
-
-              <UploadAvatar
-                setLoadingAvatar={setLoadingAvatar}
-                setUpdatedPhoto={setUpdatedPhoto}
-              />
+              {selectUpdate && (
+                <UploadAvatar
+                  setLoadingAvatar={setLoadingAvatar}
+                  id={userId}
+                  setUserDataChanged={setUserDataChanged}
+                />
+              )}
             </div>
 
             <div className="sm:col-span-3">
@@ -151,10 +186,10 @@ export default function Profile() {
 
             <div className="sm:col-span-9">
               <div className="sm:flex">
-                <p className="py-2 px-3 pe-11 block w-full  -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
+                <p className="py-2 px-3 -mt-px -ms-px relative focus:z-10 focus:outline-none focus:ring-2  dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
                   {getUser?.firstName}
                 </p>
-                <p className="py-2 px-3 pe-11 block w-full  -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
+                <p className="py-2 px-3 -mt-px -ms-px relative focus:z-10 focus:outline-none focus:ring-2  dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
                   {getUser?.lastName}
                 </p>
               </div>
@@ -243,10 +278,10 @@ export default function Profile() {
                 Cancel
               </button>
               <button
-                type="button"
+                type="submit"
                 className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               >
-                {fetching ? (
+                {fetchingUpdate ? (
                   <div className="text-white">
                     <Spinner />
                   </div>

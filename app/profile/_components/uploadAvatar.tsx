@@ -12,22 +12,27 @@ interface CldUploadWidgetResult {
 }
 interface UploadAvatarProps {
   setLoadingAvatar: (state: boolean) => void;
-  setUpdatedPhoto: (state: string) => void;
+  id: string;
+  setUserDataChanged: (state: boolean) => void;
 }
 
 export const UploadAvatar: React.FC<UploadAvatarProps> = ({
   setLoadingAvatar,
-  setUpdatedPhoto,
+  id,
+  setUserDataChanged,
 }) => {
-  const [userInfo] = useAtom(userInfoAtom);
   const [errorUpload, setErrorUpload] = useState(false);
 
   async function handleSaveUrl(url: string) {
     setLoadingAvatar(true);
     setErrorUpload(false);
-
     try {
-      const response = await fetch(`/api/users/${userInfo.id}/avatar`, {
+      if (!id) {
+        console.error("ID utente non disponibile.");
+        setLoadingAvatar(false);
+        return;
+      }
+      const response = await fetch(`/api/users/${id}/avatar`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -43,12 +48,11 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
       }
 
       const data = await response.json();
-      // console.log("Upload file response:", data);
-      setLoadingAvatar(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoadingAvatar(false);
+      setUserDataChanged(true);
     }
   }
   return (
@@ -59,7 +63,6 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
         if (typedResults.info?.secure_url) {
           console.log("Url:", typedResults.info.secure_url);
           handleSaveUrl(typedResults.info.secure_url);
-          setUpdatedPhoto(typedResults.info.secure_url);
         }
       }}
     >

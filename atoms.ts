@@ -23,7 +23,7 @@ const _messagesAtom = atom<ThreadMessage[]>([]);
 const _chatListAtom = atom<Chat[]>([]);
 const _userInfoAtom = atom<UserInfo[]>([]);
 
-export const sidebarToggleAtom = atom < boolean>(true);
+export const sidebarToggleAtom = atom < boolean>(false);
 export const loginSignupModal = atom< boolean>(false);
 
 export const showComponentAtom = atom<boolean | null>(false);

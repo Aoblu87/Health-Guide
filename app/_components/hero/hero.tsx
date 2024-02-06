@@ -1,10 +1,11 @@
 "use client";
-import { sidebarToggleAtom } from "@/atoms";
+import getUserInfo from "@/app/helper/getUserInfo";
+import { sidebarToggleAtom, userInfoAtom } from "@/atoms";
 import Animation from "@/components/ui/animation";
 import { LoginContext } from "@/context/loginContext";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FirstQuery } from "./firstQuery";
 
 export const Hero = () => {
@@ -12,11 +13,15 @@ export const Hero = () => {
   const [isOpen] = useAtom(sidebarToggleAtom);
   const { login } = useContext(LoginContext);
   const { data: session } = useSession();
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
   const handleShortcut = (query: string) => {
     setShortcutQuery(query);
   };
-console.log("session",session)
+  useEffect(() => {
+    const userData = getUserInfo();
+    setUserInfo(userData);
+  }, [setUserInfo]);
   return (
     <>
       <div
