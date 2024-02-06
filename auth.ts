@@ -5,7 +5,7 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { NextAuthOptions } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
 export const authOptions: NextAuthOptions = {
   //Define the providers you want to use
@@ -55,25 +55,27 @@ export const authOptions: NextAuthOptions = {
 
         // if not, create a new document and save user in MongoDB
         if (!user) {
+          //divide name into firstname and lastname
+          const nameParts = profile?.name?.split(" ");
+          const firstName = nameParts?.[0];
+          const lastName = nameParts?.slice(1).join(" ") || "";
+
           const newUser = await User.create({
             googleId: profile?.sub,
-            firstName: profile?.name?.replace(/\s/g, "").toLowerCase(),
-            lastName: profile?.name?.replace(/\s/g, "").toLowerCase(),
-
+            firstName: firstName?.toLowerCase(), 
+            lastName: lastName?.toLowerCase(), 
             email: profile?.email,
             avatar: profile?.image,
           });
           return newUser;
         }
-        
-       cookies().set({
+
+        cookies().set({
           name: "userId",
           value: user._id,
           httpOnly: true,
           // maxAge: 48 * 60 * 60,
         });
-
-    
 
         return user;
       } catch (error: any) {
@@ -81,11 +83,10 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
-    
+
     //USe session to keep track of the user
     async session({ session, token }) {
       session.user = token as any;
-
 
       return session;
     },
