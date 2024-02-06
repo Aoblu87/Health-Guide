@@ -1,34 +1,25 @@
 import connectionDB from "@/lib/connectionDB";
 import User from "@/models/User";
-import cloudinary from "cloudinary";
 import multer from "multer";
 import { NextRequest, NextResponse } from "next/server";
 
-
-
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  api_key: process.env.CLOUDINARY_API_KEY,
-});
-
 //Get user by ID
-export async function GET(request: NextRequest,{params}:{params:{id:string}}){
-await connectionDB();
-try {
-  const id= params.id;
-  const user = await User.findById({ _id: id }).select("-password");
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  await connectionDB();
+  try {
+    const id = params.id;
+    const user = await User.findById({ _id: id }).select("-password");
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    return NextResponse.json(user, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json(user, { status: 200 });
-} catch (error:any) {
-  return NextResponse.json({ error: error.message }, { status: 500 });
-  
 }
-
-}
-
 
 //Route for modifying a user
 export async function PUT(
@@ -73,33 +64,30 @@ export async function DELETE(
   }
 }
 export async function PATCH(
-      request: NextRequest,
-      { params }: { params: { id: string } }
-    ) {
-      await connectionDB();
-    try {
-        const reqBody = await request.json();
-              const id = params.id;
-              const file = multer(reqBody).single("photo");
-            //   const file = uploadFile.single("photo")
-              const addAvatar = await User.findByIdAndUpdate(
-                id,
-                { photo: "ciao" },
-                { new: true }
-            )
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  await connectionDB();
+  try {
+    const reqBody = await request.json();
+    const id = params.id;
+    const file = multer(reqBody).single("photo");
+    //   const file = uploadFile.single("photo")
+    const addAvatar = await User.findByIdAndUpdate(
+      id,
+      { photo: "ciao" },
+      { new: true }
+    );
 
-            if (!addAvatar) {
-               return NextResponse.json({ error: "User not found" }, { status:400})
-            } else {
-                NextResponse.json(addAvatar)
-            }
-
-    } catch (error:any) {
-        return NextResponse.json({ error: error.message }, { status:500})
-        
+    if (!addAvatar) {
+      return NextResponse.json({ error: "User not found" }, { status: 400 });
+    } else {
+      NextResponse.json(addAvatar);
     }
-    
-    }
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
 
 // export async function PATCH(
 //   request: NextRequest,
@@ -134,7 +122,6 @@ export async function PATCH(
 //       buffer
 //     );
 
-  
 //     const { dataString, filename, code } = reqBody.body;
 //     console.log(dataString);
 // //Send data to cloudinary
@@ -152,8 +139,6 @@ export async function PATCH(
 //     const updateUserWithPhoto =await  User.findByIdAndUpdate(id, {
 //       photo: `https://res.cloudinary.com/${process.env.CLOUDINARY_NAME}/image/upload/${cleanData.public_id}`,
 //     },{new:true}).select("-password");
-
-   
 
 //     if (!updateUserWithPhoto) {
 //       return NextResponse.json({ error: "User not found" }, { status: 404 });

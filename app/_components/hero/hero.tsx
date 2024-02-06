@@ -16,7 +16,7 @@ export const Hero = () => {
   const handleShortcut = (query: string) => {
     setShortcutQuery(query);
   };
-
+console.log("session",session)
   return (
     <>
       <div

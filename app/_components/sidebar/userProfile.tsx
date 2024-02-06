@@ -1,31 +1,14 @@
 "use client";
-import getUserInfo from "@/app/helper/getUserInfo";
 import { userInfoAtom } from "@/atoms";
 import profilePhoto from "@/public/assets/person-circle.svg";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useEffect } from "react";
 
 export default function UserProfile() {
   const { data: session } = useSession();
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-  useEffect(() => {
-    async function fetchUserInfo() {
-      try {
-        const userInfo = await getUserInfo();
-        if (!userInfo) {
-          throw new Error("User info not found");
-        } else {
-          setUserInfo(userInfo);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user info:", error);
-      }
-    }
+  const [userInfo] = useAtom(userInfoAtom);
 
-    fetchUserInfo();
-  }, [setUserInfo]);
   return (
     <div className="flex-shrink-0 group block">
       <div className="flex items-center">

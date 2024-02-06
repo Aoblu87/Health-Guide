@@ -1,25 +1,29 @@
 "use client";
+import getUserInfo from "@/app/helper/getUserInfo";
+import { userInfoAtom } from "@/atoms";
 import { useFloating } from "@floating-ui/react";
-import { detectOverflow, offset } from "@floating-ui/react-dom";
+import { offset } from "@floating-ui/react-dom";
 import { Popover, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { useAtom } from "jotai";
+import { Fragment, useEffect } from "react";
 import SignOut from "./signOut";
 import UserProfile from "./userProfile";
 
-const solutions = [
-  {
-    name: "Profile",
-    href: "u/profile",
-    icon: IconOne,
-  },
-  {
-    name: "Theme",
-    href: "##",
-    icon: IconTwo,
-  },
-];
-
 export default function ProfilePopover() {
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const solutions = [
+    {
+      name: "Profile",
+      href: `/profile/${userInfo.id}`,
+      icon: IconOne,
+    },
+    {
+      name: "Theme",
+      href: "##",
+      icon: IconTwo,
+    },
+  ];
+
   const { refs, floatingStyles } = useFloating({
     placement: "top-end",
     middleware: [
@@ -28,7 +32,22 @@ export default function ProfilePopover() {
       })),
     ],
   });
+  useEffect(() => {
+    async function fetchUserInfo() {
+      try {
+        const userInfo = await getUserInfo();
+        if (!userInfo) {
+          throw new Error("User info not found");
+        } else {
+          setUserInfo(userInfo);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    }
 
+    fetchUserInfo();
+  }, [setUserInfo]);
   return (
     // <div classNameflex flex-col fixed bottom-0 w-full p-1 border-t border-gray-200 dark:border-gray-700">
     <>
@@ -75,11 +94,10 @@ export default function ProfilePopover() {
                           </div>
                         </a>
                       ))}
-                    
+
                       <SignOut />
                     </div>
                   </div>
-                
                 </Popover.Panel>
               </Transition>
             </>

@@ -1,18 +1,29 @@
 "use client";
+import { sidebarToggleAtom } from "@/atoms";
+import { Spinner } from "@/components/ui/spinner";
 import { LoginContext } from "@/context/loginContext";
 import profilePhoto from "@/public/assets/img1.jpg";
+import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useContext, useEffect, useState } from "react";
 import DeleteModal from "./deleteModal";
+import { UploadAvatar } from "./uploadAvatar";
+
 export default function Profile() {
+  const { id } = useParams();
+  const router = useRouter();
   const { login } = useContext(LoginContext);
-
   const { data: session } = useSession();
-  const [file, setFile] = useState();
-  const [loading, setLoading] = useState(false);
+  const [isOpen] = useAtom(sidebarToggleAtom);
+  const [selectUpdate, setSelectUpdate] = useState(false);
+  const [fetching, setFetching] = useState(false);
   const [updateProfile, setUpdateProfile] = useState(false);
-
+  const [loadingAvatar, setLoadingAvatar] = useState(false);
+  const [fetchingUser, setfetchingUser] = useState(false);
+  const [updatedPhoto, setUpdatedPhoto] = useState("");
+  const [getUser, setGetUser] = useState<User | null>(null);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -20,52 +31,81 @@ export default function Profile() {
     lastName: "",
   });
 
-  const upFile = (e: any) => {
-    const selectedFile = e.target.files ? e.target.files[0] : null;
-    setFile(selectedFile);
-  };
+  interface User {
+    email: string;
+    firstName: string;
+    lastName: string;
+  }
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
   };
 
-  // const handleFile = async (e: any) => {
-  //   e.preventDefault();
-  //   try {
-  //     const formData = new FormData();
-  //     if (file) {
-  //       formData.append("photo", file);
-  //     }
-  //     const fileResponse = await fetch(`/api/users/${userId}`, {
-  //       method: "PATCH",
-  //       body: formData,
-  //     });
-  //     if (fileResponse.ok) {
-  //       const fileDataResponse = await fileResponse.json();
-  //       console.log(fileDataResponse);
-  //       formData.delete("photo");
-  //     } else {
-  //       throw new Error(`HTTP error! Status: ${fileResponse.status}`);
-  //     }
-  //   } catch (error: any) {
-  //     console.log("Error fetching data:", error);
-  //   }
-  // };
+  const fetchUser = useCallback(async () => {
+    setfetchingUser(true);
+    try {
+      if (!id) {
+        throw new Error("User not found");
+      }
+
+      const response = await fetch(`/api/users/${id}`);
+      if (!response.ok) {
+        throw new Error("Error getting user");
+      } else {
+        const user = await response.json();
+        setGetUser(user);
+        console.log(user);
+      }
+    } catch (error) {
+      console.log("Error fetchUser");
+    } finally {
+      setfetchingUser(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
   return (
     <div
       className={`${
-        session || login
-          ? "max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto lg:ps-64"
-          : "max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
-      }`}
+        isOpen && (login || session) ? "col-start-2" : "col-start-1"
+      } col-end-4 row-start-2 row-end-3 max-w-xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto`}
     >
       <div className="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-            Profile
-          </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Manage your name, password and account settings.
-          </p>
+        <div className="flex justify-between">
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+              Profile
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Manage your name, password and account settings.
+            </p>
+          </div>
+          <div className="flex p-3 cursor-pointer">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectUpdate(true);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <form>
@@ -76,25 +116,28 @@ export default function Profile() {
               </label>
             </div>
             <div className="sm:col-span-9 flex items-center space-x-6">
-              <div className="shrink-0">
+              <div className="shrink-0 relative">
                 <Image
                   className="inline-block h-16 w-16 rounded-full ring-2 ring-white dark:ring-gray-800"
-                  src={profilePhoto}
+                  src={updatedPhoto !== "" ? updatedPhoto : profilePhoto}
                   alt="Image Description"
+                  width={30}
+                  height={30}
                 />
+                {loadingAvatar && (
+                  <div
+                    className="absolute text-slate-500"
+                    style={{ inset: "20px 0 0 20px" }}
+                  >
+                    <Spinner />
+                  </div>
+                )}
               </div>
-              <label className="block">
-                <span className="sr-only">Choose profile photo</span>
-                <input
-                  type="file"
-                  className="block w-full text-sm text-slate-500
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                           file:bg-violet-50 file:text-violet-700
-                          hover:file:bg-violet-100"
-                />
-              </label>
+
+              <UploadAvatar
+                setLoadingAvatar={setLoadingAvatar}
+                setUpdatedPhoto={setUpdatedPhoto}
+              />
             </div>
 
             <div className="sm:col-span-3">
@@ -123,17 +166,12 @@ export default function Profile() {
 
             <div className="sm:col-span-9">
               <div className="sm:flex">
-                <input
-                  id="af-account-full-name"
-                  type="text"
-                  className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                  placeholder="Maria"
-                />
-                <input
-                  type="text"
-                  className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                  placeholder="Boone"
-                />
+                <p className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
+                  {getUser?.firstName}
+                </p>
+                <p className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
+                  {getUser?.lastName}
+                </p>
               </div>
             </div>
 
@@ -196,24 +234,23 @@ export default function Profile() {
               <DeleteModal />
             </div>{" "}
             <div className="mt-5 flex justify-end gap-x-2">
-              <a
+              <button
                 type="button"
                 className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="/"
+                onClick={() => {
+                  setSelectUpdate(false);
+                  router.push("/");
+                }}
               >
                 Cancel
-              </a>
+              </button>
               <button
                 type="button"
                 className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               >
-                {loading ? (
-                  <div
-                    className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-white rounded-full"
-                    role="status"
-                    aria-label="loading"
-                  >
-                    <span className="sr-only">Loading...</span>
+                {fetching ? (
+                  <div className="text-white">
+                    <Spinner />
                   </div>
                 ) : (
                   " Save changes"

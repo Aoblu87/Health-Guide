@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
             lastName: profile?.name?.replace(/\s/g, "").toLowerCase(),
 
             email: profile?.email,
-            photo: profile?.image,
+            avatar: profile?.image,
           });
           return newUser;
         }
