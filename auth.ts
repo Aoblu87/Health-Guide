@@ -56,14 +56,13 @@ export const authOptions: NextAuthOptions = {
         // if not, create a new document and save user in MongoDB
         if (!user) {
           //divide name into firstname and lastname
-          const nameParts = profile?.name?.split(" ");
-          const firstName = nameParts?.[0];
-          const lastName = nameParts?.slice(1).join(" ") || "";
+          const [firstName, ...lastNameParts] = profile?.name?.split(" ") || [];
+
 
           const newUser = await User.create({
             googleId: profile?.sub,
-            firstName: firstName?.toLowerCase(), 
-            lastName: lastName?.toLowerCase(), 
+            firstName: firstName?.toLowerCase(),
+            lastName: lastNameParts.join(" ").toLowerCase(),
             email: profile?.email,
             avatar: profile?.image,
           });
