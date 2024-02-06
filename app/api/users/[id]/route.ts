@@ -50,7 +50,6 @@ export async function DELETE(
 ) {
   await connectionDB();
   try {
-    const reqBody = await request.json();
     const id = params.id;
     const deleteUser = await User.findByIdAndDelete(id);
     if (!deleteUser) {

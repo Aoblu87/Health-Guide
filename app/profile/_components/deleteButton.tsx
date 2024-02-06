@@ -1,19 +1,49 @@
 import clearCookies from "@/app/helper/clearCookies";
 import getCookies from "@/app/helper/getCookies";
+import { sidebarToggleAtom, userInfoAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
+import { useAtom } from "jotai";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
-export default function DeleteButton() {
+interface DeleteButtonProps {
+  id: string;
+}
+
+export const DeleteButton: React.FC<DeleteButtonProps> = ({ id }) => {
   const router = useRouter();
   const { setLogin } = useContext(LoginContext);
+  const [isOpen, setIsOpen] = useAtom(sidebarToggleAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+
+  const logout = async () => {
+    try {
+      await clearCookies("token");
+      await clearCookies("userId");
+      await clearCookies("name");
+      await clearCookies("avatar");
+
+      setIsOpen(false);
+      //Setting the login state false
+      setLogin(false);
+      setUserInfo([]);
+      //Clearing the local storage
+      signOut({ redirect: false }).then(() => router.push("/"));
+
+      localStorage.clear();
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   const handleDelete = async () => {
-    const userId = getCookies("userId");
 
-    console.log("Cookies:userID ",JSON.stringify(userId))
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      if(!id){
+        throw new Error ('User id not provided')
+      }
+      const response = await fetch(`/api/users/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -22,17 +52,16 @@ export default function DeleteButton() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const deleteUser = response.json();
-      setLogin(false)
+     
+      setLogin(false);
       clearCookies("userId");
       clearCookies("token");
+      clearCookies("avatar")
 
-
-
-      router.push("/");
+      logout()
     } catch (error: any) {
       throw new Error(
-        "Could not delete user from cookies: " + JSON.stringify(error)
+        "Could not delete user "
       );
     }
   };
@@ -47,4 +76,4 @@ export default function DeleteButton() {
       </button>
     </div>
   );
-}
+};
