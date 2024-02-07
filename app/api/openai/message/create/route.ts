@@ -1,12 +1,16 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
+
+
 //Create message from user input
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const threadId = searchParams.get("threadId");
   const message = searchParams.get("message");
 
+  const fileIdString = searchParams.get("fileId");
+  const fileIds = fileIdString ? fileIdString.split(',') : [];
 
   if (!threadId ){
     return Response.json({ error: "Thread id not found" }, { status: 400 });
@@ -14,13 +18,17 @@ export async function GET(request: NextRequest) {
   if(!message ){
     return Response.json({ error: "Message not found" }, { status: 400 });
   }
+  
   const openai = new OpenAI();
 
   try {
     const threadMessage = await openai.beta.threads.messages.create(threadId, {
       role: "user",
       content: message,
-    });
+      file_ids: fileIds, 
+
+    },
+    );
 
     console.log(threadMessage);
 

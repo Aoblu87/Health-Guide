@@ -1,11 +1,10 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import {DeleteButton} from "./deleteButton";
-interface DeleteModalProps {
+interface ConfirmDeleteChatProps {
   id: string;
 }
 
-export const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
+export const ConfirmDeleteChat: React.FC<ConfirmDeleteChatProps> = ({ id }) => {
   let [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
@@ -21,6 +20,7 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
       <button
         type="button"
         onClick={openModal}
+
         className="p-2 md:p-0 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg  bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
       >
         Delete account{" "}
@@ -77,29 +77,17 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
                         </svg>
                       </button>
                     </div>
-                    <span className="mb-4 inline-flex justify-center items-center w-[62px] h-[62px] rounded-full border-4 border-yellow-50 bg-yellow-100 text-yellow-500 dark:bg-yellow-700 dark:border-yellow-600 dark:text-yellow-100">
-                      <svg
-                        className="flex-shrink-0 w-5 h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                      </svg>
-                    </span>
+                    
                     <Dialog.Title
                       as="h3"
                       className="text-lg font-medium leading-6 text-gray-900"
                     >
-                      Delete Account{" "}
+                      Delete Chat
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Are you sure you want to{" "}
-                        <span className="font-bold text-black ">DELETE</span>{" "}
-                        your account?{" "}
+                        Are you sure you want to delete?
+                       
                       </p>
                     </div>
                     <div className="mt-5 flex justify-between gap-x-2">
@@ -112,7 +100,10 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({ id }) => {
                           Cancel
                         </button>
                       </div>
-                      <DeleteButton id={id}/>
+                      <button
+                                          >
+
+                      </button>
                     </div>
                   </div>
                 </Dialog.Panel>

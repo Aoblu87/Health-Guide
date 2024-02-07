@@ -1,29 +1,28 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
-export async function GET(request:NextRequest) {
-    const searchParams = request.nextUrl.searchParams;
-    const threadId = searchParams.get("threadId");
-    const assistantId = searchParams.get("assistantId");
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const threadId = searchParams.get("threadId");
+  const assistantId = searchParams.get("assistantId");
+  const instructions = searchParams.get("instructions");
 
-    if(!assistantId){
-        return Response.json({error:"No assistantId provided"},{status:400});
-    }
-    if(!threadId){
-        return Response.json({error:"No threadId provided"},{status:400});
-    }
-const openai = new OpenAI();
-try {
-    
-    const run = await openai.beta.threads.runs.create(
-     threadId,
-      { assistant_id: assistantId }
-    );
-    return Response.json({NewRun:run}, { status: 200 });
-} catch (error:any) {
+  if (!assistantId) {
+    return Response.json({ error: "No assistantId provided" }, { status: 400 });
+  }
+  if (!threadId) {
+    return Response.json({ error: "No threadId provided" }, { status: 400 });
+  }
+  const openai = new OpenAI();
+  try {
+    const run = await openai.beta.threads.runs.create(threadId, {
+      assistant_id: assistantId,
+      instructions: instructions,
+    });
+    return Response.json({ NewRun: run }, { status: 200 });
+  } catch (error: any) {
     return Response.json({ error: error.message });
-}
-
+  }
 }
 
 //ENDPOINT
@@ -56,4 +55,3 @@ try {
 //     ],
 //     "metadata": {}
 //   }
-  

@@ -1,9 +1,9 @@
 "use client";
 import {
+  fileIdAtom,
   messagesAtom,
   runAtom,
   sidebarToggleAtom,
-  threadAtom,
   threadIdAtom,
   userInfoAtom,
 } from "@/atoms";
@@ -13,7 +13,7 @@ import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   useCallback,
   useContext,
@@ -24,6 +24,7 @@ import {
 } from "react";
 import { Skeleton } from "../../../components/ui/skeleton";
 import { ChatMessage } from "./chatMessage";
+import { UploadFileButton } from "./uploadFileButton";
 
 export const NewChatBubble = () => {
   const { chatId } = useParams();
@@ -37,6 +38,7 @@ export const NewChatBubble = () => {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [run, setRun] = useAtom(runAtom);
   const [isOpen] = useAtom(sidebarToggleAtom);
+  const [fileId, setFileId] = useAtom(fileIdAtom);
 
   // State
   const [message, setMessage] = useState("");
@@ -46,7 +48,6 @@ export const NewChatBubble = () => {
 
   const [pollingIntervalId, setPollingIntervalId] =
     useState<NodeJS.Timeout | null>(null);
-
 
   // CLEAN UP POLLING
   useEffect(() => {
@@ -129,21 +130,21 @@ export const NewChatBubble = () => {
         clearInterval(intervalId);
         setPollingIntervalId(null);
       }
-    }, 4000);
+    }, 6000);
 
     setPollingIntervalId(intervalId);
   }, [run?.id, setRun, threadId]);
 
   useEffect(() => {
     fetchMessages();
-  }, [fetchMessages, setMessages, run]);
+  }, [fetchMessages, run?.status]);
 
   useEffect(() => {
     // Inizia il polling solo se il run non è completato
     if (
       !run?.id ||
       (run?.status === "completed" &&
-        messages[messages.length - 1].content === "") ||
+        messages[messages.length - 1]?.content === "") ||
       run?.status !== "completed"
     ) {
       startPolling();
@@ -153,11 +154,12 @@ export const NewChatBubble = () => {
   //   AVVIA RUN----------------------------------------------------------------
   const handleCreate = async () => {
     if (!chatId) return;
+    const instruction = fileId ? fileId : "";
 
     setCreating(true);
     try {
       const response = await fetch(
-        `/api/openai/run/create?threadId=${chatId}&assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN`
+        `/api/openai/run/create?threadId=${chatId}&assistantId=${process.env.NEXT_PUBLIC_ASSISTANT_ID}&instructions${fileId}`
       );
       if (!response.ok) {
         // Gestisco l'errore specifico per run attivi
@@ -181,9 +183,9 @@ export const NewChatBubble = () => {
     }
   };
 
-  //   MANDA MESSAGGIO-----------------------------
   const sendMessage = async (e: any) => {
     e.preventDefault();
+    const file_ids = fileId ? fileId : [];
 
     setThreadId(chatId);
     if (!chatId) {
@@ -196,7 +198,7 @@ export const NewChatBubble = () => {
 
     try {
       const response = await fetch(
-        `/api/openai/message/create?threadId=${chatId}&message=${message}`
+        `/api/openai/message/create?threadId=${chatId}&message=${message}&file_ids=${file_ids}`
       );
 
       if (!response.ok) {
@@ -213,6 +215,92 @@ export const NewChatBubble = () => {
       setSending(false);
     }
   };
+
+  //   MANDA MESSAGGIO-----------------------------
+  // const sendMessage = async (e: any) => {
+  //   e.preventDefault();
+
+  //   setThreadId(chatId);
+  //   if (!chatId) {
+  //     console.error("Thread not found");
+  //   }
+  //   if (!message) {
+  //     console.error("Message not found");
+  //   }
+  //   setSending(true);
+
+  //   try {
+  //     const response = await fetch(
+  //       `/api/openai/message/create?threadId=${chatId}&message=${message}`
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error(`Errore nella richiesta: ${response.status}`);
+  //     }
+  //     const newMessage = await response.json();
+  //     // console.log("Message sent", newMessage);
+  //     setMessages([...messages, newMessage]);
+  //     setMessage("");
+  //     await handleCreate();
+  //   } catch (error) {
+  //     console.error("Sending message error", error);
+  //   } finally {
+  //     setSending(false);
+  //   }
+  // };
+  //   const sendMessage = async (e: any) => {
+  //     e.preventDefault();
+  // setRun("")
+  //     const bodyRequest = {
+  //       // threadId: threadId,
+  //       role: "user",
+  //       content: message,
+  //       file_ids: fileId ? fileId: []
+  //     };
+  //     setThreadId(chatId);
+  //     if (!chatId) {
+  //       console.error("Thread not found");
+  //     }
+  //     if (!message) {
+  //       console.error("Message not found");
+  //     }
+  //     setSending(true);
+
+  //     try {
+  //       const response = await fetch(
+  //         `https://api.openai.com/v1/threads/${threadId}/messages`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+  //             "Content-Type": "application/json",
+  //             "OpenAI-Beta": "assistants=v1",
+  //           },
+
+  //           method: "POST",
+  //           body: JSON.stringify(bodyRequest),
+  //         }
+  //       );
+
+  //       if (!response.ok) {
+  //         throw new Error(`Errore nella richiesta: ${response.status}`);
+  //       }
+  //       const newMessage = await response.json();
+  //       console.log("Message sent", newMessage);
+  //       const cleanMessage = newMessage.data
+  //       console.log("Message clean", cleanMessage);
+  //       setMessages([...messages, newMessage]);
+
+  //       console.log(messages)
+  //       await handleCreate();
+  //     } catch (error) {
+  //       console.error("Sending message error", error);
+  //     } finally {
+  //       setSending(false);
+  //       setFileId([]);
+  //       setMessage("");
+  //     }
+  //   };
+
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -256,12 +344,12 @@ export const NewChatBubble = () => {
         <div className="h-[calc(100vh-305px)] overflow-y-auto">
           <ul className="space-y-8">
             {messages ? (
-              messages.map((message: any) =>
+              messages.map((message: any, index: any) =>
                 message.role === "assistant" ? (
                   // Assistant Messages
                   <li
                     className="flex ms-auto gap-x-2 sm:gap-x-4"
-                    key={message._id}
+                    key={message._id || index}
                   >
                     <Image
                       className="inline-block h-9 w-9 rounded-full"
@@ -297,7 +385,7 @@ export const NewChatBubble = () => {
                   // User Messages
                   <li
                     className="flex ms-auto gap-x-2 sm:gap-x-4"
-                    key={message._id}
+                    key={message._id || index}
                   >
                     <div className="flex justify-end items-center grow text-end space-y-3">
                       <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
@@ -339,28 +427,8 @@ export const NewChatBubble = () => {
 
         <form className="mt-9 sticky bottom-0" onSubmit={sendMessage}>
           <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-full shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
-            <div className="flex items-center cursor-pointer">
-              {/* Button upload file */}
-              <button
-                type="button"
-                className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-full text-gray-500 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-              >
-                <svg
-                  className="flex-shrink-0 h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                </svg>
-              </button>
-            </div>
+            {/* Button upload file */}
+            {/* <UploadFileButton /> */}
             <div className="flex-[1_0_0%]">
               <label className="block text-sm text-gray-700 font-medium dark:text-white"></label>
               <input

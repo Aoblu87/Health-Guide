@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Fragment, useContext, useEffect } from "react";
 import ProfilePopover from "./profilePopover";
+import { ThemeSwitch } from "@/components/home/ThemeSwitch";
 
 export default function NewSidebar() {
   let [isOpen, setIsOpen] = useAtom(sidebarToggleAtom);
@@ -148,6 +149,7 @@ export default function NewSidebar() {
 
                     {/* Footer */}
                     <ProfilePopover />
+                    <ThemeSwitch/>
                   </div>
 
                   <div className="mt-4"></div>

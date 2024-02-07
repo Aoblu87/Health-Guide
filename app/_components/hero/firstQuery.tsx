@@ -1,6 +1,12 @@
 "use client";
 import getCookies from "@/app/helper/getCookies";
-import { chatListAtom, messagesAtom, runAtom, threadIdAtom } from "@/atoms";
+import {
+  chatListAtom,
+  fileIdAtom,
+  messagesAtom,
+  runAtom,
+  threadIdAtom,
+} from "@/atoms";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -18,7 +24,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
   const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [, setRun] = useAtom(runAtom);
   const [, setNewChatTitle] = useAtom(chatListAtom);
-
+  const [, setFileId] = useAtom(fileIdAtom);
   // Local state management for component
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -81,7 +87,8 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
     setNewChatTitle("");
     setMessages("");
     setRun("");
-  }, [setThreadId, setMessages, setRun, setNewChatTitle]);
+    setFileId([]);
+  }, [setThreadId, setMessages, setRun, setNewChatTitle, setFileId]);
 
   // // Function to send first message
   async function sendMessage(e: any) {
@@ -97,7 +104,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
 
     try {
       const response = await fetch(
-        `/api/openai/run/createRun-thread?assistantId=asst_KOVip2WaLZUUk4fLnrm0FGrN&message=${message}`
+        `/api/openai/run/createRun-thread?assistantId=${process.env.NEXT_PUBLIC_ASSISTANT_ID}&message=${message}`
       );
       if (!response.ok) {
         throw new Error(`Errore nella richiesta: ${response.status}`);

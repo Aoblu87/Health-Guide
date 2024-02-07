@@ -22,6 +22,8 @@ const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
 const _chatListAtom = atom<Chat[]>([]);
 const _userInfoAtom = atom<UserInfo[]>([]);
+const _fileIdAtom = atom<[] >([]);
+
 
 export const sidebarToggleAtom = atom < boolean>(false);
 export const loginSignupModal = atom< boolean>(false);
@@ -74,6 +76,10 @@ export const chatListAtom = atomWithLocalStorage(
 );
 export const userInfoAtom = atomWithLocalStorage(
   JSON.stringify(_userInfoAtom, null, 2),
+  null
+);
+export const fileIdAtom = atomWithLocalStorage(
+  JSON.stringify(_fileIdAtom, null, 2),
   null
 );
 
