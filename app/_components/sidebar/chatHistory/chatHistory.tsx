@@ -54,12 +54,12 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
           <SkeletonSimple/>
         </div>
       ) : (
-        <div className="max-h-[515px] overflow-y-auto py-3">
+        <div className="overflow-y-auto py-3 px-2">
           <ul >
             {todayChats.length > 0 && (
               <>
                 <div>
-                  <p className="subpixel-antialiased">Today</p>
+                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">Today</h3>
                 </div>
                 {todayChats.map((chat) => (
                   <ChatItem
@@ -73,14 +73,13 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
                     handlerRenameState={handlerRenameState}
                   />
                 ))}
-                <hr className="my-3" />
               </>
             )}
 
             {yesterdayChats.length > 0 && (
               <>
                 <div>
-                  <p className="subpixel-antialiased">Yesterday</p>
+                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">Yesterday</h3>
                 </div>
                 {yesterdayChats.map((chat) => (
                   <ChatItem
@@ -94,14 +93,13 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
                     handlerRenameState={handlerRenameState}
                   />
                 ))}
-                <hr className="my-3" />
               </>
             )}
 
             {olderChats.length > 0 && (
               <>
                 <div>
-                  <p className="subpixel-antialiased">Last week</p>
+                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">Last week</h3>
                 </div>
                 {olderChats.map((chat) => (
                   <ChatItem

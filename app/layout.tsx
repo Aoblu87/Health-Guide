@@ -28,7 +28,7 @@ export default async function RootLayout({
     <LoginProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${inter.className} bg-surface-100`}
+          className={`${inter.className} bg-deep-teal-100`}
         >
           <SessionProvider>
             <div className="grid grid-cols-[0.7fr_1.3fr_1fr] grid-rows-[0.3fr_2.5fr_0.2fr] gap-0 min-h-screen">

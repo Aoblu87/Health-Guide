@@ -49,16 +49,14 @@ export default function ProfilePopover() {
     fetchUserInfo();
   }, [setUserInfo]);
   return (
-    // <div classNameflex flex-col fixed bottom-0 w-full p-1 border-t border-gray-200 dark:border-gray-700">
     <>
       <div className="fixed bottom-0 start-0 w-full max-w-sm px-2 ">
-        <hr className="my-3" />
         <Popover className="relative">
           {({ open }) => (
             <>
               <Popover.Button
                 ref={refs.setReference}
-                className={`group inline-flex items-center rounded-2xl px-3 py-2 mb-2 w-full text-base font-medium  bg-transparent text-gray-800 shadow-sm hover:bg-white disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+                className={`group inline-flex outline-none items-center rounded-2xl px-3 py-2 mb-2 w-full font-medium  bg-gradient-to-b from-deep-teal-100 to-transparent text-deep-teal-950 shadow-sm hover:bg-deep-teal-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
               >
                 <UserProfile />{" "}
               </Popover.Button>
@@ -77,18 +75,18 @@ export default function ProfilePopover() {
                   className="absolute z-70 mt-3 w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
                 >
                   <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5">
-                    <div className="relative grid gap-5 bg-matisse-50 p-2 lg:grid-cols-1">
+                    <div className="relative grid gap-5 bg-gradient-to-b from-deep-teal-100 to-deep-teal-400 p-2 lg:grid-cols-1">
                       {solutions.map((item) => (
                         <a
                           key={item.name}
                           href={item.href}
-                          className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring "
+                          className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-deep-teal-200 focus:outline-none focus-visible:ring "
                         >
                           <div className="flex h-10 w-5 shrink-0 items-center justify-center sm:h-12 sm:w-12">
                             <item.icon aria-hidden="true" />
                           </div>
                           <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm font-medium text-deep-teal-900">
                               {item.name}
                             </p>
                           </div>

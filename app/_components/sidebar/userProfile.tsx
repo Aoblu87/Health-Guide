@@ -20,7 +20,7 @@ export default function UserProfile() {
           height={32}
         ></Image>
         <div className="ms-3">
-          <h3 className="text-base font-medium text-grey-800 dark:text-white">
+          <h3 className="text-base   dark:text-white">
             {" "}
             {session?.user.name || userInfo?.name || "User"}
           </h3>

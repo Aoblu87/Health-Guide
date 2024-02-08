@@ -25,7 +25,7 @@ const _chatListAtom = atom<Chat|null>(null);
 
 const _userInfoAtom = atom<UserInfo[]>([]);
 const _fileIdAtom = atom<[] >([]);
-
+export const shareModal = atom  < boolean>(false);
 
 export const sidebarToggleAtom = atom < boolean>(false);
 export const loginSignupModal = atom< boolean>(false);

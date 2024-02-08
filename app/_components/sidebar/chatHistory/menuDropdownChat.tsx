@@ -2,8 +2,11 @@ import { useChatHistory } from "@/hooks/useChatHistory";
 import { useFloating } from "@floating-ui/react";
 import { offset } from "@floating-ui/react-dom";
 import { Popover, Transition } from "@headlessui/react";
-import { Fragment } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Fragment } from "react";
+import { ShareChat } from "./dropdownChat/shareChat/shareChat";
+import { useAtom } from "jotai";
+import { shareModal } from "@/atoms";
 
 interface MenuDropdownListProps {
   handlerRenameState: (data: boolean) => void;
@@ -85,10 +88,10 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
               className="absolute z-99 mt-3 w-full max-w-sm -translate-x-1/2 px-4 sm:px-0 lg:max-w-3xl"
             >
               <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5">
-                <div className="relative grid gap-5 bg-matisse-50 p-2 lg:grid-cols-1">
+                <div className="relative grid gap-5 bg-gradient-to-b from-deep-teal-100 to-transparent p-2 lg:grid-cols-1">
                   {/* EDIT */}
                   <button
-                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-deep-teal-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
                     onClick={() => {
                       handlerRenameState(true);
                       handlerRenameInput(id);
@@ -111,34 +114,16 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
                       </svg>{" "}
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">Edit</p>
+                      <p className="text-sm font-medium text-deep-teal-900">
+                        Edit
+                      </p>
                     </div>
                   </button>
                   {/* SHARE */}
-                  <button className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="#1f2937"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">Share</p>
-                    </div>
-                  </button>
+                  <ShareChat id={id} />
                   {/* DELETE */}
                   <button
-                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-white focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-deep-teal-200/75 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
                     onClick={handleDelete}
                   >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
@@ -158,7 +143,9 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
                       </svg>
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">Delete</p>
+                      <p className="text-sm font-medium text-deep-teal-900">
+                        Delete
+                      </p>
                     </div>
                   </button>
                 </div>
