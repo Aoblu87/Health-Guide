@@ -29,7 +29,7 @@ export default async function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body
           className={`${inter.className} bg-deep-teal-200`}
-          style={{background: 'radial-gradient(circle, rgba(157,242,223,1) 0%, rgba(52,205,180,1) 35%, rgba(27,177,154,1) 100%'}
+          style={{background: 'radial-gradient(circle, rgba(52,205,180,0.6741290266106443) 21%, rgba(157,242,223,1) 51%, rgba(156,242,229,0.5200674019607843) 94%'}
           }
         >
           <SessionProvider>

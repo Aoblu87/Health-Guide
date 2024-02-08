@@ -26,11 +26,7 @@ export default function ProfilePopover() {
 
   const { refs, floatingStyles } = useFloating({
     placement: "top-end",
-    middleware: [
-      offset(({ rects }) => ({
-        alignmentAxis: -rects.floating.width,
-      })),
-    ],
+  
   });
   useEffect(() => {
     async function fetchUserInfo() {
@@ -71,8 +67,9 @@ export default function ProfilePopover() {
               >
                 <Popover.Panel
                   ref={refs.setFloating}
-                  style={floatingStyles}
-                  className="absolute z-70 mt-3 w-full max-w-sm -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl"
+                  // style={{transform: 'translate(96px, -225px)'}}
+                  className="absolute z-70 mt-3 w-full max-w-sm translate-x-[96px] -translate-y-[225px] lg:-translate-y-[250px] transform px-4 sm:px-0 lg:max-w-3xl"
+                  
                 >
                   <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5">
                     <div className="relative grid gap-5 bg-gradient-to-b from-deep-teal-100 to-deep-teal-400 p-2 lg:grid-cols-1">

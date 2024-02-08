@@ -235,6 +235,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
           </div>
         </div>
       </form>
+   
     </>
   );
 };

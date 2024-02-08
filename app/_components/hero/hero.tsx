@@ -29,7 +29,7 @@ export const Hero = () => {
           isOpen && (login || session) ? "col-start-2" : "col-start-1"
         } col-end-4 row-start-2 row-end-3`}
       >
-        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 sm:py-24 md:py-9 mt-4 mb-2">
+        <div className="max-w-[85rem] mx-auto px-4 lg:py-2 sm:px-6 lg:px-8 sm:py-24 md:py-">
           <div className="text-center">
             <Animation />
 

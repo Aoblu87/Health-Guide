@@ -49,7 +49,7 @@ export const NewChatBubble = () => {
 
   const [pollingIntervalId, setPollingIntervalId] =
     useState<NodeJS.Timeout | null>(null);
-    useAutoScrollToBottom(chatContainerRef, [messages]);
+  useAutoScrollToBottom(chatContainerRef, [messages]);
 
   // CLEAN UP POLLING
   useEffect(() => {
@@ -343,9 +343,9 @@ export const NewChatBubble = () => {
           isOpen && (login || session) ? "col-start-2" : "col-start-1"
         } container mx-auto col-end-4 row-start-2 row-end-3 w-full  lg:px-20 p-6 rounded-lg`}
       >
-        <div className="h-[calc(100vh-305px)] overflow-y-auto bg-gradient-to-b from-transparent to-deep-teal-200 rounded-lg p-2">
+        <div className="h-[calc(100vh-305px)] overflow-y-auto rounded-lg p-2">
           <ul className="space-y-8">
-            {sending ||messages ? (
+            {sending || messages ? (
               messages?.map((message: any, index: any) =>
                 message.role === "assistant" ? (
                   // Assistant Messages
@@ -360,7 +360,7 @@ export const NewChatBubble = () => {
                       width={30}
                       height={30}
                     />
-                    <div className="bg-gradient-to-t from-white to-deep-teal-300 border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
+                    <div className="bg-white/50 border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
                       <div className="space-y-1.5">
                         {message.content ? (
                           <div>
@@ -484,6 +484,7 @@ export const NewChatBubble = () => {
             </div>
           </div>
         </form>
+        
       </div>
     </>
   );

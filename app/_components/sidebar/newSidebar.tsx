@@ -120,7 +120,7 @@ export default function NewSidebar() {
                     </div>
                   </div>
 
-                  <div className="space-y-1.5 bg-gradient-to-b from-deep-teal-100 to-deep-teal-300 rounded-2xl mt-2 py-5">
+                  <div className="space-y-1.5 bg-gradient-to-b from-deep-teal-100 to-deep-teal-300 rounded-2xl py-3">
                     <ChatHistory />
 
                     {/* Footer */}

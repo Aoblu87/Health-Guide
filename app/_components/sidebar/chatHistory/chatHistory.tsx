@@ -54,7 +54,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
           <SkeletonSimple/>
         </div>
       ) : (
-        <div className="overflow-y-auto py-3 px-2">
+        <div className="h-96 lg:h-5/6 overflow-y-auto py-3 px-2">
           <ul >
             {todayChats.length > 0 && (
               <>
