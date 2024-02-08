@@ -18,7 +18,13 @@ export function useMarkdown(markdownText: string): string {
         .use(rehypeStringify) // Converti l'HTML AST in stringa
         .process(markdownText); // Processa il testo markdown fornito
 
-      setContentHtml(result.toString());
+      // Manipola l'HTML risultante per rendere il testo del link in grassetto e sottolineato
+      const formattedHtml = result.toString().replace(
+        /<a href="(.*?)">(.*?)<\/a>/g,
+        '<a href="$1"><strong><u>$2</u></strong></a>'
+      );
+
+      setContentHtml(formattedHtml);
     };
 
     processMarkdown();

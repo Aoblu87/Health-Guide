@@ -8,26 +8,18 @@ import {
   userInfoAtom,
 } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
+import useAutoScrollToBottom from "@/hooks/useAutoScrollToBottom";
 import profilePhoto from "@/public/assets/person-circle.svg";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Skeleton } from "../../../components/ui/skeleton";
 import { ChatMessage } from "./chatMessage";
-import { UploadFileButton } from "./uploadFileButton";
-import useAutoScrollToBottom from "@/hooks/useAutoScrollToBottom";
 
-export const NewChatBubble = () => {
+export const ChatBubble = () => {
   const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { login } = useContext(LoginContext);
@@ -49,7 +41,8 @@ export const NewChatBubble = () => {
 
   const [pollingIntervalId, setPollingIntervalId] =
     useState<NodeJS.Timeout | null>(null);
-    useAutoScrollToBottom(chatContainerRef, [messages]);
+
+  useAutoScrollToBottom(chatContainerRef, [messages]);
 
   // CLEAN UP POLLING
   useEffect(() => {
@@ -159,10 +152,24 @@ export const NewChatBubble = () => {
     const instruction = fileId ? fileId : "";
 
     setCreating(true);
+    const bodyRequest = {
+      assistan_id: process.env.NEXT_PUBLIC_ASSISTANT_ID,
+    };
     try {
       const response = await fetch(
-        `/api/openai/run/create?threadId=${chatId}&assistantId=${process.env.NEXT_PUBLIC_ASSISTANT_ID}&instructions${fileId}`
+        `api.openai.com/v1/threads/${threadId}/runs`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+            "Content-Type": "application/json",
+            "OpenAI-Beta": "assistants=v1",
+          },
+
+          method: "POST",
+          body: JSON.stringify(bodyRequest),
+        }
       );
+
       if (!response.ok) {
         // Gestisco l'errore specifico per run attivi
         if (response.status === 400) {
@@ -174,10 +181,10 @@ export const NewChatBubble = () => {
         throw new Error(`Errore nella richiesta: ${response.status}`);
       }
       const newRun = await response.json();
-      // console.log("New run:", newRun, newRun.id);
+      console.log("New run:", newRun, newRun.id);
       setRun(newRun.NewRun);
 
-      await fetchMessages();
+      // await fetchMessages();
     } catch (error) {
       console.error(error);
     } finally {
@@ -302,38 +309,6 @@ export const NewChatBubble = () => {
   //       setMessage("");
   //     }
   //   };
-
-  // const scrollToBottom = () => {
-  //   if (chatContainerRef.current) {
-  //     chatContainerRef.current.scrollTop =
-  //       chatContainerRef.current.scrollHeight;
-  //   }
-  // };
-
-  // // Effetto per scrollare alla fine ogni volta che i messaggi cambiano
-  // useLayoutEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
-  // useEffect(() => {
-  //   const scrollToEnd = () => {
-  //     if (chatContainerRef.current) {
-  //       const { scrollTop, scrollHeight, clientHeight } =
-  //         chatContainerRef.current;
-  //       const isAtBottom = scrollTop + clientHeight >= scrollHeight - 100; // 100 è una soglia per "vicino al fondo"
-
-  //       // Aggiorna lo scroll solo se l'utente si trova già in fondo alla chat
-  //       if (isAtBottom) {
-  //         chatContainerRef.current.scrollTop = scrollHeight;
-  //       }
-  //     }
-  //   };
-
-  //   // Usa requestAnimationFrame per ritardare lo scroll fino al prossimo ciclo di painting
-  //   const animationFrameId = requestAnimationFrame(scrollToEnd);
-
-  //   // Pulizia: annulla l'animation frame quando il componente si smonta o prima che l'effetto venga rieseguito
-  //   return () => cancelAnimationFrame(animationFrameId);
-  // }, [messages]);
 
   return (
     <>

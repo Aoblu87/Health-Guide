@@ -1,6 +1,7 @@
 "use client";
 import { ChatHistory } from "@/app/_components/sidebar/chatHistory/chatHistory";
 import { sidebarToggleAtom, threadIdAtom } from "@/atoms";
+import { ThemeChanger } from "@/components/home/ThemeSwitch";
 import { LoginContext } from "@/context/loginContext";
 import { Dialog, Transition } from "@headlessui/react";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -9,7 +10,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Fragment, useContext, useEffect } from "react";
 import ProfilePopover from "./profilePopover";
-import { ThemeSwitch } from "@/components/home/ThemeSwitch";
 
 export default function NewSidebar() {
   let [isOpen, setIsOpen] = useAtom(sidebarToggleAtom);
@@ -149,7 +149,6 @@ export default function NewSidebar() {
 
                     {/* Footer */}
                     <ProfilePopover />
-                    <ThemeSwitch/>
                   </div>
 
                   <div className="mt-4"></div>

@@ -4,10 +4,10 @@ import "@/app/globals.css";
 import { authOptions } from "@/auth";
 import SessionProvider from "@/context/authContext";
 import { LoginProvider } from "@/context/loginContext";
+import "@radix-ui/themes/styles.css";
 import { getServerSession } from "next-auth";
 import Navbar from "./_components/navbar";
 import NewSidebar from "./_components/sidebar/newSidebar";
-import { ThemeProvider } from "@/context/themeProvider";
 
 require("dotenv").config();
 
@@ -26,12 +26,10 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
   return (
     <LoginProvider>
-
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
-          className={`${inter.className} bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-matisse-50 to-matisse-100`}
-          >
-            <ThemeProvider>
+          className={`${inter.className} bg-surface-100`}
+        >
           <SessionProvider>
             <div className="grid grid-cols-[0.7fr_1.3fr_1fr] grid-rows-[0.3fr_2.5fr_0.2fr] gap-0 min-h-screen">
               <div className="col-start-1 col-end-2 row-start-1 row-end-4 ">
@@ -41,10 +39,8 @@ export default async function RootLayout({
               {children} <Footer />
             </div>
           </SessionProvider>
-      </ThemeProvider>
         </body>
       </html>
-
     </LoginProvider>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { useMarkdown } from "@/hooks/useMarkdown"; // Assicurati che il percorso sia corretto
+import { useMarkdown } from "@/hooks/useMarkdown"; 
 
 interface ChatMessageProps {
   message: {

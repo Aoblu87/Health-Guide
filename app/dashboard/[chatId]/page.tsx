@@ -1,4 +1,4 @@
-import { NewChatBubble } from "@/app/dashboard/_components/NewChatBubble";
+import { NewChatBubble } from "../_components/NewChatBubble";
 
 export default function Page() {
   return (

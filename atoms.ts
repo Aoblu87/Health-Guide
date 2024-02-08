@@ -3,7 +3,7 @@ import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.m
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 interface Chat {
-  id: number;
+  id: string;
   title: string;
   time: string;
 }
@@ -20,7 +20,9 @@ export const threadAtom = atom<Thread | null>(null);
 const _threadIdAtom = atom<string | null>(null);
 const _runAtom = atom<Run | null>(null);
 const _messagesAtom = atom<ThreadMessage[]>([]);
-const _chatListAtom = atom<Chat[]>([]);
+// const _chatListAtom = atom<Chat[]>([]);
+const _chatListAtom = atom<Chat|null>(null);
+
 const _userInfoAtom = atom<UserInfo[]>([]);
 const _fileIdAtom = atom<[] >([]);
 
@@ -70,9 +72,12 @@ export const assistantAtom = atomWithLocalStorage(
   null
 );
 
+// export const chatListAtom = atomWithLocalStorage(
+//   JSON.stringify(_chatListAtom, null, 2),
+//   null
+// );
 export const chatListAtom = atomWithLocalStorage(
-  JSON.stringify(_chatListAtom, null, 2),
-  null
+  _chatListAtom.toString(),null
 );
 export const userInfoAtom = atomWithLocalStorage(
   JSON.stringify(_userInfoAtom, null, 2),
