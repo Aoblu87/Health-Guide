@@ -218,7 +218,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
           <div className="flex-[0_0_auto] cursor-pointer">
             <button
               type="submit"
-              className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-matisse-400 text-white hover:bg-matisse-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="w-[46px] h-[46px] inline-flex justify-center items-center bg-deep-teal-600 hover:bg-deep-teal-700 gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-matisse-400 text-deep-teal-900  disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               disabled={sending || message === ""}
             >
               <svg

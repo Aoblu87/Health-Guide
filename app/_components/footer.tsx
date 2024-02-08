@@ -18,7 +18,7 @@ export default function Footer() {
       } mt-3 md:mt-3 lg:mb-9 col-end-4 row-start-3 row-end-4 `}
     >
       <div className="max-w-4xl text-center container mx-auto px-4 sm:px-6 lg:px-8">
-        <p className="text-xs text-gray-600 dark:text-gray-500">
+        <p className="text-xs text-deep-teal-900 dark:text-gray-500">
           © 2024 Health Guide. A product of{" "}
           <a
             className="text-slate-900 decoration-2 hover:underline font-semibold dark:text-gray-300"

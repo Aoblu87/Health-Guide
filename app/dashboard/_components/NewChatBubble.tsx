@@ -341,12 +341,12 @@ export const NewChatBubble = () => {
         ref={chatContainerRef}
         className={`${
           isOpen && (login || session) ? "col-start-2" : "col-start-1"
-        } container mx-auto col-end-4 row-start-2 row-end-3 w-full mt-8  lg:px-20 p-6 rounded-lg`}
+        } container mx-auto col-end-4 row-start-2 row-end-3 w-full  lg:px-20 p-6 rounded-lg`}
       >
-        <div className="h-[calc(100vh-305px)] overflow-y-auto">
+        <div className="h-[calc(100vh-305px)] overflow-y-auto bg-gradient-to-b from-transparent to-deep-teal-200 rounded-lg p-2">
           <ul className="space-y-8">
-            {messages ? (
-              messages.map((message: any, index: any) =>
+            {sending ||messages ? (
+              messages?.map((message: any, index: any) =>
                 message.role === "assistant" ? (
                   // Assistant Messages
                   <li
@@ -360,7 +360,7 @@ export const NewChatBubble = () => {
                       width={30}
                       height={30}
                     />
-                    <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
+                    <div className="bg-gradient-to-t from-white to-deep-teal-300 border border-gray-200 rounded-2xl p-4 space-y-3 dark:bg-slate-900 dark:border-gray-700">
                       <div className="space-y-1.5">
                         {message.content ? (
                           <div>
@@ -370,14 +370,14 @@ export const NewChatBubble = () => {
                           <div className="flex">
                             <span className="sr-only">Loading...</span>
                             <div
-                              className="h-2 w-2 bg-slate-700 rounded-full animate-bounce"
+                              className="h-2 w-2 bg-deep-teal-900 rounded-full animate-bounce"
                               style={{ animationDelay: "-0.3s" }}
                             ></div>
                             <div
-                              className="h-2 w-2 mx-1 bg-slate-700 rounded-full animate-bounce"
+                              className="h-2 w-2 mx-1 bg-deep-teal-900 rounded-full animate-bounce"
                               style={{ animationDelay: "-0.15s" }}
                             ></div>
-                            <div className="h-2 w-2 bg-slate-700 rounded-full animate-bounce"></div>
+                            <div className="h-2 w-2 bg-deep-teal-900 rounded-full animate-bounce"></div>
                           </div>
                         )}
                       </div>
@@ -390,7 +390,7 @@ export const NewChatBubble = () => {
                     key={message._id || index}
                   >
                     <div className="flex justify-end items-center grow text-end space-y-3">
-                      <div className="inline-block bg-blue-600 rounded-2xl p-4 shadow-sm">
+                      <div className="inline-block bg-deep-teal-600/75 rounded-2xl p-4 shadow-sm">
                         {message?.content ? (
                           <ChatMessage key={message.id} message={message} />
                         ) : (
@@ -432,10 +432,10 @@ export const NewChatBubble = () => {
             {/* Button upload file */}
             {/* <UploadFileButton /> */}
             <div className="flex-[1_0_0%]">
-              <label className="block text-sm text-gray-700 font-medium dark:text-white"></label>
+              <label className="block text-sm text-deep-teal-900 font-medium dark:text-white"></label>
               <input
                 type="text"
-                className="py-2.5 px-4 block w-full border-transparent rounded-full focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+                className="py-2.5 px-4 block w-full border-transparent outline-deep-teal-300 rounded-full focus:border-deep-teal-500 focus:ring-deep-teal-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
                 placeholder="Find an open pharmacy"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -444,9 +444,9 @@ export const NewChatBubble = () => {
 
             <div className="flex cursor-pointer items-center gap-x-2">
               {/* Button mic */}
-              <button
+              {/* <button
                 type="button"
-                className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-full text-gray-500 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-full text-deep-teal-500 hover:text-deep-teal-600 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:hover:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               >
                 <svg
                   className="flex-shrink-0 h-4 w-4"
@@ -464,10 +464,10 @@ export const NewChatBubble = () => {
                   <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                   <line x1="12" x2="12" y1="19" y2="22"></line>
                 </svg>
-              </button>
+              </button> */}
               <button
                 type="submit"
-                className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="w-[46px] h-[46px] inline-flex justify-center items-center  gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-deep-teal-600 text-white hover:bg-deep-teal-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 disabled={sending || message === ""}
               >
                 <svg

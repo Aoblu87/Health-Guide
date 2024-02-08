@@ -29,7 +29,7 @@ export const ChatItem: React.FC<ChatItemProps> = ({
         ) : (
           <Link
             className="flex items-center text-ellipsis gap-x-3 py-2  px-2  text-sm text-deep-teal-800 rounded-lg  hover:bg-deep-teal-100  dark:hover:bg-gray-900 dark:text-deep-teal-800 dark:hover:text-deep-teal-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            href={`u/dashboard/${chat.threadId}`}
+            href={`/dashboard/${chat.threadId}`}
           >
             {chat.title}{" "}
           </Link>

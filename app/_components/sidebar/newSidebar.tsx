@@ -47,15 +47,15 @@ export default function NewSidebar() {
 
   return session || login ? (
     <>
-      <div className="relative z-30 ms-2">
+      <div className="flex  z-30 ms-2">
         <button
           type="button"
           onClick={openModal}
-          className={`flex p-3  dark:text-gray-400 hover:bg-deep-teal-100 dark:hover:border-white/[.1] dark:hodeep-teal-800 ${
+          className={`flex items-center px-1 py-2 rounded-full dark:text-gray-400 dark:hover:border-white/[.1] dark:deep-teal-800 ${
             isOpen ? "hidden" : ""
           }`}
         >
-          <MenuIcon className="w-35 h-35" />
+          <p className="w-[6px] h-7 bg-deep-teal-800 rounded-full hover:bg-deep-teal-700"></p>
         </button>
       </div>
 
@@ -94,7 +94,7 @@ export default function NewSidebar() {
                     <div className="text-lg font-medium leading-6 text-gray-900 ms-1">
                       <h3 className="font-medium p-2">Health Guide</h3>
                     </div>
-                    <div className="mx-3 ">
+                    <div className="mx-3  ">
                       <button
                         className="flex outline-none items-center w-full gap-x-3 py-1 ps-1 text-deep-teal-800 rounded-md hover:bg-deep-teal-200/50 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none  dark:focus:ring-gray-600"
                         onClick={() => {
