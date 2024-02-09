@@ -100,6 +100,7 @@ export default function Profile() {
     } finally {
       setFetchingUpdate(false);
       setSelectUpdate(false);
+
     }
   };
 
@@ -125,9 +126,7 @@ export default function Profile() {
     }
   }, [id]);
 
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser, setFetchingUpdate]);
+
   useEffect(() => {
     if (userDataChanged) {
       fetchUser();
@@ -139,7 +138,7 @@ export default function Profile() {
     <div
       className={`${
         isOpen && (login || session) ? "col-start-2" : "col-start-1"
-      } col-end-4 row-start-2 row-end-3 max-w-xl px-4 py-3 sm:px-6 lg:px-8 lg:py-14 mx-auto`}
+      } col-end-4 row-start-2 row-end-3 max-w-xl px-4 py-3 sm:px-6 lg:px-8 lg:py-5 mx-auto`}
     >
       <div className="bg-white/50 border border-gray-200 rounded-2xl shadow p-4 sm:p-7 dark:bg-slate-900">
         <div className="flex justify-between">
