@@ -1,11 +1,9 @@
-// import { NewChatBubble } from "../_components/NewChatBubble";
-
-import { Prova } from "../_components/prova";
+import { ChatBubble } from "../_components/chatBubble";
 
 export default function Page() {
   return (
     <>
-      <Prova />
+      <ChatBubble />
     </>
   );
 }

@@ -22,7 +22,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Skeleton } from "../../../components/ui/skeleton";
 import { ChatMessage } from "./chatMessage";
 
-export const Prova = () => {
+export const ChatBubble = () => {
     const { chatId } = useParams<{ chatId: string }>();
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
