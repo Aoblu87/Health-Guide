@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import ButtonGoogleAuth from "../_components/button-google-auth";
-
+import { loginSignupModal } from "@/atoms";
+import {useAtom} from "jotai"
 export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [successfullRegistration, setSuccessfullRegistration] = useState(false);
