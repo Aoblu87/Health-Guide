@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { DeleteModal } from "./deleteModal";
-import { UploadAvatar } from "./uploadAvatar";
+import UploadAvatar from "./uploadAvatar";
 
 export default function Profile() {
   const { id } = useParams();
@@ -55,14 +55,6 @@ export default function Profile() {
     }
   };
 
-  useEffect(() => {
-    if (getUser) {
-      setUser({
-        email: getUser.email || "",
-        password: "",
-      });
-    }
-  }, [getUser]);
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setFetchingUpdate(true);
@@ -100,7 +92,6 @@ export default function Profile() {
     } finally {
       setFetchingUpdate(false);
       setSelectUpdate(false);
-
     }
   };
 
@@ -126,12 +117,21 @@ export default function Profile() {
     }
   }, [id]);
 
+  // useEffect(() => {
+  //   if (getUser && (getUser.email !== user.email || user.password === "")) {
+  //     setUser({
+  //       email: getUser.email || "",
+  //       password: "",
+  //     });
+  //   }
+  // }, [getUser, user.email, user.password]);
 
   useEffect(() => {
     if (userDataChanged) {
       fetchUser();
       setUserDataChanged(false);
     }
+    fetchUser();
   }, [fetchUser, userDataChanged]);
 
   return (

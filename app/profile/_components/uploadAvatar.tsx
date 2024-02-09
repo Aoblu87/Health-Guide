@@ -1,5 +1,3 @@
-import { userInfoAtom } from "@/atoms";
-import { useAtom } from "jotai";
 import { CldUploadWidget } from "next-cloudinary";
 import React, { useState } from "react";
 
@@ -16,7 +14,7 @@ interface UploadAvatarProps {
   setUserDataChanged: (state: boolean) => void;
 }
 
-export const UploadAvatar: React.FC<UploadAvatarProps> = ({
+const UploadAvatar: React.FC<UploadAvatarProps> = ({
   setLoadingAvatar,
   id,
   setUserDataChanged,
@@ -82,3 +80,4 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({
     </CldUploadWidget>
   );
 };
+export default React.memo(UploadAvatar);
