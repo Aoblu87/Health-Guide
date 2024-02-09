@@ -1,11 +1,11 @@
 import categorizeChats from "@/app/helper/categorizeChats";
-import { Chat, ChatHistoryProps } from "@/types/chatSidebar";
 import { chatListAtom } from "@/atoms";
 import { useChatHistory } from "@/hooks/useChatHistory";
+import { Chat, ChatHistoryProps } from "@/types/chatSidebar";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { ChatItem } from "./chatItem";
 import SkeletonSimple from "../../../../components/ui/skeletonSimple";
+import { ChatItem } from "./chatItem";
 
 export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
   const [renameChat, setRenameChat] = useState(false);
@@ -50,16 +50,17 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
     <>
       {loading && !chatList ? (
         <div className="p-3">
-
-          <SkeletonSimple/>
+          <SkeletonSimple />
         </div>
       ) : (
         <div className="h-96 lg:max-h-full overflow-y-auto py-3 px-2">
-          <ul >
+          <ul>
             {todayChats.length > 0 && (
               <>
                 <div>
-                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">Today</h3>
+                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">
+                    Today
+                  </h3>
                 </div>
                 {todayChats.map((chat) => (
                   <ChatItem
@@ -79,7 +80,9 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
             {yesterdayChats.length > 0 && (
               <>
                 <div>
-                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">Yesterday</h3>
+                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">
+                    Yesterday
+                  </h3>
                 </div>
                 {yesterdayChats.map((chat) => (
                   <ChatItem
@@ -99,7 +102,9 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ id }) => {
             {olderChats.length > 0 && (
               <>
                 <div>
-                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">Last week</h3>
+                  <h3 className="font-medium subpixel-antialiased text-deep-teal-800">
+                    Last week
+                  </h3>
                 </div>
                 {olderChats.map((chat) => (
                   <ChatItem

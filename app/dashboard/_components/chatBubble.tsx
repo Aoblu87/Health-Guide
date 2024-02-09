@@ -1,11 +1,11 @@
 "use client";
 import {
-    fileIdAtom,
-    messagesAtom,
-    runAtom,
-    sidebarToggleAtom,
-    threadIdAtom,
-    userInfoAtom,
+  fileIdAtom,
+  messagesAtom,
+  runAtom,
+  sidebarToggleAtom,
+  threadIdAtom,
+  userInfoAtom,
 } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
 import { useCreateRun } from "@/hooks/chat/useCreateRun";
@@ -23,12 +23,12 @@ import { Skeleton } from "../../../components/ui/skeleton";
 import { ChatMessage } from "./chatMessage";
 
 export const ChatBubble = () => {
-    const { chatId } = useParams<{ chatId: string }>();
+  const { chatId } = useParams<{ chatId: string }>();
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { login } = useContext(LoginContext);
   const [userInfo] = useAtom(userInfoAtom);
-const {messages, isFetching, fetchMessages}= useFetchMessages()
+  const { messages, isFetching, fetchMessages } = useFetchMessages();
   const { data: session } = useSession();
   // Atom State
   const [, setMessages] = useAtom(messagesAtom);
@@ -36,13 +36,12 @@ const {messages, isFetching, fetchMessages}= useFetchMessages()
   const [run] = useAtom(runAtom);
   const [isOpen] = useAtom(sidebarToggleAtom);
   const [fileId] = useAtom(fileIdAtom);
-const {isCreating, handleCreate} = useCreateRun()
-const {startPolling, pollingIntervalId}= usePolling()
+  const { isCreating, handleCreate } = useCreateRun();
+  const { startPolling, pollingIntervalId } = usePolling();
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
 
-  
   useAutoScrollToBottom(chatContainerRef, [messages]);
 
   // CLEAN UP POLLING
@@ -53,10 +52,7 @@ const {startPolling, pollingIntervalId}= usePolling()
     };
   }, [pollingIntervalId]);
 
-
-
   // FUNZIONE LISTA RUN
-
 
   useEffect(() => {
     fetchMessages(chatId);
@@ -73,8 +69,6 @@ const {startPolling, pollingIntervalId}= usePolling()
       startPolling();
     }
   }, [run?.status, startPolling, run?.id, messages]);
-
-  
 
   const sendMessage = async (e: any) => {
     e.preventDefault();
@@ -102,7 +96,7 @@ const {startPolling, pollingIntervalId}= usePolling()
       setMessages([...messages, newMessage]);
       setMessage("");
       await handleCreate();
-      fetchMessages(chatId)
+      fetchMessages(chatId);
     } catch (error) {
       console.error("Sending message error", error);
     } finally {

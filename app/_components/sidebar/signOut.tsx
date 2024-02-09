@@ -1,39 +1,12 @@
 "use client";
 
-import clearCookies from "@/app/helper/clearCookies";
-import { sidebarToggleAtom, userInfoAtom } from "@/atoms";
-import { LoginContext } from "@/context/loginContext";
-import { useAtom } from "jotai";
-import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import useLogout from "@/hooks/useLogout";
 
 export default function SignOut() {
-  const router = useRouter();
-  const { setLogin } = useContext(LoginContext);
-  const [isOpen, setIsOpen] = useAtom(sidebarToggleAtom);
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  
+  const { logout } = useLogout();
 
-  // Function to log out the user
-  const logout = async () => {
-    try {
-      await clearCookies("token");
-      await clearCookies("userId");
-      await clearCookies("name");
-      await clearCookies("avatar");
-
-      setIsOpen(false);
-      //Setting the login state false
-      setLogin(false);
-      setUserInfo([]);
-      //Clearing the local storage
-      signOut({ redirect: false }).then(() => router.push("/"));
-
-      localStorage.clear();
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  
   return (
     <button
       type="button"

@@ -3,7 +3,6 @@ import { ChatHistory } from "@/app/_components/sidebar/chatHistory/chatHistory";
 import { sidebarToggleAtom, threadIdAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
 import { Dialog, Transition } from "@headlessui/react";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

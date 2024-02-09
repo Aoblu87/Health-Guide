@@ -1,7 +1,7 @@
 import clearCookies from "@/app/helper/clearCookies";
-import getCookies from "@/app/helper/getCookies";
 import { sidebarToggleAtom, userInfoAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
+import useLogout from "@/hooks/useLogout";
 import { useAtom } from "jotai";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -14,34 +14,16 @@ interface DeleteButtonProps {
 export const DeleteButton: React.FC<DeleteButtonProps> = ({ id }) => {
   const router = useRouter();
   const { setLogin } = useContext(LoginContext);
-  const [isOpen, setIsOpen] = useAtom(sidebarToggleAtom);
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [, setIsOpen] = useAtom(sidebarToggleAtom);
+  const [, setUserInfo] = useAtom(userInfoAtom);
+  const { logout } = useLogout();
 
-  const logout = async () => {
-    try {
-      await clearCookies("token");
-      await clearCookies("userId");
-      await clearCookies("name");
-      await clearCookies("avatar");
-
-      setIsOpen(false);
-      //Setting the login state false
-      setLogin(false);
-      setUserInfo([]);
-      //Clearing the local storage
-      signOut({ redirect: false }).then(() => router.push("/"));
-
-      localStorage.clear();
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  
 
   const handleDelete = async () => {
-
     try {
-      if(!id){
-        throw new Error ('User id not provided')
+      if (!id) {
+        throw new Error("User id not provided");
       }
       const response = await fetch(`/api/users/${id}`, {
         method: "DELETE",
@@ -52,17 +34,15 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({ id }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-     
+
       setLogin(false);
       clearCookies("userId");
       clearCookies("token");
-      clearCookies("avatar")
+      clearCookies("avatar");
 
-      logout()
+      logout();
     } catch (error: any) {
-      throw new Error(
-        "Could not delete user "
-      );
+      throw new Error("Could not delete user ");
     }
   };
   return (
