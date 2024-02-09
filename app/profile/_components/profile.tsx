@@ -25,6 +25,8 @@ export default function Profile() {
   const [fetchingUser, setFetchingUser] = useState(false);
   const [getUser, setGetUser] = useState<User | null>(null);
   const [userDataChanged, setUserDataChanged] = useState(false);
+  const [passwordFocus, setPasswordFocus] = useState(false);
+
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -35,29 +37,62 @@ export default function Profile() {
     lastName: string;
     avatar: string;
     id: string;
+    password: string;
+  }
+  interface UpdateFields {
+    email?: string;
+    password?: string;
   }
 
+  const handlePasswordFocus = () => {
+    setPasswordFocus(true);
+  };
+
+  const handlePasswordBlur = () => {
+    setPasswordFocus(false);
+    if (!user.password) {
+      setUser({ ...user, password: getUser?.password || "" });
+    }
+  };
+
+  useEffect(() => {
+    if (getUser) {
+      setUser({
+        email: getUser.email || "",
+        password: "",
+      });
+    }
+  }, [getUser]);
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setFetchingUpdate(true);
+    let updatedFields: UpdateFields = {};
+    if (user.email !== getUser?.email) {
+      updatedFields.email = user.email;
+    }
+    if (user.password) {
+      updatedFields.password = user.password;
+    }
     try {
       if (!id) {
         console.error("ID utente non disponibile.");
         setFetchingUpdate(false);
         return;
       }
+
       const response = await fetch(`/api/users/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(updatedFields),
       });
       if (!response.ok) {
         throw new Error(`Errore nell'aggiornamento: ${response.statusText}`);
       }
       const userUpdated = await response.json();
-      setGetUser(userUpdated); // Aggiorna lo stato con i nuovi dati dell'utente
+      setGetUser(userUpdated);
+
       setUserDataChanged(true);
       // console.log(userUpdated)
     } catch (error) {
@@ -237,10 +272,12 @@ export default function Profile() {
                     className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-puce-200 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-deep-teal-400 dark:focus:ring-gray-900"
                     placeholder="Enter current password"
                     value={user.password}
+                    onFocus={handlePasswordFocus}
+                    onBlur={handlePasswordBlur}
                     onChange={(e) =>
                       setUser({ ...user, password: e.target.value })
                     }
-                    required
+                    required={passwordFocus}
                   />
                 ) : (
                   <p className="py-2 px-3 pe-11 block w-full  -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:outline-none focus:ring-2 focus:ring-purple-900 focus:border-transparent disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-deep-teal-400 dark:focus:ring-gray-900">
