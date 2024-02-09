@@ -8,6 +8,9 @@ import { useAtom } from "jotai";
 import { Fragment, useEffect } from "react";
 import SignOut from "./signOut";
 import UserProfile from "./userProfile";
+import {autoPlacement} from '@floating-ui/react-dom';
+import {flip} from '@floating-ui/react-dom';
+
 
 export default function ProfilePopover() {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
@@ -17,16 +20,20 @@ export default function ProfilePopover() {
       href: `/profile/${userInfo.id}`,
       icon: IconOne,
     },
-    {
-      name: "Theme",
-      href: "##",
-      icon: IconTwo,
-    },
+    
   ];
 
   const { refs, floatingStyles } = useFloating({
     placement: "top-end",
-  
+    // middleware: [
+    //   offset(({rects}) => ({
+    //     alignmentAxis: -rects.floating.width,
+    //   }))]
+  });
+
+  useFloating({
+    middleware: [autoPlacement()],
+
   });
   useEffect(() => {
     async function fetchUserInfo() {
@@ -52,7 +59,7 @@ export default function ProfilePopover() {
             <>
               <Popover.Button
                 ref={refs.setReference}
-                className={`group inline-flex outline-none items-center rounded-2xl px-3 py-2 mb-2 w-full font-medium  bg-gradient-to-b from-deep-teal-100 to-transparent text-deep-teal-950 shadow-sm hover:bg-deep-teal-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+                className={`group inline-flex outline-none items-center rounded-2xl px-3 py-2 mb-2 w-full font-medium  bg-gradient-to-b from-deep-teal-100 to-transparent text-deep-teal-950 shadow-sm hover:bg-puce-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
               >
                 <UserProfile />{" "}
               </Popover.Button>
@@ -67,6 +74,7 @@ export default function ProfilePopover() {
               >
                 <Popover.Panel
                   ref={refs.setFloating}
+                  style={floatingStyles}
                   // style={{transform: 'translate(96px, -225px)'}}
                   className="absolute z-70 mt-3 w-full max-w-sm translate-x-[96px] -translate-y-[225px] lg:-translate-y-[250px] transform px-4 sm:px-0 lg:max-w-3xl"
                   
@@ -77,7 +85,7 @@ export default function ProfilePopover() {
                         <a
                           key={item.name}
                           href={item.href}
-                          className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-deep-teal-200 focus:outline-none focus-visible:ring "
+                          className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-puce-100/75 focus:outline-none focus-visible:ring "
                         >
                           <div className="flex h-10 w-5 shrink-0 items-center justify-center sm:h-12 sm:w-12">
                             <item.icon aria-hidden="true" />

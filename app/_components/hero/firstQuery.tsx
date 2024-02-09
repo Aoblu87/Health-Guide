@@ -11,10 +11,7 @@ import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-interface FirstQueryProps {
-  shortcutQuery: string;
-}
-export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
+export const FirstQuery = () => {
   const router = useRouter();
   const [isReadyForNewSearch, setIsReadyForNewSearch] = useState(false);
   const [isReadyToNavigate, setIsReadyToNavigate] = useState(false);
@@ -209,7 +206,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
             <input
               name="query"
               type="text"
-              className="py-2.5 px-4 block w-full border-transparent rounded-full focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+              className="py-2.5 px-4 block w-full border-transparent rounded-full focus:border-puce-300/90 focus:ring-puce-300/90 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
               placeholder="Find an open pharmacy"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -218,7 +215,7 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
           <div className="flex-[0_0_auto] cursor-pointer">
             <button
               type="submit"
-              className="w-[46px] h-[46px] inline-flex justify-center items-center bg-deep-teal-600 hover:bg-deep-teal-700 gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-matisse-400 text-deep-teal-900  disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="w-[46px] h-[46px] inline-flex justify-center items-center bg-pink-300/90 hover:bg-pink-400/95 gap-x-2 text-sm font-semibold rounded-full border border-transparent bg-matisse-400 text-deep-teal-900  disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               disabled={sending || message === ""}
             >
               <svg
@@ -235,7 +232,6 @@ export const FirstQuery: React.FC<FirstQueryProps> = ({ shortcutQuery }) => {
           </div>
         </div>
       </form>
-   
     </>
   );
 };

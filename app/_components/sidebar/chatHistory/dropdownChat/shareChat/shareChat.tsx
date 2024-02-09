@@ -25,7 +25,7 @@ export const ShareChat: React.FC<ShareChatProps> = ({ id }) => {
   return (
     <>
       <button
-        className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-deep-teal-200/75 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+        className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-puce-100/75 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
         onClick={openModal}
       >
         <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">

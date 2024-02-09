@@ -62,7 +62,7 @@ export default function SignUp() {
                       <input
                         type="text"
                         id="create-account-first-name"
-                        className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                        className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-deep-teal-900 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-puce-300/90 focus:ring-puce-300/90 "
                         name="First name"
                         placeholder="Mario"
                         required
@@ -76,7 +76,7 @@ export default function SignUp() {
                       <input
                         type="text"
                         id="create-account-last-name"
-                        className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                        className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-deep-teal-900 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-puce-300/90 focus:ring-puce-300/90 "
                         name="Last name"
                         placeholder="Rossi"
                         required
@@ -93,7 +93,7 @@ export default function SignUp() {
                       id="email"
                       disabled={loading}
                       name="email"
-                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-deep-teal-900 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-puce-300/90 focus:ring-puce-300/90 "
                       required
                       placeholder="mario.rossi@gmail.com "
                       value={user.email}
@@ -109,7 +109,7 @@ export default function SignUp() {
                       id="password"
                       disabled={loading}
                       name="password"
-                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-deep-teal-900 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-puce-300/90 focus:ring-puce-300/90 "
                       required
                       placeholder="********"
                       aria-describedby="password-error"
@@ -127,8 +127,8 @@ export default function SignUp() {
 
                   <button
                     type="submit"
-                    className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-matisse-600 text-white hover:bg-matisse-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                  >
+                    className="w-full py-3 px-4 inline-flex justify-center hover:bg-puce-200 bg-gradient-to-t from-puce-200 to-puce-50/50  items-center gap-x-2 text-sm font-semibold rounded-lg text-deep-teal-900  disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    >
                     {loading ? (
                       <div
                         className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-white rounded-full"

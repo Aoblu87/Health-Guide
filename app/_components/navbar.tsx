@@ -19,7 +19,7 @@ export default function Navbar() {
     <div
       className={`${
         isOpen && (login || session) ? "col-start-2" : "col-start-1"
-      } col-end-4 row-start-1 row-end-2 flex`}
+      } col-end-4 row-start-1 row-end-2 flex mb-4`}
     >
       <header className="container mx-auto sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-20 w-full bg-transparent text-sm py-3 dark:bg-gray-800 dark:border-gray-700">
         <nav
@@ -32,7 +32,7 @@ export default function Navbar() {
             } flex items-center justify-between`}
           >
             <button
-              className="outline-none items-center p-1 rounded-lg w-full gap-x-3   text-deep-teal-800  hover:bg-deep-teal-400/50 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none  dark:focus:ring-gray-600"
+              className="outline-none items-center p-1 rounded-lg w-full gap-x-3   text-deep-teal-800  hover:bg-puce-100/75 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none  dark:focus:ring-gray-600"
               onClick={() => {
                 setThreadId("");
                 router.push("/");
@@ -42,7 +42,7 @@ export default function Navbar() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-Width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="w-7 h-7"
               >

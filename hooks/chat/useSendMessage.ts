@@ -1,6 +1,6 @@
 import { fileIdAtom, messagesAtom, threadIdAtom } from "@/atoms";
 import { useAtom } from "jotai";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 export const useSendMessage = ({
   setMessage,
@@ -8,41 +8,41 @@ export const useSendMessage = ({
 }: UseSendMessageParams) => {
   const [messages, setMessages] = useAtom(messagesAtom);
   const [fileId, setFileId] = useAtom(fileIdAtom);
-  const [threadId] = useAtom(threadIdAtom);
+  const [threadId, setThreadId] = useAtom(threadIdAtom);
   const [isSending, setSending] = useState<boolean>(false);
-  const sendMessage = useCallback(
-    async (message: string) => {
-      if (!threadId) {
-        console.error("Thread not found");
-        return;
-      }
-      if (!message) {
-        console.error("Message not found");
-        return;
-      }
-      const file_ids = fileId ? fileId : [];
 
-      setSending(true);
-      try {
-        const response = await fetch(
-          `/api/openai/message/create?threadId=${threadId}&message=${message}&file_ids=${file_ids}`
-        );
+  const sendMessage = async (e: any, chatId: string, message: string) => {
+    e.preventDefault();
+    const file_ids = fileId ? fileId : [];
 
-        if (!response.ok) {
-          throw new Error(`Errore nella richiesta: ${response.status}`);
-        }
-        const newMessage: Message = await response.json();
-        setMessages([...messages, newMessage]);
-        setMessage("");
-        await handleCreate();
-      } catch (error) {
-        console.error("Sending message error", error);
-      } finally {
-        setSending(false);
+    setThreadId(chatId);
+    if (!chatId) {
+      console.error("Thread not found");
+    }
+    if (!message) {
+      console.error("Message not found");
+    }
+    setSending(true);
+
+    try {
+      const response = await fetch(
+        `/api/openai/message/create?threadId=${chatId}&message=${message}&file_ids=${file_ids}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Errore nella richiesta: ${response.status}`);
       }
-    },
-    [fileId, threadId, messages, setMessage, handleCreate, setMessages]
-  );
+      const newMessage = await response.json();
+      // console.log("Message sent", newMessage);
+      setMessages([...messages, newMessage]);
+      setMessage("");
+      await handleCreate();
+    } catch (error) {
+      console.error("Sending message error", error);
+    } finally {
+      setSending(false);
+    }
+  };
 
   return { sendMessage, isSending };
 };

@@ -27,7 +27,7 @@ export default function LoginSignupModal() {
         <button
           type="button"
           onClick={openModal}
-          className="rounded-md  px-4 py-2 text-sm font-medium text-slate-700 hover:bg-white focus:outline-none focus-visible:ring-2 "
+          className="rounded-md  px-4 py-2 text-sm font-medium text-slate-700 hover:bg-puce-100/75 focus:outline-none focus-visible:ring-2 "
         >
           Sign in
         </button>
@@ -58,7 +58,7 @@ export default function LoginSignupModal() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gradient-to-b from-matisse-300 to-matisse-100  p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gradient-to-b from-deep-teal-100 to-deep-teal-400  p-6 text-left align-middle shadow-xl transition-all">
                   <div className="relative p-4 sm:p-7">
                     <div className="absolute top-2 end-2">
                       <button
@@ -88,17 +88,17 @@ export default function LoginSignupModal() {
                       <h1 className="block text-2xl font-bold text-slate-800 dark:text-white">
                         {isActive ? "Sign up" : "Sign in"}
                       </h1>
-                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 ">
+                      <p className="mt-2 text-sm text-deep-teal-800 dark:text-slate-400 ">
                         {isActive
                           ? "Already have an account?"
-                          : "Don&apos;t have an account yet?"}
+                          : "Don't have an account yet?"}
                         <br className="md:hidden"></br>
                         {isActive ? (
                           <button
                             onClick={() => {
                               setIsActive(false);
                             }}
-                            className="text-matisse-900 ms-2 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                            className="text-deep-teal-900 ms-2 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                           >
                             Sign in{" "}
                           </button>
@@ -107,7 +107,7 @@ export default function LoginSignupModal() {
                             onClick={() => {
                               setIsActive(true);
                             }}
-                            className="text-matisse-900 ms-2 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                            className="text-deep-teal-900 ms-2 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                           >
                             Sign up{" "}
                           </button>

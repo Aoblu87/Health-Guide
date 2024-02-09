@@ -7,6 +7,8 @@ import { Fragment } from "react";
 import { ShareChat } from "./dropdownChat/shareChat/shareChat";
 import { useAtom } from "jotai";
 import { shareModal } from "@/atoms";
+import {autoPlacement} from '@floating-ui/react-dom';
+
 
 interface MenuDropdownListProps {
   handlerRenameState: (data: boolean) => void;
@@ -56,11 +58,13 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
   };
   const { refs, floatingStyles } = useFloating({
     placement: "right",
-    middleware: [
-      offset(({ rects }) => ({
-        alignmentAxis: -rects.floating.width,
-      })),
-    ],
+    // middleware: [
+    //   offset(({ rects }) => ({
+    //     alignmentAxis: -rects.floating.width,
+    //   })),
+    // ],
+    middleware: [autoPlacement()],
+
   });
 
   return (
@@ -88,16 +92,16 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
               className="absolute z-99 mt-3 w-full max-w-sm -translate-x-1/2 px-4 sm:px-0 lg:max-w-3xl"
             >
               <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5">
-                <div className="relative grid gap-5 bg-gradient-to-b from-deep-teal-100 to-transparent p-2 lg:grid-cols-1">
+                <div className="relative grid gap-5 bg-gradient-to-b from-deep-teal-100 to-deep-teal-200 p-2 lg:grid-cols-1">
                   {/* EDIT */}
                   <button
-                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-deep-teal-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-puce-100/75 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
                     onClick={() => {
                       handlerRenameState(true);
                       handlerRenameInput(id);
                     }}
                   >
-                    <div className="flex h-10 w-5 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -120,10 +124,10 @@ export const MenuDropdownList: React.FC<MenuDropdownListProps> = ({
                     </div>
                   </button>
                   {/* SHARE */}
-                  <ShareChat id={id} />
+                  {/* <ShareChat id={id} /> */}
                   {/* DELETE */}
                   <button
-                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-deep-teal-200/75 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
+                    className="-m-3 flex items-center rounded-2xl p-2 transition duration-150 ease-in-out hover:bg-puce-100/75 focus:outline-none focus-visible:ring focus-visible:ring-orange-500/50"
                     onClick={handleDelete}
                   >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">

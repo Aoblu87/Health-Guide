@@ -1,13 +1,16 @@
 "use client";
 import {
-  fileIdAtom,
-  messagesAtom,
-  runAtom,
-  sidebarToggleAtom,
-  threadIdAtom,
-  userInfoAtom,
+    fileIdAtom,
+    messagesAtom,
+    runAtom,
+    sidebarToggleAtom,
+    threadIdAtom,
+    userInfoAtom,
 } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
+import { useCreateRun } from "@/hooks/chat/useCreateRun";
+import { useFetchMessages } from "@/hooks/chat/useFetchMessages";
+import { usePolling } from "@/hooks/chat/usePolling";
 import useAutoScrollToBottom from "@/hooks/useAutoScrollToBottom";
 import profilePhoto from "@/public/assets/person-circle.svg";
 import avatar from "@/public/assets/photo-1541101767792-f9b2b1c4f127.avif";
@@ -15,32 +18,31 @@ import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Skeleton } from "../../../components/ui/skeleton";
 import { ChatMessage } from "./chatMessage";
 
-export const NewChatBubble = () => {
-  const { chatId } = useParams();
+export const Prova = () => {
+    const { chatId } = useParams<{ chatId: string }>();
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { login } = useContext(LoginContext);
   const [userInfo] = useAtom(userInfoAtom);
-
+const {messages, isFetching, fetchMessages}= useFetchMessages()
   const { data: session } = useSession();
   // Atom State
-  const [messages, setMessages] = useAtom(messagesAtom);
-  const [threadId, setThreadId] = useAtom(threadIdAtom);
-  const [run, setRun] = useAtom(runAtom);
+  const [, setMessages] = useAtom(messagesAtom);
+  const [, setThreadId] = useAtom(threadIdAtom);
+  const [run] = useAtom(runAtom);
   const [isOpen] = useAtom(sidebarToggleAtom);
-  const [fileId, setFileId] = useAtom(fileIdAtom);
-
+  const [fileId] = useAtom(fileIdAtom);
+const {isCreating, handleCreate} = useCreateRun()
+const {startPolling, pollingIntervalId}= usePolling()
   // State
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-  const [, setFetching] = useState(true);
-  const [, setCreating] = useState(false);
 
-  const [pollingIntervalId, setPollingIntervalId] =
-    useState<NodeJS.Timeout | null>(null);
+  
   useAutoScrollToBottom(chatContainerRef, [messages]);
 
   // CLEAN UP POLLING
@@ -51,87 +53,14 @@ export const NewChatBubble = () => {
     };
   }, [pollingIntervalId]);
 
-  //FETCH MESSAGES
-  const fetchMessages = useCallback(async () => {
-    setFetching(true);
-    if (!chatId) return;
 
-    try {
-      const response = await fetch(
-        `/api/openai/message/list?threadId=${chatId}`
-      );
-      if (!response.ok) {
-        throw new Error(`Errore nella richiesta: ${response.status}`);
-      }
-      const getMessages = await response.json();
-
-      // console.log("Data Response fetch messages:", getMessages);
-      // Sort messages by created_at timestamp in ascending order
-      const sortedMessages = getMessages.messages.sort(
-        (a: any, b: any) => a.created_at - b.created_at
-      );
-      // Format the sorted messages
-      const formattedMessages = sortedMessages.map((msg: any) => {
-        return {
-          ...msg,
-          content: msg.content
-            .map((contentItem: any) => contentItem.text.value)
-            .join(" "),
-        };
-      });
-      // console.log("Formatted Messages:", formattedMessages);
-      setMessages(formattedMessages);
-
-      setMessage("");
-    } catch (error: any) {
-      console.error("Fetching messages error", error);
-    } finally {
-      setFetching(false);
-    }
-  }, [chatId, setMessages]);
 
   // FUNZIONE LISTA RUN
-  const startPolling = useCallback(async () => {
-    // async function startPolling(runId: string) {
-    if (!threadId || !run.id) {
-      console.log("threadId or run.id is missing, exiting startPolling");
-      return;
-    }
-    if (!run.id) return;
-    const intervalId = setInterval(async () => {
-      try {
-        const response = await fetch(
-          `/api/openai/run/retrieve?threadId=${threadId}&runId=${run.id}`
-        );
-        if (!response.ok) {
-          throw new Error(`Errore nella richiesta: ${response.status}`);
-        }
-        const updatedRun = await response.json();
-        // console.log("Updated run:", updatedRun);
-        // console.log("status run: ", updatedRun.run.status);
-        setRun(updatedRun.run);
 
-        if (
-          ["cancelled", "failed", "completed", "expired"].includes(
-            updatedRun.run.status
-          )
-        ) {
-          clearInterval(intervalId);
-          setPollingIntervalId(null);
-        }
-      } catch (error) {
-        console.error("Error polling run status:", error);
-        clearInterval(intervalId);
-        setPollingIntervalId(null);
-      }
-    }, 6000);
-
-    setPollingIntervalId(intervalId);
-  }, [run?.id, setRun, threadId]);
 
   useEffect(() => {
-    fetchMessages();
-  }, [fetchMessages, run?.status]);
+    fetchMessages(chatId);
+  }, [fetchMessages, run?.status, chatId]);
 
   useEffect(() => {
     // Inizia il polling solo se il run non è completato
@@ -145,37 +74,7 @@ export const NewChatBubble = () => {
     }
   }, [run?.status, startPolling, run?.id, messages]);
 
-  //   AVVIA RUN----------------------------------------------------------------
-  const handleCreate = async () => {
-    if (!chatId) return;
-    const instruction = fileId ? fileId : "";
-
-    setCreating(true);
-    try {
-      const response = await fetch(
-        `/api/openai/run/create?threadId=${chatId}&assistantId=${process.env.NEXT_PUBLIC_ASSISTANT_ID}&instructions${fileId}`
-      );
-      if (!response.ok) {
-        // Gestisco l'errore specifico per run attivi
-        if (response.status === 400) {
-          const errorData = await response.json();
-          console.error("Run already active:", errorData.error);
-
-          return;
-        }
-        throw new Error(`Errore nella richiesta: ${response.status}`);
-      }
-      const newRun = await response.json();
-      // console.log("New run:", newRun, newRun.id);
-      setRun(newRun.NewRun);
-
-      await fetchMessages();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setCreating(false);
-    }
-  };
+  
 
   const sendMessage = async (e: any) => {
     e.preventDefault();
@@ -203,6 +102,7 @@ export const NewChatBubble = () => {
       setMessages([...messages, newMessage]);
       setMessage("");
       await handleCreate();
+      fetchMessages(chatId)
     } catch (error) {
       console.error("Sending message error", error);
     } finally {

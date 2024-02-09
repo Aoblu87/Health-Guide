@@ -17,12 +17,7 @@ export default function NewSidebar() {
   const { data: session } = useSession();
   const router = useRouter();
 
-  // function closeModalButton() {
-  //   // Controlla se la larghezza della finestra è inferiore a 1024px prima di chiudere il modale
-  //   if (window.innerWidth < 1024) {
-  //     setIsOpen(false);
-  //   }
-  // }
+
 
   //Check the viewport size and setIsOpen to true when the viewport size is lg
   useEffect(() => {
@@ -96,7 +91,7 @@ export default function NewSidebar() {
                     </div>
                     <div className="mx-3  ">
                       <button
-                        className="flex outline-none items-center w-full gap-x-3 py-1 ps-1 text-deep-teal-800 rounded-md hover:bg-deep-teal-200/50 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none  dark:focus:ring-gray-600"
+                        className="flex outline-none items-center w-full gap-x-3 py-1 ps-1 text-deep-teal-800 rounded-md hover:bg-puce-100/75 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none  dark:focus:ring-gray-600"
                         onClick={() => {
                           setThreadId("");
                           router.push("/");
