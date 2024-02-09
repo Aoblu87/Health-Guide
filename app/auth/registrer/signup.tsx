@@ -9,7 +9,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [successfullRegistration, setSuccessfullRegistration] = useState(false);
   const { setLogin } = useContext(LoginContext);
-
+let [isOpenMod, setIsOpenMod] = useAtom(loginSignupModal);
   const [invalidForm, setInvalidForm] = useState(false);
   const [user, setUser] = useState({
     email: "",
@@ -45,7 +45,7 @@ export default function SignUp() {
         setLogin(true);
       }
       const data = await response.json();
-      router.push("/");
+      setIsOpenMod(false)
     } catch (error) {
       console.log("Error fetching data:", error);
     } finally {
