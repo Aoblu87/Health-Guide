@@ -1,12 +1,16 @@
 import clearCookies from "@/app/helper/clearCookies";
-import { sidebarToggleAtom, userInfoAtom } from "@/atoms";
+import {
+  fileIdAtom,
+  messagesAtom,
+  runAtom,
+  sidebarToggleAtom,
+  threadIdAtom,
+  userInfoAtom,
+} from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
-import useLogout from "@/hooks/useLogout";
 import { useAtom } from "jotai";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-
 interface DeleteButtonProps {
   id: string;
 }
@@ -16,9 +20,35 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({ id }) => {
   const { setLogin } = useContext(LoginContext);
   const [, setIsOpen] = useAtom(sidebarToggleAtom);
   const [, setUserInfo] = useAtom(userInfoAtom);
-  const { logout } = useLogout();
 
-  
+  const [, setMessages] = useAtom(messagesAtom);
+  const [, setThreadId] = useAtom(threadIdAtom);
+  const [, setRun] = useAtom(runAtom);
+  const [, setFileId] = useAtom(fileIdAtom);
+
+  const logout = async () => {
+    try {
+      await clearCookies("token");
+      await clearCookies("userId");
+      await clearCookies("name");
+      await clearCookies("avatar");
+
+      // Set your atoms to their initial values or any desired values
+      setMessages([]);
+      setThreadId(null);
+      setRun(null);
+      setFileId(null);
+      setLogin(false);
+      setIsOpen(false);
+      // Clear local storage if needed
+      localStorage.clear();
+
+      // Redirect to the home page after logout
+      router.push("/");
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   const handleDelete = async () => {
     try {

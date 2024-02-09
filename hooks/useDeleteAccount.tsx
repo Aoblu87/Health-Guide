@@ -9,6 +9,7 @@ import {
 } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
 import { useAtom } from "jotai";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect } from "react";
 
@@ -18,7 +19,6 @@ const useDeleteAccount = () => {
   const [, setUserInfo] = useAtom(userInfoAtom);
   const [, setRun] = useAtom(runAtom);
   const [, setFileId] = useAtom(fileIdAtom);
-  const [, setIsOpen] = useAtom(sidebarToggleAtom);
   const { setLogin } = useContext(LoginContext);
   const router = useRouter();
 
@@ -40,8 +40,9 @@ const useDeleteAccount = () => {
       // Clear local storage if needed
       localStorage.clear();
 
-      // Redirect to the home page after deleteAccount
-      router.push("/");
+     
+          //Clearing the local storage
+          signOut({ redirect: false }).then(() => router.push("/"));
     } catch (error: any) {
       console.log(error.message);
     }

@@ -1,12 +1,51 @@
 "use client";
+import clearCookies from "@/app/helper/clearCookies";
 
-import useLogout from "@/hooks/useLogout";
+import {
+  fileIdAtom,
+  messagesAtom,
+  runAtom,
+  sidebarToggleAtom,
+  threadIdAtom,
+} from "@/atoms";
+import { LoginContext } from "@/context/loginContext";
+import { useAtom } from "jotai";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
 
 export default function SignOut() {
-  
-  const { logout } = useLogout();
+  const [, setMessages] = useAtom(messagesAtom);
+  const [, setThreadId] = useAtom(threadIdAtom);
+  const [, setRun] = useAtom(runAtom);
+  const [, setFileId] = useAtom(fileIdAtom);
+  const [, setIsOpen] = useAtom(sidebarToggleAtom);
+  const { setLogin } = useContext(LoginContext);
+  const router = useRouter();
+  const logout = async () => {
+    try {
+      await clearCookies("token");
+      await clearCookies("userId");
+      await clearCookies("name");
+      await clearCookies("avatar");
 
-  
+      // Set your atoms to their initial values or any desired values
+      setMessages([]);
+      setThreadId(null);
+      setRun(null);
+      setFileId(null);
+      setLogin(false);
+      setIsOpen(false);
+      // Clear local storage if needed
+      localStorage.clear();
+
+      //Clearing the local storage
+      signOut({ redirect: false }).then(() => router.push("/"));
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <button
       type="button"
