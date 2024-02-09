@@ -8,7 +8,7 @@ import { useContext, useState } from "react";
 export default function LoginForm(props: any) {
   const { loading, setLoading } = props;
   const [invalidForm, setInvalidForm] = useState(false);
-  let [isOpenMod, setIsOpenMod] = useAtom(loginSignupModal);
+  let [, setIsOpenMod] = useAtom(loginSignupModal);
 
   const [user, setUser] = useState({
     email: "gianni.gianni@gianni.it",

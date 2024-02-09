@@ -2,15 +2,12 @@
 import getUserInfo from "@/app/helper/getUserInfo";
 import { userInfoAtom } from "@/atoms";
 import { useFloating } from "@floating-ui/react";
-import { offset } from "@floating-ui/react-dom";
+import { autoPlacement } from "@floating-ui/react-dom";
 import { Popover, Transition } from "@headlessui/react";
 import { useAtom } from "jotai";
 import { Fragment, useEffect } from "react";
 import SignOut from "./signOut";
 import UserProfile from "./userProfile";
-import {autoPlacement} from '@floating-ui/react-dom';
-import {flip} from '@floating-ui/react-dom';
-
 
 export default function ProfilePopover() {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
@@ -20,7 +17,6 @@ export default function ProfilePopover() {
       href: `/profile/${userInfo.id}`,
       icon: IconOne,
     },
-    
   ];
 
   const { refs, floatingStyles } = useFloating({
@@ -33,7 +29,6 @@ export default function ProfilePopover() {
 
   useFloating({
     middleware: [autoPlacement()],
-
   });
   useEffect(() => {
     async function fetchUserInfo() {
@@ -77,7 +72,6 @@ export default function ProfilePopover() {
                   style={floatingStyles}
                   // style={{transform: 'translate(96px, -225px)'}}
                   className="absolute z-70 mt-3 w-full max-w-sm translate-x-[96px] -translate-y-[225px] lg:-translate-y-[250px] transform px-4 sm:px-0 lg:max-w-3xl"
-                  
                 >
                   <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5">
                     <div className="relative grid gap-5 bg-gradient-to-b from-deep-teal-100 to-deep-teal-400 p-2 lg:grid-cols-1">
