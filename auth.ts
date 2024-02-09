@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET as string,
   //Define the pages you want to use
   pages: {
-    signIn: "/api/auth",
+    signIn: "/",
   },
   //define the strategy of the authentication on session and its duration
   session: {
