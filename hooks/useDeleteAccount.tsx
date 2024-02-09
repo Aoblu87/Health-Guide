@@ -36,7 +36,6 @@ const useDeleteAccount = () => {
       setRun(null);
       setFileId(null);
       setLogin(false);
-      setIsOpen(false);
 
       // Clear local storage if needed
       localStorage.clear();
@@ -54,7 +53,6 @@ const useDeleteAccount = () => {
     setThreadId,
     setUserInfo,
     setLogin,
-    setIsOpen,
   ]);
 
   // deleteAccount automatically on component mount

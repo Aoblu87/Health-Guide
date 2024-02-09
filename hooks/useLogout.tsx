@@ -1,11 +1,5 @@
 import clearCookies from "@/app/helper/clearCookies";
-import {
-  fileIdAtom,
-  messagesAtom,
-  runAtom,
-  sidebarToggleAtom,
-  threadIdAtom,
-} from "@/atoms";
+import { fileIdAtom, messagesAtom, runAtom, threadIdAtom } from "@/atoms";
 import { LoginContext } from "@/context/loginContext";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
@@ -16,7 +10,6 @@ const useLogout = () => {
   const [, setThreadId] = useAtom(threadIdAtom);
   const [, setRun] = useAtom(runAtom);
   const [, setFileId] = useAtom(fileIdAtom);
-  const [, setIsOpen] = useAtom(sidebarToggleAtom);
   const { setLogin } = useContext(LoginContext);
   const router = useRouter();
 
@@ -33,7 +26,6 @@ const useLogout = () => {
       setRun(null);
       setFileId(null);
       setLogin(false);
-      setIsOpen(false);
 
       // Clear local storage if needed
       localStorage.clear();
@@ -43,15 +35,7 @@ const useLogout = () => {
     } catch (error: any) {
       console.log(error.message);
     }
-  }, [
-    router,
-    setFileId,
-    setMessages,
-    setRun,
-    setThreadId,
-    setLogin,
-    setIsOpen,
-  ]);
+  }, [router, setFileId, setMessages, setRun, setThreadId, setLogin]);
 
   // Logout automatically on component mount
   useEffect(() => {
