@@ -86,7 +86,7 @@ export default function LoginForm(props: any) {
             id="password"
             disabled={loading}
             name="password"
-            className=" rounded-lg border-transparent flex-1 outline focus:border-puce-300/90 focus:ring-puce-300/90 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-deep-teal-900 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-matisse-700 "
+            className=" rounded-lg border-transparent flex-1  focus:border-puce-300/90 focus:ring-puce-300/90 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-deep-teal-900 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-matisse-700 "
             required
             placeholder="********"
             aria-describedby="password-error"
