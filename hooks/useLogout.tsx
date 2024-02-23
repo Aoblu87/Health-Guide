@@ -15,10 +15,10 @@ const useLogout = () => {
 
   const logout = useCallback(async () => {
     try {
-      await clearCookies("token");
-      await clearCookies("userId");
-      await clearCookies("name");
-      await clearCookies("avatar");
+       clearCookies("token");
+       clearCookies("userId");
+       clearCookies("name");
+       clearCookies("avatar");
 
       // Set your atoms to their initial values or any desired values
       setMessages([]);
