@@ -33,7 +33,7 @@ export default function Footer() {
           © 2024 Health Guide. A product of{" "}
           <a
             className="text-slate-900 decoration-2 hover:underline font-semibold dark:text-gray-300"
-            href="http://htmlstream.com/"
+            href=""
             target="_blank"
           >
             Stefania Struzzi
