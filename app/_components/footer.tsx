@@ -36,7 +36,7 @@ export default function Footer() {
             href="http://htmlstream.com/"
             target="_blank"
           >
-            Stefania
+            Stefania Struzzi
           </a>
           .
         </p>
