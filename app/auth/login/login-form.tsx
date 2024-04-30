@@ -1,9 +1,9 @@
-"use client";
-import { loginSignupModal } from "@/atoms";
-import { LoginContext } from "@/context/loginContext";
-import { useAtom } from "jotai";
-import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+'use client';
+import { loginSignupModal } from '@/atoms';
+import { LoginContext } from '@/context/loginContext';
+import { useAtom } from 'jotai';
+import { useRouter } from 'next/navigation';
+import { useContext, useState } from 'react';
 
 export default function LoginForm(props: any) {
   const { loading, setLoading } = props;
@@ -11,8 +11,8 @@ export default function LoginForm(props: any) {
   let [, setIsOpenMod] = useAtom(loginSignupModal);
 
   const [user, setUser] = useState({
-    email: "mario@cacio.it",
-    password: "mariocacio",
+    email: 'serena.rossi@email.it',
+    password: 'serenarossi',
   });
   const router = useRouter();
   const { setLogin } = useContext(LoginContext);
@@ -24,9 +24,9 @@ export default function LoginForm(props: any) {
     try {
       const response = await fetch(`/api/auth/login`, {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({
           email: user.email,
           password: user.password,
@@ -41,14 +41,14 @@ export default function LoginForm(props: any) {
 
       const data = await response.json();
       // Store the token and user ID in localStorage or context
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.userId);
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId);
 
       // Update login state
       setLogin(true);
       setIsOpenMod(false);
     } catch (error) {
-      console.log("Error fetching data:", error);
+      console.log('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
@@ -113,7 +113,7 @@ export default function LoginForm(props: any) {
               <span className="sr-only">Loading...</span>
             </div>
           ) : (
-            "Sign in"
+            'Sign in'
           )}
         </button>
       </div>
