@@ -11,8 +11,8 @@ export default function LoginForm(props: any) {
   let [, setIsOpenMod] = useAtom(loginSignupModal);
 
   const [user, setUser] = useState({
-    email: 'serena.rossi@email.it',
-    password: 'serenarossi',
+    email: 'stefania@email.it',
+    password: 'stefania',
   });
   const router = useRouter();
   const { setLogin } = useContext(LoginContext);
